@@ -16,6 +16,62 @@
     .notebook.yellow-cover { background: linear-gradient(135deg, #ffe985, #f0bc4f); }
     .notebook.green-cover { background: linear-gradient(135deg, #a6dfbd, #52a981); }
     .notebook.dark-cover { background: linear-gradient(135deg, #555069, #242237); }
+    .heading-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .cover-choice { font-size: 21px; }
+    .animation-cover { background: radial-gradient(circle at 25% 20%, #fff16a 0 9%, transparent 10%), radial-gradient(circle at 75% 75%, #ff9acd 0 12%, transparent 13%), linear-gradient(135deg, #54d9ee, #7364df); }
+    .series-cover { background: linear-gradient(135deg, #301d51, #7a3e83 48%, #fd936d); }
+    .cinema-cover { background: repeating-linear-gradient(45deg, #f7c23e 0 9px, #252035 9px 18px); }
+    .fantasy-cover { background: radial-gradient(circle at 70% 20%, #fff9bf 0 7%, transparent 8%), linear-gradient(135deg, #1b2354, #7c4aa5 65%, #ef92ba); }
+    .space-cover { background: radial-gradient(circle at 20% 25%, #fff 0 2%, transparent 3%), radial-gradient(circle at 76% 36%, #fff 0 2%, transparent 3%), linear-gradient(135deg, #08112f, #264e93); }
+    .mystery-cover { background: radial-gradient(circle at 52% 35%, #fde9a7 0 9%, transparent 10%), linear-gradient(135deg, #153c3d, #236660); }
+    .magic-school-cover { background: radial-gradient(circle at 75% 17%, #ffe488 0 7%, transparent 8%), linear-gradient(135deg, #421832, #a64049 48%, #e9a94c); }
+    .hero-city-cover { background: linear-gradient(135deg, #153e76 0 45%, #e3bc42 45% 56%, #bb273e 56%); }
+    .galaxy-saga-cover { background: radial-gradient(circle at 18% 30%, #fff 0 2%, transparent 3%), radial-gradient(circle at 74% 25%, #fff 0 2%, transparent 3%), radial-gradient(circle at 49% 68%, #fb8ac4 0 12%, transparent 32%), linear-gradient(135deg, #070d2e, #243b8e); }
+    .pixel-world-cover { background: linear-gradient(90deg, #6ec66e 0 25%, #428c48 25% 50%, #74472a 50% 75%, #b67c43 75%); }
+    .ocean-adventure-cover { background: radial-gradient(circle at 70% 26%, #ffd76b 0 12%, transparent 13%), linear-gradient(155deg, #43c5dc 0 50%, #1976ad 50%); }
+    .detective-club-cover { background: repeating-linear-gradient(135deg, #e5d89a 0 12px, #a8713f 12px 24px); }
+    .pdf-library { margin-top: 20px; background: #fff; border: 1px solid #ece8f2; border-radius: 20px; padding: 26px; }
+    .export-grid .pdf-library { margin-top: 0; }
+    .pdf-library h2 { font: 700 25px Fraunces, serif; margin-bottom: 6px; }
+    .pdf-library > div > p:not(.eyebrow) { color: #706b80; }
+    .library-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .library-controls select { border: 1px solid #dedbe9; border-radius: 10px; padding: 11px 12px; color: #514b63; font: 14px 'DM Sans', sans-serif; background: #fff; }
+    .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-top: 15px; }
+    .pdf-card { border: 1px solid #ebe6f0; border-radius: 13px; padding: 13px; background: #fcfbff; }
+    .pdf-card .pdf-icon { font-size: 25px; display: block; margin-bottom: 8px; }
+    .pdf-card strong, .pdf-card small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pdf-card strong { font-size: 13px; } .pdf-card small { color: #887f96; margin: 4px 0 10px; }
+    .pdf-card a { color: #d76457; font-size: 12px; font-weight: 700; text-decoration: none; }
+    .school-sync { margin-top: 21px; padding: 15px; border-radius: 14px; background: #f4f1ff; display: flex; align-items: center; gap: 12px; }
+    .school-sync > span { font-size: 28px; } .school-sync h3 { margin: 0 0 3px; font-size: 14px; } .school-sync p { margin: 0; color: #6e6880; font-size: 12px; line-height: 1.4; } .school-sync button { margin-left: auto; white-space: nowrap; }
+    .record-subject-label { display: block; font-size: 13px; font-weight: 700; margin: 18px 0 7px; }
+    #recordSubjectSelect, #recordFilter, #customSubject { border: 1px solid #dedbe9; border-radius: 9px; padding: 9px 11px; color: #514b63; font: 14px 'DM Sans', sans-serif; background: #fff; }
+    #customSubject { display: block; width: min(100%, 260px); margin: 8px auto 0; }
+    .delete-subject-button { border: 0; background: transparent; color: #c35e55; font: 600 12px 'DM Sans', sans-serif; cursor: pointer; padding: 8px 3px 0; }
+    .recording-toolbar { max-width: 700px; margin: 28px auto 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .recording-toolbar h2, .trash-panel h2 { font: 700 23px Fraunces, serif; margin: 0; }
+    .recording-subject { color: #786c94; font-size: 12px; white-space: nowrap; }
+    .audio-item .delete-recording, .trash-actions button { border: 0; background: #fff0eb; color: #c75b50; border-radius: 8px; padding: 7px 9px; cursor: pointer; font: 12px 'DM Sans', sans-serif; }
+    .trash-panel { max-width: 700px; margin: 26px auto; padding: 20px; border: 1px dashed #d8d0df; border-radius: 17px; background: #fcfafc; }
+    .trash-panel p { color: #7d7589; font-size: 13px; margin: 5px 0 0; }
+    .trash-actions { display: flex; gap: 6px; margin-left: auto; } .trash-actions .remove-forever { background: #544e65; color: #fff; }
+    @media (max-width: 520px) { .recording-toolbar { align-items: flex-start; flex-direction: column; } .audio-item { flex-wrap: wrap; } .audio-item audio { order: 4; flex-basis: 100%; } .trash-actions { margin-left: 0; } }
+    .print-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; align-items: start; }
+    .print-controls { background: #fff; border: 1px solid #ece8f2; border-radius: 18px; padding: 19px; display: grid; gap: 9px; }
+    .print-controls label { font-size: 13px; font-weight: 700; margin-top: 5px; }
+    .print-controls select { width: 100%; padding: 10px; border: 1px solid #dedbe9; border-radius: 9px; color: #514b63; font: 14px 'DM Sans', sans-serif; background: #fff; }
+    .print-controls p { color: #817a91; font-size: 12px; line-height: 1.45; margin: 9px 0 0; }
+    .print-preview { background: #f0ecf9; border-radius: 19px; padding: 21px; text-align: center; overflow: auto; }
+    .print-preview > .eyebrow { text-align: left; }
+    #printPaper { width: min(100%, 680px); margin: auto; min-height: 550px; transform-origin: top center; }
+    #printPaper .paper-content { min-height: 550px; }
+    #printPaper .sticker-layer { position: absolute; inset: 0; pointer-events: none; }
+    @media (max-width: 700px) { .print-layout { grid-template-columns: 1fr; } #printPaper .paper-content { padding: 40px 25px; } }
+    @media print { .print-controls, .print-preview > .eyebrow { display: none !important; } .print-layout { display: block !important; } .print-preview { background: #fff !important; padding: 0 !important; } #printPaper { width: 100% !important; max-width: none !important; } }
+    @media (max-width: 520px) { .school-sync { align-items: flex-start; flex-wrap: wrap; } .school-sync button { margin-left: 40px; } }
+    .notebook-list button { display: flex; align-items: center; gap: 7px; }
+    .notebook-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px; }
+    @media (max-width: 430px) { .heading-actions { width: 100%; } .heading-actions button { flex: 1; padding: 11px 7px; font-size: 12px; } }
   </style>
 </head>
 <body>
@@ -28,6 +84,7 @@
         <button class="nav-item" data-tab="adesivos"><span>☺</span> Adesivos</button>
         <button class="nav-item" data-tab="gravacao"><span>◉</span> Gravações</button>
         <button class="nav-item" data-tab="exportar"><span>⇩</span> Exportar PDF</button>
+        <button class="nav-item" data-tab="imprimir"><span>🖨</span> Imprimir</button>
       </nav>
       <div class="side-tip"><span>☀</span><p>Seu espaço para criar, aprender e imaginar.</p></div>
     </aside>
@@ -36,11 +93,13 @@
       <header class="mobile-header"><button id="menuButton" aria-label="Abrir menu">☰</button><span>caderno <b>digital</b></span></header>
 
       <section id="caderno" class="tab-panel active">
-        <div class="page-heading"><div><p class="eyebrow">SEU ESPAÇO CRIATIVO</p><h1>Meu caderno</h1></div><button id="newPage" class="secondary-button">＋ Nova folha</button></div>
+        <div class="page-heading"><div><p class="eyebrow">SEU ESPAÇO CRIATIVO</p><h1 id="notebookTitle">Meu caderno</h1></div><div class="heading-actions"><button id="newNotebook" class="primary-button">＋ Novo caderno</button><button id="newPage" class="secondary-button">＋ Nova folha</button></div></div>
         <div class="studio-grid">
           <aside class="customizer">
+            <div class="option-group"><h3>Meus cadernos</h3><div id="notebookList" class="page-list notebook-list"></div></div>
             <div class="option-group"><h3>Escolha sua capa</h3><div class="cover-choices" id="coverChoices">
-              <button class="cover-choice selected coral" data-cover="coral" aria-label="Capa coral"></button><button class="cover-choice lilac" data-cover="lilac" aria-label="Capa lilás"></button><button class="cover-choice blue" data-cover="blue" aria-label="Capa azul"></button><button class="cover-choice yellow" data-cover="yellow" aria-label="Capa amarela"></button><button class="cover-choice green" data-cover="green" aria-label="Capa verde"></button><button class="cover-choice dark" data-cover="dark" aria-label="Capa escura"></button>
+              <button class="cover-choice selected coral" data-cover="coral" aria-label="Capa coral"></button><button class="cover-choice lilac" data-cover="lilac" aria-label="Capa lilás"></button><button class="cover-choice blue" data-cover="blue" aria-label="Capa azul"></button><button class="cover-choice yellow" data-cover="yellow" aria-label="Capa amarela"></button><button class="cover-choice green" data-cover="green" aria-label="Capa verde"></button><button class="cover-choice dark" data-cover="dark" aria-label="Capa escura"></button><button class="cover-choice animation-cover" data-cover="animation" aria-label="Capa inspirada em desenhos">🎨</button><button class="cover-choice series-cover" data-cover="series" aria-label="Capa inspirada em séries">📺</button><button class="cover-choice cinema-cover" data-cover="cinema" aria-label="Capa inspirada em filmes">🎬</button><button class="cover-choice fantasy-cover" data-cover="fantasy" aria-label="Capa de fantasia">🪄</button><button class="cover-choice space-cover" data-cover="space" aria-label="Capa espacial">🚀</button><button class="cover-choice mystery-cover" data-cover="mystery" aria-label="Capa de mistério">🔎</button>
+              <button class="cover-choice magic-school-cover" data-cover="magic-school" aria-label="Capa inspirada em escola de magia" title="Escola de magia">⚡</button><button class="cover-choice hero-city-cover" data-cover="hero-city" aria-label="Capa inspirada em heróis" title="Heróis em ação">🦸</button><button class="cover-choice galaxy-saga-cover" data-cover="galaxy-saga" aria-label="Capa inspirada em saga espacial" title="Saga galáctica">🌌</button><button class="cover-choice pixel-world-cover" data-cover="pixel-world" aria-label="Capa inspirada em aventuras de blocos" title="Aventura pixelada">🧱</button><button class="cover-choice ocean-adventure-cover" data-cover="ocean-adventure" aria-label="Capa inspirada em aventura no oceano" title="Aventura no oceano">🌊</button><button class="cover-choice detective-club-cover" data-cover="detective-club" aria-label="Capa inspirada em uma série de mistério" title="Clube de mistério">🕵️</button>
             </div></div>
             <div class="option-group"><h3>Tipo de folha</h3><div class="paper-options" id="paperOptions">
               <button class="paper-option selected" data-paper="lined"><i class="lines"></i> Pautada</button><button class="paper-option" data-paper="grid"><i class="grid"></i> Quadriculada</button><button class="paper-option" data-paper="blank"><i class="blank"></i> Em branco</button>
@@ -51,6 +110,8 @@
         </div>
       </section>
 
+      <section id="imprimir" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE PRONTO NO PAPEL</p><h1>Imprimir folha</h1><p class="subtitle">Escolha qualquer caderno e página para ver a prévia antes de imprimir.</p></div><button id="printButton" class="primary-button">🖨 Imprimir esta folha</button></div><div class="print-layout"><aside class="print-controls"><label for="printNotebookSelect">Caderno</label><select id="printNotebookSelect"></select><label for="printPageSelect">Folha</label><select id="printPageSelect"></select><p>Somente a folha escolhida será impressa.</p></aside><div class="print-preview"><p class="eyebrow">PRÉVIA DE IMPRESSÃO</p><div id="printPaper" class="paper lined-paper"></div></div></div></section>
+
       <section id="ia" class="tab-panel">
         <div class="page-heading"><div><p class="eyebrow">ESTUDE COM LEVEZA</p><h1>Tutora IA <span class="sparkle">✦</span></h1><p class="subtitle">Sua companheira para tirar dúvidas e entender melhor as matérias.</p></div></div>
         <div class="ai-layout"><div class="ai-card"><div class="ai-avatar">✦</div><div><h2>Oi, eu sou a Luma!</h2><p>Posso explicar assuntos escolares, resumir textos e ajudar você a entender suas aulas da Alura.</p></div></div><div class="suggestions"><button data-question="Explique fotossíntese de um jeito fácil">🌱 Explique fotossíntese</button><button data-question="Como resolver uma equação de primeiro grau?">➗ Equação de 1º grau</button><button data-question="Me ajude a montar um resumo para estudar">📝 Criar um resumo</button><button data-question="Como aproveitar melhor uma aula da Alura?">💻 Aulas da Alura</button></div><div class="chat-box" id="chatBox"><div class="message luma">Olá! Qual matéria você quer estudar hoje?</div></div><form id="aiForm" class="ai-input"><input id="aiQuestion" placeholder="Pergunte qualquer coisa sobre a escola..." autocomplete="off" /><button type="submit">Enviar ↑</button></form><p class="ai-note">A Tutora IA funciona com respostas de estudo no navegador. Para respostas ilimitadas e personalizadas, conecte uma API de IA no JavaScript.</p></div>
@@ -58,9 +119,9 @@
 
       <section id="adesivos" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE TUDO COM A SUA CARA</p><h1>Adesivos</h1><p class="subtitle">Clique em um adesivo para adicioná-lo à folha atual.</p></div></div><div class="sticker-tabs"><button class="sticker-filter active" data-category="todos">Todos</button><button class="sticker-filter" data-category="escola">Escola & tecnologia</button><button class="sticker-filter" data-category="diversao">Diversão</button><button class="sticker-filter" data-category="natureza">Natureza</button></div><div id="stickerGallery" class="sticker-gallery"></div></section>
 
-      <section id="gravacao" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">GUARDE SUAS IDEIAS</p><h1>Gravações</h1><p class="subtitle">Grave explicações, lembretes ou uma aula para ouvir depois.</p></div></div><div class="record-card"><div id="recordVisual" class="record-visual"><span>🎙</span></div><h2 id="recordTitle">Pronta para gravar?</h2><p id="recordStatus">Toque no botão e permita o uso do microfone.</p><div class="record-controls"><button id="recordButton" class="record-button" aria-label="Iniciar gravação">●</button><span id="recordTime">00:00</span></div></div><div id="recordingsList" class="recordings-list"></div></section>
+      <section id="gravacao" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">GUARDE SUAS IDEIAS</p><h1>Gravações</h1><p class="subtitle">Grave explicações, lembretes ou uma aula para ouvir depois.</p></div><button id="toggleTrash" class="secondary-button">🗑 Lixeira (<span id="trashCount">0</span>)</button></div><div class="record-card"><div id="recordVisual" class="record-visual"><span>🎙</span></div><h2 id="recordTitle">Pronta para gravar?</h2><p id="recordStatus">Toque no botão e permita o uso do microfone.</p><label class="record-subject-label" for="recordSubjectSelect">Matéria desta gravação</label><select id="recordSubjectSelect"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option value="personalizada">Nome da matéria</option></select><input id="customSubject" class="hidden" maxlength="40" placeholder="Digite o nome da matéria" aria-label="Nome da matéria"><div class="record-controls"><button id="recordButton" class="record-button" aria-label="Iniciar gravação">●</button><span id="recordTime">00:00</span></div></div><div class="recording-toolbar"><h2>Minhas gravações</h2><select id="recordFilter" aria-label="Filtrar gravações por matéria"><option value="Todas">Todas as matérias</option><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option value="personalizada">Nome da matéria</option></select></div><div id="recordingsList" class="recordings-list"></div><div id="trashPanel" class="trash-panel hidden"><div><h2>Lixeira</h2><p>Você pode recuperar uma gravação ou apagá-la de vez.</p></div><div id="trashList" class="recordings-list"></div></div></section>
 
-      <section id="exportar" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">COMPARTILHE SEU CONTEÚDO</p><h1>Exportar e transcrever</h1><p class="subtitle">Salve sua folha como PDF ou extraia o texto de um PDF de estudo.</p></div></div><div class="export-grid"><article class="feature-card"><span class="feature-icon peach">⇩</span><h2>Baixar meu caderno</h2><p>Gere um PDF da página atual, com seu texto e adesivos.</p><button id="exportButton" class="primary-button">Exportar como PDF</button></article><article class="feature-card"><span class="feature-icon lavender">T</span><h2>Transcrever PDF</h2><p>Extraia o texto das suas matérias. Links e endereços não entram na transcrição.</p><label class="upload-button" for="pdfFile">Escolher um PDF</label><input type="file" id="pdfFile" accept="application/pdf" hidden><p id="pdfStatus" class="small-status"></p></article></div><article id="transcriptionCard" class="transcription-card hidden"><div><h2>Texto transcrito</h2><p>Revise, copie ou adicione ao seu caderno.</p></div><textarea id="transcriptionText" readonly></textarea><div><button id="copyText" class="secondary-button">Copiar texto</button><button id="addTextToNotebook" class="primary-button">Adicionar ao caderno</button></div></article></section>
+      <section id="exportar" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">SEUS ARQUIVOS DE ESTUDO</p><h1>Materiais e transcrição</h1><p class="subtitle">Organize seus PDFs por matéria ou transforme um PDF em texto.</p></div></div><div class="export-grid"><article class="pdf-library"><div><p class="eyebrow">MATERIAIS DE ESTUDO</p><h2>Biblioteca por matéria</h2><p>Adicione seus PDFs e mantenha cada material no lugar certo.</p></div><div class="library-controls"><select id="subjectSelect" aria-label="Selecionar matéria"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option>Outras matérias</option></select><label class="upload-button" for="libraryFiles">Adicionar PDFs</label><input type="file" id="libraryFiles" accept="application/pdf" multiple hidden></div><p id="libraryStatus" class="small-status"></p><div id="libraryGrid" class="library-grid"></div><div class="school-sync"><span>🏫</span><div><h3>Escola Paraná</h3><p>A sincronização automática requer uma integração oficial autorizada pela sua conta escolar.</p></div><button id="schoolSyncButton" class="secondary-button">Ver detalhes</button></div></article><article class="feature-card"><span class="feature-icon lavender">T</span><h2>Transcrever PDF</h2><p>Extraia o texto das suas matérias. Links e endereços não entram na transcrição.</p><label class="upload-button" for="pdfFile">Escolher um PDF</label><input type="file" id="pdfFile" accept="application/pdf" hidden><p id="pdfStatus" class="small-status"></p></article></div><article id="transcriptionCard" class="transcription-card hidden"><div><h2>Texto transcrito</h2><p>Revise, copie ou adicione ao seu caderno.</p></div><textarea id="transcriptionText" readonly></textarea><div><button id="copyText" class="secondary-button">Copiar texto</button><button id="addTextToNotebook" class="primary-button">Adicionar ao caderno</button></div></article></section>
     </main>
   </div>
   <script src="app.js"></script>
