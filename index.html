@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Caderno Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    .notebook.coral-cover { background: linear-gradient(135deg, #ffb39d, #f38576); }
+    .notebook.lilac-cover { background: linear-gradient(135deg, #c7b8ff, #8f7cdd); }
+    .notebook.blue-cover { background: linear-gradient(135deg, #91d5f1, #4296c9); }
+    .notebook.yellow-cover { background: linear-gradient(135deg, #ffe985, #f0bc4f); }
+    .notebook.green-cover { background: linear-gradient(135deg, #a6dfbd, #52a981); }
+    .notebook.dark-cover { background: linear-gradient(135deg, #555069, #242237); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#caderno"><span class="brand-icon">✦</span><span>caderno<br><b>digital</b></span></a>
+      <nav aria-label="Navegação principal">
+        <button class="nav-item active" data-tab="caderno"><span>▣</span> Meu caderno</button>
+        <button class="nav-item" data-tab="ia"><span>✦</span> Tutora IA</button>
+        <button class="nav-item" data-tab="adesivos"><span>☺</span> Adesivos</button>
+        <button class="nav-item" data-tab="gravacao"><span>◉</span> Gravações</button>
+        <button class="nav-item" data-tab="exportar"><span>⇩</span> Exportar PDF</button>
+      </nav>
+      <div class="side-tip"><span>☀</span><p>Seu espaço para criar, aprender e imaginar.</p></div>
+    </aside>
+
+    <main>
+      <header class="mobile-header"><button id="menuButton" aria-label="Abrir menu">☰</button><span>caderno <b>digital</b></span></header>
+
+      <section id="caderno" class="tab-panel active">
+        <div class="page-heading"><div><p class="eyebrow">SEU ESPAÇO CRIATIVO</p><h1>Meu caderno</h1></div><button id="newPage" class="secondary-button">＋ Nova folha</button></div>
+        <div class="studio-grid">
+          <aside class="customizer">
+            <div class="option-group"><h3>Escolha sua capa</h3><div class="cover-choices" id="coverChoices">
+              <button class="cover-choice selected coral" data-cover="coral" aria-label="Capa coral"></button><button class="cover-choice lilac" data-cover="lilac" aria-label="Capa lilás"></button><button class="cover-choice blue" data-cover="blue" aria-label="Capa azul"></button><button class="cover-choice yellow" data-cover="yellow" aria-label="Capa amarela"></button><button class="cover-choice green" data-cover="green" aria-label="Capa verde"></button><button class="cover-choice dark" data-cover="dark" aria-label="Capa escura"></button>
+            </div></div>
+            <div class="option-group"><h3>Tipo de folha</h3><div class="paper-options" id="paperOptions">
+              <button class="paper-option selected" data-paper="lined"><i class="lines"></i> Pautada</button><button class="paper-option" data-paper="grid"><i class="grid"></i> Quadriculada</button><button class="paper-option" data-paper="blank"><i class="blank"></i> Em branco</button>
+            </div></div>
+            <div class="option-group"><h3>Minhas páginas</h3><div id="pageList" class="page-list"></div></div>
+          </aside>
+          <div class="notebook-area"><div id="notebook" class="notebook coral-cover"><div id="paper" class="paper lined-paper"><div id="paperContent" class="paper-content" contenteditable="true" spellcheck="true"><p class="date">28 DE AGOSTO</p><h2>Olá, Amanda! <span>✦</span></h2><p>Este é o seu espaço para anotar ideias, estudar e deixar tudo com a sua cara.</p><p>Toque aqui para começar a escrever...</p></div><div id="stickerLayer" class="sticker-layer" aria-label="Adesivos na folha"></div></div></div><p class="drag-help">Arraste os adesivos pela folha · Clique no texto para editar</p></div>
+        </div>
+      </section>
+
+      <section id="ia" class="tab-panel">
+        <div class="page-heading"><div><p class="eyebrow">ESTUDE COM LEVEZA</p><h1>Tutora IA <span class="sparkle">✦</span></h1><p class="subtitle">Sua companheira para tirar dúvidas e entender melhor as matérias.</p></div></div>
+        <div class="ai-layout"><div class="ai-card"><div class="ai-avatar">✦</div><div><h2>Oi, eu sou a Luma!</h2><p>Posso explicar assuntos escolares, resumir textos e ajudar você a entender suas aulas da Alura.</p></div></div><div class="suggestions"><button data-question="Explique fotossíntese de um jeito fácil">🌱 Explique fotossíntese</button><button data-question="Como resolver uma equação de primeiro grau?">➗ Equação de 1º grau</button><button data-question="Me ajude a montar um resumo para estudar">📝 Criar um resumo</button><button data-question="Como aproveitar melhor uma aula da Alura?">💻 Aulas da Alura</button></div><div class="chat-box" id="chatBox"><div class="message luma">Olá! Qual matéria você quer estudar hoje?</div></div><form id="aiForm" class="ai-input"><input id="aiQuestion" placeholder="Pergunte qualquer coisa sobre a escola..." autocomplete="off" /><button type="submit">Enviar ↑</button></form><p class="ai-note">A Tutora IA funciona com respostas de estudo no navegador. Para respostas ilimitadas e personalizadas, conecte uma API de IA no JavaScript.</p></div>
+      </section>
+
+      <section id="adesivos" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE TUDO COM A SUA CARA</p><h1>Adesivos</h1><p class="subtitle">Clique em um adesivo para adicioná-lo à folha atual.</p></div></div><div class="sticker-tabs"><button class="sticker-filter active" data-category="todos">Todos</button><button class="sticker-filter" data-category="escola">Escola & tecnologia</button><button class="sticker-filter" data-category="diversao">Diversão</button><button class="sticker-filter" data-category="natureza">Natureza</button></div><div id="stickerGallery" class="sticker-gallery"></div></section>
+
+      <section id="gravacao" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">GUARDE SUAS IDEIAS</p><h1>Gravações</h1><p class="subtitle">Grave explicações, lembretes ou uma aula para ouvir depois.</p></div></div><div class="record-card"><div id="recordVisual" class="record-visual"><span>🎙</span></div><h2 id="recordTitle">Pronta para gravar?</h2><p id="recordStatus">Toque no botão e permita o uso do microfone.</p><div class="record-controls"><button id="recordButton" class="record-button" aria-label="Iniciar gravação">●</button><span id="recordTime">00:00</span></div></div><div id="recordingsList" class="recordings-list"></div></section>
+
+      <section id="exportar" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">COMPARTILHE SEU CONTEÚDO</p><h1>Exportar e transcrever</h1><p class="subtitle">Salve sua folha como PDF ou extraia o texto de um PDF de estudo.</p></div></div><div class="export-grid"><article class="feature-card"><span class="feature-icon peach">⇩</span><h2>Baixar meu caderno</h2><p>Gere um PDF da página atual, com seu texto e adesivos.</p><button id="exportButton" class="primary-button">Exportar como PDF</button></article><article class="feature-card"><span class="feature-icon lavender">T</span><h2>Transcrever PDF</h2><p>Extraia o texto das suas matérias. Links e endereços não entram na transcrição.</p><label class="upload-button" for="pdfFile">Escolher um PDF</label><input type="file" id="pdfFile" accept="application/pdf" hidden><p id="pdfStatus" class="small-status"></p></article></div><article id="transcriptionCard" class="transcription-card hidden"><div><h2>Texto transcrito</h2><p>Revise, copie ou adicione ao seu caderno.</p></div><textarea id="transcriptionText" readonly></textarea><div><button id="copyText" class="secondary-button">Copiar texto</button><button id="addTextToNotebook" class="primary-button">Adicionar ao caderno</button></div></article></section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
