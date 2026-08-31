@@ -7,7 +7,7 @@ window.addEventListener('appinstalled',()=>{installAppPrompt=null;$('#installApp
 function showInstallHelp(){const isIos=/iPad|iPhone|iPod/.test(navigator.userAgent);$('#installHelpText').textContent=isIos?'No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.':'Abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.';$('#installHelp').classList.remove('hidden');}
 $('#installAppButton').onclick=async()=>{if(!installAppPrompt){showInstallHelp();return;}installAppPrompt.prompt();await installAppPrompt.userChoice;installAppPrompt=null;$('#installAppButton').classList.remove('available');};
 $('#closeInstallHelp').onclick=()=>$('#installHelp').classList.add('hidden');
-if(!window.matchMedia('(display-mode: standalone)').matches&&/iPad|iPhone|iPod/.test(navigator.userAgent))$('#installAppButton').classList.add('available');
+if(!window.matchMedia('(display-mode: standalone)').matches)$('#installAppButton').classList.add('available');
 let paperType = 'lined', currentPage = 0, currentNotebook = 0;
 const notebookStorage = 'caderno-digital-notebooks';
 let notebooks;
