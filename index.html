@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#292540" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Caderno Digital" />
   <title>Meu Caderno Digital</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/app-icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/app-icon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
@@ -17,19 +25,21 @@
     .notebook.green-cover { background: linear-gradient(135deg, #a6dfbd, #52a981); }
     .notebook.dark-cover { background: linear-gradient(135deg, #555069, #242237); }
     .heading-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .sidebar { overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    .sidebar nav { flex: 0 0 auto; }
+    .sidebar::-webkit-scrollbar { width: 9px; }
+    .sidebar::-webkit-scrollbar-track { background: #f5f2f8; }
+    .sidebar::-webkit-scrollbar-thumb { border: 2px solid #f5f2f8; border-radius: 99px; background: #aaa2b8; }
+    .sidebar::-webkit-scrollbar-thumb:hover { background: #766e86; }
     .cover-choice { font-size: 21px; }
-    .animation-cover { background: radial-gradient(circle at 25% 20%, #fff16a 0 9%, transparent 10%), radial-gradient(circle at 75% 75%, #ff9acd 0 12%, transparent 13%), linear-gradient(135deg, #54d9ee, #7364df); }
-    .series-cover { background: linear-gradient(135deg, #301d51, #7a3e83 48%, #fd936d); }
-    .cinema-cover { background: repeating-linear-gradient(45deg, #f7c23e 0 9px, #252035 9px 18px); }
-    .fantasy-cover { background: radial-gradient(circle at 70% 20%, #fff9bf 0 7%, transparent 8%), linear-gradient(135deg, #1b2354, #7c4aa5 65%, #ef92ba); }
-    .space-cover { background: radial-gradient(circle at 20% 25%, #fff 0 2%, transparent 3%), radial-gradient(circle at 76% 36%, #fff 0 2%, transparent 3%), linear-gradient(135deg, #08112f, #264e93); }
-    .mystery-cover { background: radial-gradient(circle at 52% 35%, #fde9a7 0 9%, transparent 10%), linear-gradient(135deg, #153c3d, #236660); }
-    .magic-school-cover { background: radial-gradient(circle at 75% 17%, #ffe488 0 7%, transparent 8%), linear-gradient(135deg, #421832, #a64049 48%, #e9a94c); }
-    .hero-city-cover { background: linear-gradient(135deg, #153e76 0 45%, #e3bc42 45% 56%, #bb273e 56%); }
-    .galaxy-saga-cover { background: radial-gradient(circle at 18% 30%, #fff 0 2%, transparent 3%), radial-gradient(circle at 74% 25%, #fff 0 2%, transparent 3%), radial-gradient(circle at 49% 68%, #fb8ac4 0 12%, transparent 32%), linear-gradient(135deg, #070d2e, #243b8e); }
-    .pixel-world-cover { background: linear-gradient(90deg, #6ec66e 0 25%, #428c48 25% 50%, #74472a 50% 75%, #b67c43 75%); }
-    .ocean-adventure-cover { background: radial-gradient(circle at 70% 26%, #ffd76b 0 12%, transparent 13%), linear-gradient(155deg, #43c5dc 0 50%, #1976ad 50%); }
-    .detective-club-cover { background: repeating-linear-gradient(135deg, #e5d89a 0 12px, #a8713f 12px 24px); }
+    .netflix-cover { background: radial-gradient(circle at 74% 24%, #e50914 0 13%, transparent 14%), linear-gradient(145deg, #090909, #2a0508); }
+    .disney-cover { background: radial-gradient(circle at 70% 25%, #86d9ff 0 8%, transparent 9%), linear-gradient(145deg, #081a5c, #1749b5 60%, #52b8e9); }
+    .apple-tv-cover { background: radial-gradient(circle at 28% 25%, #fff 0 6%, transparent 7%), linear-gradient(135deg, #050505, #333 55%, #777); }
+    .crunchyroll-cover { background: radial-gradient(circle at 72% 28%, #fff 0 9%, transparent 10%), linear-gradient(145deg, #ff5b00, #ff8a00 58%, #44200c); }
+    .prime-video-cover { background: linear-gradient(155deg, #07182d, #1168a6 58%, #19a7df); }
+    .max-cover { background: radial-gradient(circle at 75% 25%, #bf63ff 0 10%, transparent 11%), linear-gradient(145deg, #16043d, #5420a8 55%, #8b52e8); }
+    .globoplay-cover { background: radial-gradient(circle at 28% 25%, #ff654d 0 9%, transparent 10%), radial-gradient(circle at 72% 70%, #b955ff 0 12%, transparent 13%), linear-gradient(145deg, #ed174c, #6226a9); }
+    .pluto-tv-cover { background: radial-gradient(circle at 72% 25%, #ffe000 0 10%, transparent 11%), linear-gradient(145deg, #111, #303030 58%, #5b477c); }
     .pdf-library { margin-top: 20px; background: #fff; border: 1px solid #ece8f2; border-radius: 20px; padding: 26px; }
     .export-grid .pdf-library { margin-top: 0; }
     .pdf-library h2 { font: 700 25px Fraunces, serif; margin-bottom: 6px; }
@@ -44,6 +54,12 @@
     .pdf-card a { color: #d76457; font-size: 12px; font-weight: 700; text-decoration: none; }
     .school-sync { margin-top: 21px; padding: 15px; border-radius: 14px; background: #f4f1ff; display: flex; align-items: center; gap: 12px; }
     .school-sync > span { font-size: 28px; } .school-sync h3 { margin: 0 0 3px; font-size: 14px; } .school-sync p { margin: 0; color: #6e6880; font-size: 12px; line-height: 1.4; } .school-sync button { margin-left: auto; white-space: nowrap; }
+    .classroom-sync { margin-top: 10px; background: #edf6ff; }
+    .classroom-setup { margin: 10px 0 0; padding: 14px; border: 1px solid #dce9f5; border-radius: 12px; background: #f8fbff; }
+    .classroom-setup label { display: block; margin-bottom: 7px; font-size: 12px; font-weight: 700; }
+    .classroom-setup > div { display: flex; gap: 8px; }
+    .classroom-setup input { min-width: 0; flex: 1; border: 1px solid #d9dbea; border-radius: 9px; padding: 10px 11px; font: 13px 'DM Sans', sans-serif; }
+    .classroom-setup p { margin: 8px 0 0; color: #77718a; font-size: 11px; line-height: 1.45; }
     .record-subject-label { display: block; font-size: 13px; font-weight: 700; margin: 18px 0 7px; }
     #recordSubjectSelect, #recordFilter, #customSubject { border: 1px solid #dedbe9; border-radius: 9px; padding: 9px 11px; color: #514b63; font: 14px 'DM Sans', sans-serif; background: #fff; }
     #customSubject { display: block; width: min(100%, 260px); margin: 8px auto 0; }
@@ -68,62 +84,353 @@
     #printPaper .sticker-layer { position: absolute; inset: 0; pointer-events: none; }
     @media (max-width: 700px) { .print-layout { grid-template-columns: 1fr; } #printPaper .paper-content { padding: 40px 25px; } }
     @media print { .print-controls, .print-preview > .eyebrow { display: none !important; } .print-layout { display: block !important; } .print-preview { background: #fff !important; padding: 0 !important; } #printPaper { width: 100% !important; max-width: none !important; } }
-    @media (max-width: 520px) { .school-sync { align-items: flex-start; flex-wrap: wrap; } .school-sync button { margin-left: 40px; } }
-    .notebook-list button { display: flex; align-items: center; gap: 7px; }
-    .notebook-dot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 10px; }
+    @media (max-width: 520px) { .school-sync { align-items: flex-start; flex-wrap: wrap; } .school-sync button { margin-left: 40px; } .classroom-setup > div { flex-direction: column; } .classroom-setup button { width: 100%; } }
+    .notebook-list-item { display: grid; grid-template-columns: minmax(0, 1fr) 30px; gap: 5px; }
+    .notebook-list .notebook-select { display: flex; align-items: center; gap: 7px; min-width: 0; }
+    .notebook-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .notebook-list .rename-notebook { display: grid; place-items: center; padding: 0; color: #746d83; font-size: 15px; text-align: center; }
+    .notebook-list .rename-notebook:hover { background: #eee9f8; color: #4e4662; }
+    .audio-item { flex-wrap: wrap; }
+    .recording-caption { border: 0; border-radius: 8px; padding: 7px 9px; background: #edf3ff; color: #315987; cursor: pointer; font: 600 12px 'DM Sans', sans-serif; }
+    .recording-transcript { flex-basis: 100%; margin: 4px 0 0 32px; color: #514b63; font-size: 13px; line-height: 1.5; }
+    .live-caption-panel { width: min(100%, 430px); margin: 14px auto 0; text-align: left; }
+    .live-captions { min-height: 54px; margin-top: 8px; padding: 11px 13px; border: 2px solid #776f89; border-radius: 10px; background: #faf9ff; color: #292540; font-size: 13px; line-height: 1.5; }
+    .vision-protanopia .live-captions, .vision-deuteranopia .live-captions, .vision-tritanopia .live-captions { border-style: dashed; }
+    .essay-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+    .essay-editor-card, .essay-sync-card { padding: 24px; border: 1px solid #e5e0ec; border-radius: 20px; background: #fff; }
+    .essay-editor-card { display: grid; grid-template-columns: 1fr 220px; gap: 10px 14px; }
+    .essay-editor-card label { align-self: end; font-size: 13px; font-weight: 700; }
+    .essay-editor-card label[for="essayGenre"] { grid-column: 2; grid-row: 1; }
+    .essay-editor-card input, .essay-editor-card select, .essay-editor-card textarea { width: 100%; padding: 11px 12px; border: 1px solid #bdb6c8; border-radius: 9px; color: #292540; background: #fff; font: 14px 'DM Sans', sans-serif; }
+    .essay-editor-card label[for="essayTheme"], #essayTheme, .essay-editor-card label[for="essayText"], #essayText, .essay-footer { grid-column: 1 / -1; }
+    #essayText { min-height: 430px; resize: vertical; font: 16px/1.8 'DM Sans', sans-serif; }
+    .essay-footer { display: flex; justify-content: space-between; gap: 12px; color: #655f73; font-size: 12px; }
+    .essay-sync-card { position: sticky; top: 82px; }
+    .essay-sync-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; background: #fff0eb; font-size: 27px; }
+    .essay-sync-card h2 { margin: 15px 0 8px; font: 700 24px Fraunces, serif; }
+    .essay-sync-card > p { color: #6c6678; line-height: 1.5; }
+    .essay-sync-card button { width: 100%; margin-top: 8px; }
+    .essay-sync-card .privacy-note { margin-top: 14px; font-size: 11px; }
+    @media (max-width: 800px) { .essay-layout { grid-template-columns: 1fr; } .essay-sync-card { position: static; } }
+    @media (max-width: 520px) { .essay-editor-card { grid-template-columns: 1fr; } .essay-editor-card label, .essay-editor-card input, .essay-editor-card select { grid-column: 1 !important; grid-row: auto !important; } .essay-footer { flex-direction: column; } }
+    .tutor-tools { display: grid; gap: 18px; margin-top: 24px; }
+    .tutor-tool-card { padding: 24px; border: 1px solid #e8e3ee; border-radius: 20px; background: #fff; }
+    .tutor-tool-card h2 { margin: 0; font: 700 25px Fraunces, serif; }
+    .tutor-tool-card > p { margin: 8px 0 16px; color: #6d6779; }
+    .tool-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .response-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+    .response-card { padding: 15px; border: 1px solid #dcd5e7; border-radius: 13px; background: #faf8ff; }
+    .response-card h3 { margin-bottom: 8px; font-size: 14px; }
+    .response-card p { margin: 0; color: #5f596b; font-size: 13px; line-height: 1.5; }
+    .save-response-card { display: block; margin-top: 9px; border: 1px solid #8d83a2; border-radius: 7px; padding: 6px 8px; background: #fff; color: #514769; cursor: pointer; font: 600 11px 'DM Sans', sans-serif; }
+    .study-plan-form { display: grid; grid-template-columns: minmax(0, 1fr) 130px auto; gap: 8px; margin: 14px 0; }
+    .study-plan-form input, .study-plan-form select, .platform-card input { padding: 10px 11px; border: 1px solid #bdb6c8; border-radius: 8px; font: 14px 'DM Sans', sans-serif; }
+    .study-plan-list { display: grid; gap: 8px; }
+    .study-plan-item { display: grid; grid-template-columns: auto 85px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 10px 12px; border-radius: 10px; background: #f8f6fc; }
+    .study-plan-item.done span { text-decoration: line-through; color: #716b7e; }
+    .study-plan-item button { border: 0; background: transparent; color: #b14f49; cursor: pointer; }
+    .platform-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    .platform-card { display: grid; gap: 7px; padding: 17px; border: 1px solid #ddd6e8; border-radius: 14px; }
+    .platform-card h3 { margin: 0 0 5px; }
+    .platform-card label { font-size: 12px; font-weight: 700; }
+    .platform-card a { margin-top: 4px; color: #315987; font-weight: 700; }
+    .platform-view-button { border: 0; border-radius: 8px; padding: 10px; background: #f1eef8; color: #514769; cursor: pointer; font-weight: 700; }
+    .platform-dashboard { margin-top: 14px; }
+    .platform-dashboard-card { padding: 16px; border: 1px solid #dcd5e7; border-radius: 13px; background: #faf9fd; }
+    .platform-dashboard-card h3 { margin-bottom: 8px; }
+    .platform-dashboard-card p { margin: 5px 0; color: #5e586a; }
+    .progress-track { height: 12px; margin-top: 10px; overflow: hidden; border: 1px solid #777080; border-radius: 99px; background: #fff; }
+    .progress-track span { display: block; height: 100%; background: repeating-linear-gradient(45deg, #315987 0 8px, #5484b9 8px 16px); }
+    .enem-layout { display: grid; grid-template-columns: minmax(280px, .85fr) minmax(340px, 1.15fr); gap: 16px; }
+    .enem-card { padding: 21px; border: 1px solid #ddd6e7; border-radius: 17px; background: #fff; }
+    .enem-card h2 { margin: 0 0 8px; font: 700 24px Fraunces, serif; }
+    .enem-card > p { color: #676172; line-height: 1.5; }
+    .enem-form { display: grid; gap: 7px; margin-top: 16px; }
+    .enem-form label { margin-top: 5px; font-size: 12px; font-weight: 700; }
+    .enem-form input, .enem-form select { width: 100%; padding: 10px 11px; border: 1px solid #bcb5c7; border-radius: 8px; background: #fff; font: 14px 'DM Sans', sans-serif; }
+    .enem-official-links { display: grid; gap: 9px; margin-top: 15px; }
+    .enem-official-link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 11px; align-items: center; width: 100%; padding: 12px; border: 1px solid #d8d1e2; border-radius: 11px; background: #faf8fd; color: #292540; cursor: pointer; text-align: left; }
+    .enem-official-link strong, .enem-official-link small { display: block; }
+    .enem-official-link small { margin-top: 3px; color: #716a7d; }
+    .enem-study { margin-top: 16px; }
+    .enem-study-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .enem-study-header h2 { margin: 0; font: 700 24px Fraunces, serif; }
+    .enem-area-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 9px; margin-top: 13px; }
+    .enem-area { display: flex; align-items: center; gap: 9px; padding: 12px; border: 1px solid #ddd6e7; border-radius: 10px; background: #fff; font-weight: 600; }
+    @media (max-width: 780px) { .enem-layout { grid-template-columns: 1fr; } }
+    .reading-layout { display: grid; grid-template-columns: minmax(300px, .9fr) minmax(340px, 1.1fr); gap: 16px; }
+    .reading-card { padding: 22px; border: 1px solid #ddd6e7; border-radius: 18px; background: #fff; }
+    .reading-card h2 { margin: 0 0 8px; font: 700 24px Fraunces, serif; }
+    .reading-card > p { color: #696273; line-height: 1.5; }
+    .reading-form { display: grid; gap: 7px; margin-top: 15px; }
+    .reading-form label { margin-top: 5px; font-size: 12px; font-weight: 700; }
+    .reading-form input, .reading-form textarea { width: 100%; padding: 10px 11px; border: 1px solid #bcb5c7; border-radius: 8px; background: #fff; font: 14px 'DM Sans', sans-serif; }
+    .reading-form textarea { min-height: 105px; resize: vertical; }
+    .reading-range-row { display: grid; grid-template-columns: minmax(0, 1fr) 58px; gap: 10px; align-items: center; }
+    .reading-range-row input[type="range"] { padding: 0; }
+    .reading-range-value { padding: 7px; border-radius: 7px; background: #f0ecf8; text-align: center; font-weight: 700; }
+    .reading-platform-card { display: flex; flex-direction: column; }
+    .reading-platform-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 16px; background: #e9f5ee; color: #245b3e; font-size: 29px; }
+    .reading-platform-actions { display: grid; gap: 9px; margin-top: 17px; }
+    .reading-tip { margin-top: 16px; padding: 13px; border-left: 4px solid #347153; border-radius: 8px; background: #edf8f1; color: #234f39; font-size: 12px; line-height: 1.5; }
+    @media (max-width: 760px) { .reading-layout { grid-template-columns: 1fr; } }
+    .alura-card { border-top: 5px solid #19a974; } .duolingo-card { border-top: 5px solid #4b8fce; }
+    @media (max-width: 700px) { .study-plan-form, .platform-cards { grid-template-columns: 1fr; } .study-plan-item { grid-template-columns: auto 75px minmax(0, 1fr) auto; } }
+    .video-toolbar { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; padding: 15px; border: 1px solid #e4dfeb; border-radius: 14px; background: #fff; }
+    .video-toolbar label { font-size: 12px; font-weight: 700; }
+    .video-toolbar select { padding: 9px 11px; border: 1px solid #bcb5c7; border-radius: 8px; background: #fff; font: 14px 'DM Sans', sans-serif; }
+    .video-lesson-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 16px; }
+    .video-lesson-card { display: grid; gap: 9px; padding: 18px; border: 1px solid #e0dae8; border-radius: 16px; background: #fff; }
+    .video-source-badge { width: max-content; padding: 5px 8px; border-radius: 99px; background: #f0ecfa; color: #574d6d; font-size: 10px; font-weight: 700; letter-spacing: .5px; }
+    .video-lesson-card h2 { margin: 0; font: 700 20px Fraunces, serif; }
+    .video-lesson-card p { min-height: 40px; margin: 0; color: #6a6476; font-size: 13px; line-height: 1.5; }
+    .video-lesson-card a { width: max-content; border-radius: 8px; padding: 9px 12px; background: #292540; color: #fff; text-decoration: none; font-size: 12px; font-weight: 700; }
+    .video-lesson-card .internal-site-button { width: max-content; border: 0; border-radius: 8px; padding: 9px 12px; background: #292540; color: #fff; cursor: pointer; font-size: 12px; font-weight: 700; }
+    .video-safety-note { display: flex; gap: 10px; margin-top: 18px; padding: 13px 15px; border-left: 4px solid #315987; border-radius: 8px; background: #edf3ff; color: #253b58; font-size: 12px; line-height: 1.5; }
+    @media (max-width: 520px) { .video-toolbar { align-items: stretch; flex-direction: column; } .video-safety-note { flex-direction: column; } }
+    .internal-site-viewer { position: fixed; inset: 0; z-index: 1000; padding: 18px; background: #191426b8; }
+    .internal-site-window { display: grid; grid-template-rows: auto auto minmax(0, 1fr); width: min(1200px, 100%); height: calc(100vh - 36px); margin: auto; overflow: hidden; border-radius: 16px; background: #fff; box-shadow: 0 20px 60px #0006; }
+    .internal-site-window header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 17px; border-bottom: 1px solid #ddd7e6; }
+    .internal-site-window h2 { margin: 0; font: 700 21px Fraunces, serif; }
+    .internal-site-window header button { border: 1px solid #8f879c; border-radius: 8px; padding: 8px 11px; background: #fff; cursor: pointer; }
+    #internalSiteNotice { margin: 0; padding: 9px 17px; background: #edf3ff; color: #283d59; font-size: 12px; }
+    #internalSiteFrame { width: 100%; height: 100%; border: 0; background: #fff; }
+    .side-login { display: grid; gap: 6px; margin: auto 6px 0; padding: 14px; border: 1px solid #e2ddea; border-radius: 14px; background: #f8f5ff; }
+    .side-login h2 { margin: 0 0 4px; font: 700 18px Fraunces, serif; }
+    .side-login label { font-size: 11px; font-weight: 700; }
+    .side-login input { width: 100%; min-width: 0; padding: 8px 9px; border: 1px solid #bdb5c8; border-radius: 7px; font: 12px 'DM Sans', sans-serif; }
+    .password-field { display: grid; grid-template-columns: minmax(0, 1fr) 34px; gap: 5px; }
+    .password-field button { border: 1px solid #bdb5c8; border-radius: 7px; background: #fff; cursor: pointer; }
+    .side-login-button { margin-top: 4px; border: 0; border-radius: 8px; padding: 9px; background: #565070; color: #fff; cursor: pointer; font-weight: 700; }
+    .side-login > p { min-height: 15px; margin: 2px 0 0; color: #655f73; font-size: 10px; line-height: 1.35; }
+    .google-login-heading { display: flex; align-items: center; gap: 9px; }
+    .google-login-mark { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #d9d6df; border-radius: 50%; background: #fff; color: #4285f4; font: 700 16px Arial, sans-serif; }
+    .google-login-button { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 5px; border: 1px solid #b9b4c3; border-radius: 8px; padding: 9px; background: #fff; color: #292540; cursor: pointer; font-weight: 700; }
+    .google-login-button:hover { background: #f6f3fa; }
+    .download-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .download-card { display: grid; gap: 9px; padding: 22px; border: 1px solid #e2dce9; border-radius: 18px; background: #fff; }
+    .download-card h2 { margin: 0; font: 700 23px Fraunces, serif; }
+    .download-card > p { margin: 0 0 5px; color: #6b6577; line-height: 1.5; }
+    .download-card label:not(.upload-button) { font-size: 12px; font-weight: 700; }
+    .download-card input { width: 100%; padding: 10px 11px; border: 1px solid #bcb4c7; border-radius: 8px; font: 14px 'DM Sans', sans-serif; }
+    .canva-connect-card { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; padding: clamp(22px, 4vw, 38px); border: 1px solid #dcd5e6; border-radius: 22px; background: linear-gradient(135deg, #fff 0%, #f5efff 100%); box-shadow: 0 12px 30px #30244012; }
+    .canva-mark { display: grid; place-items: center; width: 88px; height: 88px; border-radius: 24px; background: linear-gradient(135deg, #00c4cc, #7d2ae8); color: #fff; box-shadow: 0 10px 24px #7d2ae833; font: 700 28px Fraunces, serif; }
+    .canva-connect-card h2 { margin: 0 0 7px; font: 700 26px Fraunces, serif; }
+    .canva-connect-card p { margin: 0; color: #686173; line-height: 1.55; }
+    .canva-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+    .canva-connected-badge { width: max-content; margin-bottom: 10px; padding: 6px 10px; border-radius: 999px; background: #e5f7ef; color: #246348; font-size: 12px; font-weight: 700; }
+    .canva-workspace { overflow: hidden; min-height: 720px; border: 1px solid #dcd5e6; border-radius: 18px; background: #fff; box-shadow: 0 12px 30px #30244012; }
+    .canva-workspace-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 14px; border-bottom: 1px solid #e2ddea; background: #f8f5ff; }
+    .canva-workspace-toolbar strong { font: 700 18px Fraunces, serif; }
+    .canva-workspace-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .canva-workspace-actions button, .canva-workspace-actions a { border: 1px solid #aaa2b6; border-radius: 8px; padding: 8px 10px; background: #fff; color: #292540; cursor: pointer; text-decoration: none; font: 700 12px 'DM Sans', sans-serif; }
+    .canva-embed { display: block; width: 100%; height: 660px; border: 0; background: #f5f3f8; }
+    .canva-embed-note { margin: 0; padding: 9px 14px; background: #fff8df; color: #69581f; font-size: 11px; line-height: 1.45; }
+    @media (max-width: 600px) { .canva-connect-card { grid-template-columns: 1fr; } .canva-mark { width: 70px; height: 70px; border-radius: 19px; font-size: 23px; } }
+    .offline-library-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin: 28px 0 12px; }
+    .offline-library-heading h2 { margin: 0; font: 700 25px Fraunces, serif; }
+    .offline-library-heading p { margin: 4px 0 0; color: #6b6577; font-size: 12px; }
+    #offlineVideoCount { padding: 6px 10px; border-radius: 99px; background: #eee9f7; font-size: 12px; font-weight: 700; }
+    .offline-video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .offline-video-card { overflow: hidden; border: 1px solid #ddd6e6; border-radius: 15px; background: #fff; }
+    .offline-video-card video { display: block; width: 100%; aspect-ratio: 16/9; background: #17131e; }
+    .offline-video-info { display: flex; align-items: center; justify-content: space-between; gap: 9px; padding: 12px; }
+    .offline-video-info strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .offline-video-info button { border: 0; border-radius: 7px; padding: 7px 9px; background: #fff0eb; color: #a84842; cursor: pointer; }
+    @media (max-width: 700px) { .download-layout { grid-template-columns: 1fr; } }
+    .sticker-creator { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px 10px; align-items: end; margin-bottom: 14px; padding: 16px; border: 1px solid #ddd6e7; border-radius: 14px; background: #fff; }
+    .sticker-creator.hidden { display: none; }
+    .sticker-creator label { font-size: 12px; font-weight: 700; }
+    .sticker-creator input { width: 100%; padding: 10px; border: 1px solid #bdb5c8; border-radius: 8px; font: 14px 'DM Sans', sans-serif; }
+    .sticker-creator label:nth-of-type(1) { grid-column: 1; } .sticker-creator label:nth-of-type(2) { grid-column: 2; }
+    .sticker-creator input:nth-of-type(1) { grid-column: 1; } .sticker-creator input:nth-of-type(2) { grid-column: 2; }
+    .sticker-creator button { grid-column: 3; grid-row: 2; }
+    .sticker-creator p { grid-column: 1 / -1; }
+    @media (max-width: 650px) { .sticker-creator { grid-template-columns: 1fr; } .sticker-creator label, .sticker-creator input, .sticker-creator button, .sticker-creator p { grid-column: 1 !important; grid-row: auto !important; } }
+    .notebook-dot { width: 13px; height: 13px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px #d4cedd; flex: 0 0 13px; }
+    #caderno { position: relative; }
+    .draggable-notebook-button { position: absolute; z-index: 8; top: 14px; right: 14px; display: flex; align-items: center; gap: 7px; max-width: calc(100% - 28px); border: 2px solid #292540; border-radius: 999px; padding: 10px 14px; background: #fff; color: #292540; box-shadow: 0 7px 18px #2925402b; cursor: pointer; user-select: none; font: 700 12px 'DM Sans', sans-serif; }
+    .draggable-notebook-button span { font-size: 16px; }
+    .pen-toolbar { position: fixed; right: 22px; bottom: 78px; z-index: 20; width: min(310px, calc(100vw - 28px)); padding: 14px; border: 2px solid #292540; border-radius: 15px; background: #fff; box-shadow: 0 12px 32px #29254035; }
+    .pen-toolbar.hidden { display: none; }
+    .pen-toolbar-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 11px; }
+    .pen-toolbar-header strong { font: 700 18px Fraunces, serif; }
+    .pen-toolbar-header button { border: 0; background: transparent; cursor: pointer; }
+    .pen-actions, .pen-colors { display: flex; gap: 7px; flex-wrap: wrap; }
+    .pen-actions button { border: 1px solid #bcb5c7; border-radius: 8px; padding: 8px 10px; background: #fff; cursor: pointer; font-weight: 700; }
+    .pen-actions button.active { background: #292540; color: #fff; }
+    .pen-colors { margin: 11px 0; }
+    .pen-color { width: 31px; height: 31px; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px #7b7486; cursor: pointer; }
+    .pen-color.active { box-shadow: 0 0 0 3px #292540; }
+    .pen-size-row { display: grid; grid-template-columns: auto minmax(0, 1fr) 35px; gap: 8px; align-items: center; font-size: 12px; font-weight: 700; }
+    .drawing-canvas { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; pointer-events: none; touch-action: none; }
+    .drawing-canvas.active { pointer-events: auto; cursor: crosshair; }
+    .paper.drawing-active .paper-content { pointer-events: none; }
+    .paper.drawing-active .sticker-layer { pointer-events: none; }
+    .paper.drawing-active .placed-sticker { pointer-events: none; }
+    @media (max-width: 600px) { .draggable-notebook-button { top: 10px; right: 10px; padding: 8px 11px; } }
     @media (max-width: 430px) { .heading-actions { width: 100%; } .heading-actions button { flex: 1; padding: 11px 7px; font-size: 12px; } }
+    .skip-link { position: fixed; top: 8px; left: 8px; z-index: 9999; padding: 12px 16px; border-radius: 8px; background: #171321; color: #fff; transform: translateY(-150%); }
+    .skip-link:focus { transform: none; }
+    .visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, [contenteditable]:focus-visible { outline: 3px solid #1677c8 !important; outline-offset: 3px; }
+    .accessibility-bar { position: fixed; top: 14px; right: 18px; z-index: 20; }
+    .accessibility-panel { width: min(360px, calc(100vw - 32px)); margin-top: 8px; padding: 18px; border: 2px solid var(--ink); border-radius: 14px; background: #fff; box-shadow: 0 10px 30px #29254030; }
+    .accessibility-panel h2 { font: 700 21px Fraunces; margin-bottom: 14px; }
+    .accessibility-controls { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .accessibility-controls button { border: 1px solid #746d83; border-radius: 8px; background: #fff; padding: 8px; cursor: pointer; }
+    .accessibility-controls button[aria-pressed="true"] { background: #292540; color: #fff; }
+    .accessibility-panel > label:not(.accessibility-check) { display: block; margin: 8px 0 5px; font-weight: 700; }
+    .accessibility-panel select { width: 100%; padding: 9px; border: 1px solid #746d83; border-radius: 8px; }
+    .accessibility-check { display: block; margin-top: 12px; }
+    .speech-controls { display: flex; gap: 8px; margin-top: 16px; }
+    .speech-controls button { flex: 1; }
+    .communication-assist { margin-top: 14px; padding-top: 12px; border-top: 1px solid #d8d1e2; }
+    .communication-assist summary { cursor: pointer; font-weight: 700; }
+    .communication-assist label { display: block; margin: 12px 0 5px; font-size: 12px; font-weight: 700; }
+    .communication-assist textarea { width: 100%; padding: 9px; border: 1px solid #746d83; border-radius: 8px; resize: vertical; font: 14px/1.5 'DM Sans', sans-serif; }
+    .quick-phrases { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .quick-phrases button { border: 1px solid #746d83; border-radius: 99px; padding: 6px 9px; background: #fff; cursor: pointer; font-size: 11px; }
+    body.font-large { font-size: 118%; } body.font-larger { font-size: 135%; }
+    body.underline-controls a, body.underline-controls button { text-decoration: underline !important; text-underline-offset: 3px; }
+    body.vision-protanopia { --ink: #17243b; --muted: #42516a; --peach: #f2b134; --lilac: #4b7bec; }
+    body.vision-deuteranopia { --ink: #19273d; --muted: #46556c; --peach: #f0a52b; --lilac: #4778c7; }
+    body.vision-tritanopia { --ink: #25183f; --muted: #58496e; --peach: #d94f70; --lilac: #368b80; }
+    body.vision-achromatopsia { --ink: #111; --muted: #3f3f3f; --peach: #d5d5d5; --lilac: #767676; filter: grayscale(1); background: #fff; }
+    body.vision-achromatopsia button, body.vision-achromatopsia a, body.vision-achromatopsia input, body.vision-achromatopsia select { border: 2px solid #111; }
+    body.vision-achromatopsia .active, body.vision-achromatopsia [aria-pressed="true"], body.vision-achromatopsia [aria-selected="true"] { outline: 3px double #000; outline-offset: 2px; }
+    body.vision-high-contrast { --ink: #000; --muted: #171717; --line: #000; --peach: #ffd800; --lilac: #0067ff; background: #fff; }
+    body.vision-high-contrast .sidebar, body.vision-high-contrast article, body.vision-high-contrast .customizer, body.vision-high-contrast .chat-box { border: 2px solid #000; box-shadow: none; }
+    body.vision-high-contrast .nav-item.active { outline: 3px solid #000; }
+    body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+    body.deaf-mode [role="status"], body.deaf-mode .small-status { padding: 8px 10px; border-left: 4px solid #315987; background: #edf3ff; color: #17243b; }
+    body.deaf-mode .record-visual.recording { outline: 5px dashed #292540; outline-offset: 5px; }
+    .focus-mode-button { position: fixed; right: 22px; bottom: 22px; z-index: 900; display: flex; align-items: center; gap: 8px; border: 2px solid #292540; border-radius: 999px; padding: 11px 16px; background: #fff; color: #292540; box-shadow: 0 8px 24px #29254033; cursor: pointer; font: 700 13px 'DM Sans', sans-serif; }
+    .focus-mode-button[aria-pressed="true"] { background: #292540; color: #fff; }
+    body.focus-mode .sidebar, body.focus-mode .mobile-header, body.focus-mode .accessibility-bar { display: none !important; }
+    body.focus-mode main { width: 100%; max-width: none; margin-left: 0; padding-left: clamp(22px, 7vw, 110px); padding-right: clamp(22px, 7vw, 110px); }
+    body.focus-mode .tab-panel { max-width: 1400px; }
+    .focus-schedule { display: none; position: fixed; top: 20px; right: 22px; z-index: 850; width: min(340px, calc(100vw - 30px)); max-height: min(520px, calc(100vh - 100px)); overflow: auto; padding: 16px; border: 2px solid #292540; border-radius: 16px; background: #fff; box-shadow: 0 12px 34px #29254035; }
+    body.focus-mode .focus-schedule { display: block; }
+    .focus-schedule-header { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+    .focus-schedule-header h2 { margin: 0; font: 700 20px Fraunces, serif; }
+    .focus-schedule-header button { border: 1px solid #bdb6c8; border-radius: 7px; padding: 6px 8px; background: #fff; cursor: pointer; }
+    .focus-schedule.collapsed .focus-schedule-body { display: none; }
+    .focus-schedule-form { display: grid; grid-template-columns: minmax(0, 1fr) 82px; gap: 7px; margin-top: 13px; }
+    .focus-schedule-form input { min-width: 0; padding: 9px; border: 1px solid #bdb6c8; border-radius: 8px; font: 12px 'DM Sans', sans-serif; }
+    .focus-schedule-form input:first-child { grid-column: 1 / -1; }
+    .focus-schedule-form button { border: 0; border-radius: 8px; background: #292540; color: #fff; cursor: pointer; font-weight: 700; }
+    .focus-schedule-list { display: grid; gap: 7px; margin-top: 12px; }
+    .focus-schedule-item { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 9px; border-radius: 9px; background: #f7f4fb; }
+    .focus-schedule-item strong, .focus-schedule-item small { display: block; }
+    .focus-schedule-item small { margin-top: 2px; color: #746d80; }
+    .focus-schedule-item.done strong { color: #777; text-decoration: line-through; }
+    .focus-schedule-item > button { border: 0; background: transparent; color: #ad4d47; cursor: pointer; }
+    .focus-schedule-empty { margin: 12px 0 0; color: #746d80; font-size: 12px; }
+    @media (max-width: 600px) { .focus-mode-button { right: 13px; bottom: 13px; padding: 10px 13px; } }
+    @media (max-width: 600px) { .focus-schedule { top: 10px; right: 13px; } }
+    @media print { .focus-mode-button { display: none !important; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+    @media (max-width: 700px) { .accessibility-bar { top: 8px; right: 8px; } .accessibility-bar > button { padding: 9px 10px; } }
+    .install-app-button { position: fixed; right: 22px; bottom: 76px; z-index: 899; display: none; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 12px 17px; background: linear-gradient(135deg, #ef8071, #8a55b5); color: #fff; box-shadow: 0 8px 24px #4b385b3d; cursor: pointer; font: 700 13px 'DM Sans', sans-serif; }
+    .install-app-button.available { display: flex; }
+    .install-help { position: fixed; right: 22px; bottom: 130px; z-index: 901; width: min(320px, calc(100vw - 28px)); padding: 15px; border: 1px solid #d8d1e2; border-radius: 14px; background: #fff; box-shadow: 0 12px 34px #29254035; color: #575064; font-size: 12px; line-height: 1.5; }
+    .install-help strong { display: block; margin-bottom: 5px; color: #292540; font-size: 14px; }
+    .install-help button { float: right; border: 0; background: transparent; color: #6b6577; cursor: pointer; font-weight: 700; }
+    @media (max-width: 600px) { .install-app-button { right: 13px; bottom: 68px; } .install-help { right: 13px; bottom: 122px; } }
+    @media (display-mode: standalone) { .install-app-button { display: none !important; } }
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#mainContent">Pular para o conteúdo principal</a>
   <div class="app-shell">
-    <aside class="sidebar">
+    <aside id="mainSidebar" class="sidebar">
       <a class="brand" href="#caderno"><span class="brand-icon">✦</span><span>caderno<br><b>digital</b></span></a>
-      <nav aria-label="Navegação principal">
-        <button class="nav-item active" data-tab="caderno"><span>▣</span> Meu caderno</button>
-        <button class="nav-item" data-tab="ia"><span>✦</span> Tutora IA</button>
-        <button class="nav-item" data-tab="adesivos"><span>☺</span> Adesivos</button>
-        <button class="nav-item" data-tab="gravacao"><span>◉</span> Gravações</button>
-        <button class="nav-item" data-tab="exportar"><span>⇩</span> Exportar PDF</button>
-        <button class="nav-item" data-tab="imprimir"><span>🖨</span> Imprimir</button>
+      <nav aria-label="Navegação principal" role="tablist" aria-orientation="vertical">
+        <button class="nav-item active" data-tab="caderno" role="tab" aria-controls="caderno" aria-selected="true"><span aria-hidden="true">▣</span> Meus cadernos</button>
+        <button class="nav-item" data-tab="ia" role="tab" aria-controls="ia" aria-selected="false"><span aria-hidden="true">✦</span> Tutora IA</button>
+        <button class="nav-item" data-tab="enem" role="tab" aria-controls="enem" aria-selected="false"><span aria-hidden="true">◆</span> ENEM</button>
+        <button class="nav-item" data-tab="redacao" role="tab" aria-controls="redacao" aria-selected="false"><span aria-hidden="true">▤</span> Redação</button>
+        <button class="nav-item" data-tab="leitura" role="tab" aria-controls="leitura" aria-selected="false"><span aria-hidden="true">▥</span> Leitura</button>
+        <button class="nav-item" data-tab="videoaulas" role="tab" aria-controls="videoaulas" aria-selected="false"><span aria-hidden="true">▶</span> Videoaulas</button>
+        <button class="nav-item" data-tab="adesivos" role="tab" aria-controls="adesivos" aria-selected="false"><span aria-hidden="true">☺</span> Adesivos</button>
+        <button class="nav-item" data-tab="gravacao" role="tab" aria-controls="gravacao" aria-selected="false"><span aria-hidden="true">◉</span> Gravações</button>
+        <button class="nav-item" data-tab="exportar" role="tab" aria-controls="exportar" aria-selected="false"><span aria-hidden="true">⇩</span> Exportar PDF</button>
+        <button class="nav-item" data-tab="canva" role="tab" aria-controls="canva" aria-selected="false"><span aria-hidden="true">C</span> Canva</button>
+        <button class="nav-item" data-tab="downloads" role="tab" aria-controls="downloads" aria-selected="false"><span aria-hidden="true">⬇</span> Downloads</button>
+        <button class="nav-item" data-tab="imprimir" role="tab" aria-controls="imprimir" aria-selected="false"><span aria-hidden="true">🖨</span> Imprimir</button>
       </nav>
-      <div class="side-tip"><span>☀</span><p>Seu espaço para criar, aprender e imaginar.</p></div>
+      <section class="side-login" aria-label="Entrar com a conta Google"><div class="google-login-heading"><span class="google-login-mark" aria-hidden="true">G</span><h2>Minha conta</h2></div><p>Escolha uma conta Google para continuar ou adicione outra conta.</p><button id="sideGoogleLogin" type="button" class="google-login-button"><span aria-hidden="true">G</span> Continuar com Google</button><p id="sideLoginStatus" role="status" aria-live="polite">A senha será digitada somente na página oficial do Google.</p></section>
     </aside>
+    <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
 
-    <main>
-      <header class="mobile-header"><button id="menuButton" aria-label="Abrir menu">☰</button><span>caderno <b>digital</b></span></header>
+    <main id="mainContent" tabindex="-1">
+      <header class="mobile-header"><button id="menuButton" aria-label="Abrir menu" aria-controls="mainSidebar" aria-expanded="false">☰</button><span>caderno <b>digital</b></span></header>
+      <section class="accessibility-bar" aria-label="Opções de acessibilidade">
+        <button id="accessibilityToggle" class="secondary-button" aria-expanded="false" aria-controls="accessibilityPanel">♿ Acessibilidade</button>
+        <div id="accessibilityPanel" class="accessibility-panel hidden">
+          <h2>Opções de acessibilidade</h2>
+          <div class="accessibility-controls" role="group" aria-label="Tamanho do texto"><button data-font="normal" aria-pressed="true">Texto normal</button><button data-font="large" aria-pressed="false">Texto grande</button><button data-font="larger" aria-pressed="false">Texto maior</button></div>
+          <label for="visionMode">Cores adaptadas</label><select id="visionMode"><option value="default">Cores padrão</option><option value="protanopia">Protanopia</option><option value="deuteranopia">Deuteranopia</option><option value="tritanopia">Tritanopia</option><option value="achromatopsia">Acromatopsia</option><option value="high-contrast">Alto contraste</option></select>
+          <label class="accessibility-check"><input id="reduceMotion" type="checkbox"> Reduzir animações</label>
+          <label class="accessibility-check"><input id="underlineLinks" type="checkbox"> Sublinhar links e botões</label>
+          <label class="accessibility-check"><input id="deafMode" type="checkbox"> Modo para pessoas surdas</label>
+          <div class="speech-controls" role="group" aria-label="Leitura em voz alta"><button id="readPage" class="primary-button">🔊 Ler aba atual</button><button id="stopReading" class="secondary-button" disabled>Parar leitura</button></div>
+          <p id="speechStatus" class="small-status" role="status" aria-live="polite"></p>
+          <details class="communication-assist"><summary>Comunicação por texto</summary><label for="communicationText">Digite o que deseja comunicar</label><textarea id="communicationText" rows="3" placeholder="Digite uma mensagem..."></textarea><div class="quick-phrases" aria-label="Frases rápidas"><button data-phrase="Sim">Sim</button><button data-phrase="Não">Não</button><button data-phrase="Preciso de ajuda">Preciso de ajuda</button><button data-phrase="Pode repetir, por favor?">Pode repetir</button></div><div class="speech-controls"><button id="speakCommunication" class="primary-button">🔊 Falar mensagem</button><button id="copyCommunication" class="secondary-button">Copiar</button></div><p id="communicationStatus" class="small-status" role="status" aria-live="polite"></p></details>
+        </div>
+      </section>
 
       <section id="caderno" class="tab-panel active">
-        <div class="page-heading"><div><p class="eyebrow">SEU ESPAÇO CRIATIVO</p><h1 id="notebookTitle">Meu caderno</h1></div><div class="heading-actions"><button id="newNotebook" class="primary-button">＋ Novo caderno</button><button id="newPage" class="secondary-button">＋ Nova folha</button></div></div>
+        <div id="penToolbar" class="pen-toolbar hidden" role="dialog" aria-label="Ferramentas de escrita e desenho"><div class="pen-toolbar-header"><strong>Canetas</strong><button id="closePenToolbar" type="button" aria-label="Fechar ferramentas de caneta">✕</button></div><div class="pen-actions"><button id="textWritingMode" type="button">T Escrever</button><button id="drawingMode" type="button" class="active">✎ Desenhar</button><button id="eraserMode" type="button">⌫ Borracha</button><button id="clearDrawing" type="button">Limpar</button></div><div class="pen-colors" role="group" aria-label="Cor para escrever ou desenhar"><button class="pen-color active" data-pen-color="#292540" style="background:#292540" aria-label="Cor preta"></button><button class="pen-color" data-pen-color="#315987" style="background:#315987" aria-label="Cor azul"></button><button class="pen-color" data-pen-color="#2499d8" style="background:#2499d8" aria-label="Cor azul-clara"></button><button class="pen-color" data-pen-color="#d44f45" style="background:#d44f45" aria-label="Cor vermelha"></button><button class="pen-color" data-pen-color="#f28c28" style="background:#f28c28" aria-label="Cor laranja"></button><button class="pen-color" data-pen-color="#d6ad00" style="background:#d6ad00" aria-label="Cor amarela"></button><button class="pen-color" data-pen-color="#347153" style="background:#347153" aria-label="Cor verde"></button><button class="pen-color" data-pen-color="#25a878" style="background:#25a878" aria-label="Cor verde-clara"></button><button class="pen-color" data-pen-color="#8a55b5" style="background:#8a55b5" aria-label="Cor roxa"></button><button class="pen-color" data-pen-color="#e04f9a" style="background:#e04f9a" aria-label="Cor rosa"></button><button class="pen-color" data-pen-color="#795548" style="background:#795548" aria-label="Cor marrom"></button><button class="pen-color" data-pen-color="#6b6577" style="background:#6b6577" aria-label="Cor cinza"></button></div><label class="pen-size-row" for="penSize">Espessura <input id="penSize" type="range" min="1" max="18" value="4"><output id="penSizeValue" for="penSize">4</output></label><p id="penStatus" class="small-status" role="status" aria-live="polite">Modo desenho ativado.</p></div>
+        <div class="page-heading"><div><p class="eyebrow">SEU ESPAÇO CRIATIVO</p><h1 id="notebookTitle">Meus cadernos</h1></div><div class="heading-actions"><button id="newNotebook" class="primary-button">＋ Novo caderno</button><button id="newPage" class="secondary-button">＋ Nova folha</button></div></div>
         <div class="studio-grid">
           <aside class="customizer">
             <div class="option-group"><h3>Meus cadernos</h3><div id="notebookList" class="page-list notebook-list"></div></div>
             <div class="option-group"><h3>Escolha sua capa</h3><div class="cover-choices" id="coverChoices">
-              <button class="cover-choice selected coral" data-cover="coral" aria-label="Capa coral"></button><button class="cover-choice lilac" data-cover="lilac" aria-label="Capa lilás"></button><button class="cover-choice blue" data-cover="blue" aria-label="Capa azul"></button><button class="cover-choice yellow" data-cover="yellow" aria-label="Capa amarela"></button><button class="cover-choice green" data-cover="green" aria-label="Capa verde"></button><button class="cover-choice dark" data-cover="dark" aria-label="Capa escura"></button><button class="cover-choice animation-cover" data-cover="animation" aria-label="Capa inspirada em desenhos">🎨</button><button class="cover-choice series-cover" data-cover="series" aria-label="Capa inspirada em séries">📺</button><button class="cover-choice cinema-cover" data-cover="cinema" aria-label="Capa inspirada em filmes">🎬</button><button class="cover-choice fantasy-cover" data-cover="fantasy" aria-label="Capa de fantasia">🪄</button><button class="cover-choice space-cover" data-cover="space" aria-label="Capa espacial">🚀</button><button class="cover-choice mystery-cover" data-cover="mystery" aria-label="Capa de mistério">🔎</button>
-              <button class="cover-choice magic-school-cover" data-cover="magic-school" aria-label="Capa inspirada em escola de magia" title="Escola de magia">⚡</button><button class="cover-choice hero-city-cover" data-cover="hero-city" aria-label="Capa inspirada em heróis" title="Heróis em ação">🦸</button><button class="cover-choice galaxy-saga-cover" data-cover="galaxy-saga" aria-label="Capa inspirada em saga espacial" title="Saga galáctica">🌌</button><button class="cover-choice pixel-world-cover" data-cover="pixel-world" aria-label="Capa inspirada em aventuras de blocos" title="Aventura pixelada">🧱</button><button class="cover-choice ocean-adventure-cover" data-cover="ocean-adventure" aria-label="Capa inspirada em aventura no oceano" title="Aventura no oceano">🌊</button><button class="cover-choice detective-club-cover" data-cover="detective-club" aria-label="Capa inspirada em uma série de mistério" title="Clube de mistério">🕵️</button>
+              <button class="cover-choice selected coral" data-cover="coral" aria-label="Capa coral"></button><button class="cover-choice lilac" data-cover="lilac" aria-label="Capa lilás"></button><button class="cover-choice blue" data-cover="blue" aria-label="Capa azul"></button><button class="cover-choice yellow" data-cover="yellow" aria-label="Capa amarela"></button><button class="cover-choice green" data-cover="green" aria-label="Capa verde"></button><button class="cover-choice dark" data-cover="dark" aria-label="Capa escura"></button><button class="cover-choice netflix-cover" data-cover="netflix" aria-label="Capa inspirada na Netflix" title="Netflix">🎬</button><button class="cover-choice disney-cover" data-cover="disney" aria-label="Capa inspirada no Disney Plus" title="Disney+">🏰</button><button class="cover-choice apple-tv-cover" data-cover="apple-tv" aria-label="Capa inspirada na Apple TV" title="Apple TV">🍎</button><button class="cover-choice crunchyroll-cover" data-cover="crunchyroll" aria-label="Capa inspirada na Crunchyroll" title="Crunchyroll">🍥</button><button class="cover-choice prime-video-cover" data-cover="prime-video" aria-label="Capa inspirada no Prime Video" title="Prime Video">▶</button><button class="cover-choice max-cover" data-cover="max" aria-label="Capa inspirada na HBO Max" title="HBO Max">★</button><button class="cover-choice globoplay-cover" data-cover="globoplay" aria-label="Capa inspirada no Globoplay" title="Globoplay">◉</button><button class="cover-choice pluto-tv-cover" data-cover="pluto-tv" aria-label="Capa inspirada na Pluto TV" title="Pluto TV">♇</button>
             </div></div>
             <div class="option-group"><h3>Tipo de folha</h3><div class="paper-options" id="paperOptions">
               <button class="paper-option selected" data-paper="lined"><i class="lines"></i> Pautada</button><button class="paper-option" data-paper="grid"><i class="grid"></i> Quadriculada</button><button class="paper-option" data-paper="blank"><i class="blank"></i> Em branco</button>
             </div></div>
             <div class="option-group"><h3>Minhas páginas</h3><div id="pageList" class="page-list"></div></div>
           </aside>
-          <div class="notebook-area"><div id="notebook" class="notebook coral-cover"><div id="paper" class="paper lined-paper"><div id="paperContent" class="paper-content" contenteditable="true" spellcheck="true"><p class="date">28 DE AGOSTO</p><h2>Olá, Amanda! <span>✦</span></h2><p>Este é o seu espaço para anotar ideias, estudar e deixar tudo com a sua cara.</p><p>Toque aqui para começar a escrever...</p></div><div id="stickerLayer" class="sticker-layer" aria-label="Adesivos na folha"></div></div></div><p class="drag-help">Arraste os adesivos pela folha · Clique no texto para editar</p></div>
+          <div class="notebook-area"><div id="notebook" class="notebook coral-cover"><div id="paper" class="paper lined-paper"><button id="draggableNotebookButton" class="draggable-notebook-button" type="button" aria-label="Abrir ferramentas de escrita e desenho"><span aria-hidden="true">✎</span> Canetas</button><div id="paperContent" class="paper-content" contenteditable="true" spellcheck="true"><p class="date">28 DE AGOSTO</p><h2>Olá, Amanda! <span>✦</span></h2><p>Este é o seu espaço para anotar ideias, estudar e deixar tudo com a sua cara.</p><p>Toque aqui para começar a escrever...</p></div><canvas id="drawingCanvas" class="drawing-canvas" aria-label="Área de desenho da folha"></canvas><div id="stickerLayer" class="sticker-layer" aria-label="Adesivos na folha"></div></div></div><p class="drag-help">Use as canetas para escrever ou desenhar · Arraste os adesivos pela folha</p></div>
         </div>
       </section>
+
+      <section id="canva" class="tab-panel"><div id="canvaConnectView"><div class="page-heading"><div><p class="eyebrow">CRIE E ORGANIZE</p><h1>Canva</h1><p class="subtitle">Acesse seus designs e materiais visuais pelo Caderno Digital.</p></div></div><article class="canva-connect-card"><div class="canva-mark" aria-hidden="true">Canva</div><div><div id="canvaConnectedBadge" class="canva-connected-badge hidden">✓ Canva vinculado</div><h2 id="canvaConnectTitle">Vincule sua conta do Canva</h2><p id="canvaConnectDescription">Entre pela página oficial do Canva. Sua senha não será solicitada nem armazenada pelo Caderno Digital.</p><div class="canva-actions"><button id="connectCanva" type="button" class="primary-button">Vincular Canva</button><button id="finishCanvaConnection" type="button" class="secondary-button hidden">Já entrei — concluir vínculo</button></div><p id="canvaStatus" class="small-status" role="status" aria-live="polite"></p></div></article></div><div id="canvaWorkspace" class="canva-workspace hidden"><div class="canva-workspace-toolbar"><strong>Canva</strong><div class="canva-workspace-actions"><button id="reloadCanva" type="button">↻ Recarregar</button><a href="https://www.canva.com/" target="_blank" rel="noopener noreferrer">Abrir em nova janela</a><button id="disconnectCanva" type="button">Desvincular</button></div></div><iframe id="canvaFrame" class="canva-embed" title="Canva dentro do Caderno Digital" allow="clipboard-read; clipboard-write" referrerpolicy="strict-origin-when-cross-origin"></iframe><p class="canva-embed-note">Se o Canva não aparecer, use “Abrir em nova janela”. Alguns logins podem impedir a exibição dentro de outros aplicativos por segurança.</p></div></section>
+
+      <section id="downloads" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">ASSISTA SEM INTERNET</p><h1>Downloads</h1><p class="subtitle">Salve vídeos permitidos no dispositivo e assista depois sem conexão.</p></div></div><div class="download-layout"><article class="download-card"><h2>Adicionar vídeo do dispositivo</h2><p>Escolha um vídeo que você possui ou tem autorização para guardar.</p><label class="upload-button" for="offlineVideoFile">Escolher vídeo</label><input id="offlineVideoFile" type="file" accept="video/*" hidden><p id="offlineFileStatus" class="small-status" role="status" aria-live="polite"></p></article><article class="download-card"><h2>Salvar por link direto</h2><p>Funciona com links diretos permitidos, como arquivos MP4. Páginas de streaming podem bloquear a cópia.</p><label for="offlineVideoName">Nome do vídeo</label><input id="offlineVideoName" maxlength="100" placeholder="Nome da aula"><label for="offlineVideoUrl">Link direto do vídeo</label><input id="offlineVideoUrl" type="url" placeholder="https://exemplo.com/aula.mp4"><button id="downloadVideoUrl" class="primary-button">Baixar para assistir offline</button><p id="offlineUrlStatus" class="small-status" role="status" aria-live="polite"></p></article></div><div class="offline-library-heading"><div><h2>Minha biblioteca offline</h2><p>Os vídeos ficam armazenados somente neste navegador.</p></div><span id="offlineVideoCount" aria-live="polite">0 vídeos</span></div><div id="offlineVideoGrid" class="offline-video-grid"></div><aside class="video-safety-note"><strong>Uso responsável</strong><span>Baixe apenas vídeos próprios, de domínio público ou que permitam download. Para YouTube, Alura e outros streamings, use o recurso oficial de download da plataforma.</span></aside></section>
 
       <section id="imprimir" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE PRONTO NO PAPEL</p><h1>Imprimir folha</h1><p class="subtitle">Escolha qualquer caderno e página para ver a prévia antes de imprimir.</p></div><button id="printButton" class="primary-button">🖨 Imprimir esta folha</button></div><div class="print-layout"><aside class="print-controls"><label for="printNotebookSelect">Caderno</label><select id="printNotebookSelect"></select><label for="printPageSelect">Folha</label><select id="printPageSelect"></select><p>Somente a folha escolhida será impressa.</p></aside><div class="print-preview"><p class="eyebrow">PRÉVIA DE IMPRESSÃO</p><div id="printPaper" class="paper lined-paper"></div></div></div></section>
 
       <section id="ia" class="tab-panel">
         <div class="page-heading"><div><p class="eyebrow">ESTUDE COM LEVEZA</p><h1>Tutora IA <span class="sparkle">✦</span></h1><p class="subtitle">Sua companheira para tirar dúvidas e entender melhor as matérias.</p></div></div>
-        <div class="ai-layout"><div class="ai-card"><div class="ai-avatar">✦</div><div><h2>Oi, eu sou a Luma!</h2><p>Posso explicar assuntos escolares, resumir textos e ajudar você a entender suas aulas da Alura.</p></div></div><div class="suggestions"><button data-question="Explique fotossíntese de um jeito fácil">🌱 Explique fotossíntese</button><button data-question="Como resolver uma equação de primeiro grau?">➗ Equação de 1º grau</button><button data-question="Me ajude a montar um resumo para estudar">📝 Criar um resumo</button><button data-question="Como aproveitar melhor uma aula da Alura?">💻 Aulas da Alura</button></div><div class="chat-box" id="chatBox"><div class="message luma">Olá! Qual matéria você quer estudar hoje?</div></div><form id="aiForm" class="ai-input"><input id="aiQuestion" placeholder="Pergunte qualquer coisa sobre a escola..." autocomplete="off" /><button type="submit">Enviar ↑</button></form><p class="ai-note">A Tutora IA funciona com respostas de estudo no navegador. Para respostas ilimitadas e personalizadas, conecte uma API de IA no JavaScript.</p></div>
+        <div class="ai-layout"><div class="ai-card"><div class="ai-avatar" aria-hidden="true">✦</div><div><h2>Oi, eu sou a Luma!</h2><p>Posso explicar assuntos escolares, resumir textos e ajudar você a entender suas aulas da Alura.</p></div></div><div class="suggestions"><button data-question="Explique fotossíntese de um jeito fácil">🌱 Explique fotossíntese</button><button data-question="Como resolver uma equação de primeiro grau?">➗ Equação de 1º grau</button><button data-question="Me ajude a montar um resumo para estudar">📝 Criar um resumo</button><button data-question="Como aproveitar melhor uma aula da Alura?">💻 Aulas da Alura</button></div><div class="chat-box" id="chatBox" role="log" aria-live="polite" aria-label="Conversa com a tutora Luma"><div class="message luma">Olá! Qual matéria você quer estudar hoje?</div></div><form id="aiForm" class="ai-input"><label class="visually-hidden" for="aiQuestion">Pergunta para a tutora</label><input id="aiQuestion" placeholder="Pergunte qualquer coisa sobre a escola..." autocomplete="off" /><button type="submit">Enviar ↑</button></form><p class="ai-note">A Tutora IA funciona com respostas de estudo no navegador. Para respostas ilimitadas e personalizadas, conecte uma API de IA no JavaScript.</p></div><div class="tutor-tools"><section class="tutor-tool-card"><div class="tool-heading"><div><p class="eyebrow">REVISE O QUE APRENDEU</p><h2>Cartões de resposta</h2></div><button id="clearResponseCards" class="secondary-button">Limpar cartões</button></div><p>Depois de receber uma resposta da Luma, salve-a como cartão para revisar.</p><div id="responseCards" class="response-cards"></div></section><section class="tutor-tool-card"><div class="tool-heading"><div><p class="eyebrow">ORGANIZE SUA SEMANA</p><h2>Plano de estudos</h2></div></div><form id="studyPlanForm" class="study-plan-form"><label class="visually-hidden" for="studyTask">Nova atividade</label><input id="studyTask" maxlength="100" placeholder="Ex.: Matemática por 30 minutos" required><select id="studyDay" aria-label="Dia da atividade"><option>Segunda</option><option>Terça</option><option>Quarta</option><option>Quinta</option><option>Sexta</option><option>Sábado</option><option>Domingo</option></select><button class="primary-button">Adicionar</button></form><div id="studyPlanList" class="study-plan-list"></div></section><section class="tutor-tool-card platform-sync-area"><div><p class="eyebrow">SUAS PLATAFORMAS</p><h2>Alura e Duolingo</h2><p>Registre e acompanhe seus estudos sem sair do Caderno Digital.</p></div><div class="platform-cards"><article class="platform-card alura-card"><h3>Alura</h3><label for="aluraCourse">Link do curso ou formação</label><input id="aluraCourse" type="url" placeholder="https://www.alura.com.br/curso-..."><label for="aluraProgress">Progresso informado</label><input id="aluraProgress" type="number" min="0" max="100" placeholder="0 a 100"><button id="saveAlura" class="secondary-button">Sincronizar no caderno</button><button class="platform-view-button" data-view-platform="alura">Ver painel da Alura</button></article><article class="platform-card duolingo-card"><h3>Duolingo</h3><label for="duolingoLanguage">Idioma estudado</label><input id="duolingoLanguage" placeholder="Ex.: Inglês"><label for="duolingoStreak">Dias de ofensiva</label><input id="duolingoStreak" type="number" min="0" placeholder="Ex.: 15"><button id="saveDuolingo" class="secondary-button">Sincronizar no caderno</button><button class="platform-view-button" data-view-platform="duolingo">Ver painel do Duolingo</button></article></div><div id="platformDashboard" class="platform-dashboard" aria-live="polite"></div><p id="platformSyncStatus" class="small-status" role="status" aria-live="polite"></p><p class="ai-note">O acompanhamento fica dentro do Caderno Digital. Nenhuma senha é solicitada ou armazenada.</p></section></div>
       </section>
+
+      <section id="enem" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">PREPARE-SE PARA O EXAME</p><h1>ENEM</h1><p class="subtitle">Acompanhe sua preparação e acesse os serviços oficiais do MEC e do INEP sem sair do Caderno Digital.</p></div><button id="syncEnemOfficial" class="secondary-button">↻ Sincronizar MEC/INEP</button></div><div class="enem-layout"><article class="enem-card"><h2>Meu ENEM</h2><p>Guarde seu e-mail gov.br e o estado da inscrição neste aparelho. Sua senha nunca será solicitada.</p><div class="enem-form"><label for="enemEmail">E-mail da conta gov.br</label><input id="enemEmail" type="email" autocomplete="email" placeholder="seuemail@exemplo.com"><label for="enemRegistrationStatus">Situação da inscrição</label><select id="enemRegistrationStatus"><option value="not-checked">Ainda não conferi</option><option value="confirmed">Inscrição confirmada</option><option value="waiting">Aguardando confirmação</option><option value="incomplete">Preciso concluir minha inscrição</option></select><button id="saveEnemProfile" class="primary-button">Salvar no caderno</button><p id="enemProfileStatus" class="small-status" role="status" aria-live="polite"></p></div></article><article class="enem-card"><h2>Serviços oficiais</h2><p>Os botões abaixo abrem os canais oficiais dentro do visualizador do Caderno Digital.</p><div class="enem-official-links"><button class="enem-official-link" data-enem-url="https://enem.inep.gov.br/participante/" data-enem-title="ENEM — Página do Participante"><span aria-hidden="true">◉</span><span><strong>Página do Participante</strong><small>Inscrição, local de prova e resultados</small></span><span aria-hidden="true">›</span></button><button class="enem-official-link" data-enem-url="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem" data-enem-title="ENEM — Informações oficiais do INEP"><span aria-hidden="true">◆</span><span><strong>Portal oficial do ENEM</strong><small>Notícias, calendário e orientações do INEP</small></span><span aria-hidden="true">›</span></button><button class="enem-official-link" data-enem-url="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" data-enem-title="ENEM — Provas e gabaritos"><span aria-hidden="true">▤</span><span><strong>Provas e gabaritos</strong><small>Materiais oficiais para praticar</small></span><span aria-hidden="true">›</span></button></div><p id="enemSyncStatus" class="small-status" role="status" aria-live="polite"></p></article></div><article class="enem-card enem-study"><div class="enem-study-header"><h2>Plano de preparação</h2><strong id="enemProgressText">0% concluído</strong></div><div class="progress-track" role="progressbar" aria-label="Progresso da preparação para o ENEM" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="enemProgress"><span></span></div><div class="enem-area-list"><label class="enem-area"><input type="checkbox" data-enem-area="linguagens"> Linguagens</label><label class="enem-area"><input type="checkbox" data-enem-area="humanas"> Ciências Humanas</label><label class="enem-area"><input type="checkbox" data-enem-area="natureza"> Ciências da Natureza</label><label class="enem-area"><input type="checkbox" data-enem-area="matematica"> Matemática</label><label class="enem-area"><input type="checkbox" data-enem-area="redacao"> Redação</label></div></article></section>
+
+      <section id="redacao" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">PRATIQUE SUA ESCRITA</p><h1>Redação</h1><p class="subtitle">Escreva, salve e prepare seu texto para enviar à Redação Paraná.</p></div></div><div class="essay-layout"><article class="essay-editor-card"><label for="essayTitle">Título da redação</label><input id="essayTitle" maxlength="120" placeholder="Digite o título"><label for="essayGenre">Gênero textual</label><select id="essayGenre"><option>Dissertativo-argumentativo</option><option>Artigo de opinião</option><option>Crônica</option><option>Conto</option><option>Relato</option><option>Carta</option><option>Outro</option></select><label for="essayTheme">Tema</label><input id="essayTheme" maxlength="180" placeholder="Digite o tema proposto"><label for="essayText">Sua redação</label><textarea id="essayText" spellcheck="true" placeholder="Comece a escrever aqui..."></textarea><div class="essay-footer"><span id="essayCount" aria-live="polite">0 palavras · 0 caracteres</span><span id="essaySaveStatus" role="status" aria-live="polite">Salva automaticamente neste navegador.</span></div></article><aside class="essay-sync-card"><span class="essay-sync-icon" aria-hidden="true">▤</span><h2>Redação Paraná</h2><p>Prepare o texto aqui e envie pela plataforma oficial usando sua conta @Escola.</p><button id="linkEssayParana" class="secondary-button">Vincular Redação Paraná</button><button id="sendEssayParana" class="primary-button">Copiar e abrir para enviar</button><p id="essaySyncStatus" class="small-status" role="status" aria-live="polite"></p><p class="privacy-note">O Caderno Digital não solicita nem armazena sua senha escolar.</p></aside></div></section>
+
+      <section id="leitura" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">SEU CLUBE DE LEITURA</p><h1>Leitura</h1><p class="subtitle">Acesse o Leia Paraná e acompanhe seus livros sem sair do Caderno Digital.</p></div><button id="syncLeiaParana" class="secondary-button">↻ Sincronizar Leia Paraná</button></div><div class="reading-layout"><article class="reading-card"><h2>Minha leitura atual</h2><p>Registre seu livro e acompanhe o progresso salvo neste aparelho.</p><div class="reading-form"><label for="readingSchoolEmail">E-mail @escola</label><input id="readingSchoolEmail" type="email" autocomplete="email" placeholder="seunome@escola.pr.gov.br"><label for="readingBookTitle">Livro atual</label><input id="readingBookTitle" maxlength="140" placeholder="Digite o título do livro"><label for="readingProgress">Progresso da leitura</label><div class="reading-range-row"><input id="readingProgress" type="range" min="0" max="100" step="1" value="0"><output id="readingProgressValue" class="reading-range-value" for="readingProgress">0%</output></div><div class="progress-track" id="readingProgressTrack" role="progressbar" aria-label="Progresso do livro atual" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><label for="readingNotes">Anotações da leitura</label><textarea id="readingNotes" maxlength="1500" placeholder="Escreva ideias, personagens e trechos importantes..."></textarea><button id="saveReadingProgress" class="primary-button">Salvar leitura</button><p id="readingSaveStatus" class="small-status" role="status" aria-live="polite"></p></div></article><article class="reading-card reading-platform-card"><span class="reading-platform-icon" aria-hidden="true">▥</span><h2>Leia Paraná</h2><p>Entre com seu e-mail @escola para acessar o Clube de Leitura, livros, exercícios e o progresso oficial.</p><div class="reading-platform-actions"><button id="openLeiaParana" class="primary-button">Acessar Leia Paraná aqui dentro</button><button id="openLeiaHelp" class="secondary-button">Como usar o Leia Paraná</button></div><p id="readingSyncStatus" class="small-status" role="status" aria-live="polite"></p><aside class="reading-tip"><strong>Privacidade:</strong> o Caderno Digital não pede nem guarda sua senha. O progresso oficial continua sendo controlado pelo Leia Paraná.</aside></article></div></section>
+
+      <section id="videoaulas" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">APRENDA ASSISTINDO</p><h1>Videoaulas</h1><p class="subtitle">Conteúdo escolar selecionado no YouTube e aulas da Alura.</p></div><button id="syncVideoLessons" class="primary-button">↻ Sincronizar vídeos</button></div><div class="video-toolbar"><label for="videoSubject">Matéria</label><select id="videoSubject"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option>Programação</option></select><label for="videoSource">Fonte</label><select id="videoSource"><option value="all">Todas as fontes educacionais</option><option value="youtube">YouTube Educação</option><option value="alura">Alura</option></select></div><p id="videoSyncStatus" class="small-status" role="status" aria-live="polite"></p><div id="videoLessonGrid" class="video-lesson-grid"></div><aside class="video-safety-note"><strong>Biblioteca protegida</strong><span>Esta aba mostra apenas atalhos de estudo de fontes selecionadas. O feed geral e as recomendações de entretenimento do YouTube não aparecem aqui.</span></aside></section>
 
       <section id="adesivos" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE TUDO COM A SUA CARA</p><h1>Adesivos</h1><p class="subtitle">Clique em um adesivo para adicioná-lo à folha atual.</p></div></div><div class="sticker-tabs"><button class="sticker-filter active" data-category="todos">Todos</button><button class="sticker-filter" data-category="escola">Escola & tecnologia</button><button class="sticker-filter" data-category="diversao">Diversão</button><button class="sticker-filter" data-category="natureza">Natureza</button></div><div id="stickerGallery" class="sticker-gallery"></div></section>
 
       <section id="gravacao" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">GUARDE SUAS IDEIAS</p><h1>Gravações</h1><p class="subtitle">Grave explicações, lembretes ou uma aula para ouvir depois.</p></div><button id="toggleTrash" class="secondary-button">🗑 Lixeira (<span id="trashCount">0</span>)</button></div><div class="record-card"><div id="recordVisual" class="record-visual"><span>🎙</span></div><h2 id="recordTitle">Pronta para gravar?</h2><p id="recordStatus">Toque no botão e permita o uso do microfone.</p><label class="record-subject-label" for="recordSubjectSelect">Matéria desta gravação</label><select id="recordSubjectSelect"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option value="personalizada">Nome da matéria</option></select><input id="customSubject" class="hidden" maxlength="40" placeholder="Digite o nome da matéria" aria-label="Nome da matéria"><div class="record-controls"><button id="recordButton" class="record-button" aria-label="Iniciar gravação">●</button><span id="recordTime">00:00</span></div></div><div class="recording-toolbar"><h2>Minhas gravações</h2><select id="recordFilter" aria-label="Filtrar gravações por matéria"><option value="Todas">Todas as matérias</option><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option value="personalizada">Nome da matéria</option></select></div><div id="recordingsList" class="recordings-list"></div><div id="trashPanel" class="trash-panel hidden"><div><h2>Lixeira</h2><p>Você pode recuperar uma gravação ou apagá-la de vez.</p></div><div id="trashList" class="recordings-list"></div></div></section>
 
-      <section id="exportar" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">SEUS ARQUIVOS DE ESTUDO</p><h1>Materiais e transcrição</h1><p class="subtitle">Organize seus PDFs por matéria ou transforme um PDF em texto.</p></div></div><div class="export-grid"><article class="pdf-library"><div><p class="eyebrow">MATERIAIS DE ESTUDO</p><h2>Biblioteca por matéria</h2><p>Adicione seus PDFs e mantenha cada material no lugar certo.</p></div><div class="library-controls"><select id="subjectSelect" aria-label="Selecionar matéria"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option>Outras matérias</option></select><label class="upload-button" for="libraryFiles">Adicionar PDFs</label><input type="file" id="libraryFiles" accept="application/pdf" multiple hidden></div><p id="libraryStatus" class="small-status"></p><div id="libraryGrid" class="library-grid"></div><div class="school-sync"><span>🏫</span><div><h3>Escola Paraná</h3><p>A sincronização automática requer uma integração oficial autorizada pela sua conta escolar.</p></div><button id="schoolSyncButton" class="secondary-button">Ver detalhes</button></div></article><article class="feature-card"><span class="feature-icon lavender">T</span><h2>Transcrever PDF</h2><p>Extraia o texto das suas matérias. Links e endereços não entram na transcrição.</p><label class="upload-button" for="pdfFile">Escolher um PDF</label><input type="file" id="pdfFile" accept="application/pdf" hidden><p id="pdfStatus" class="small-status"></p></article></div><article id="transcriptionCard" class="transcription-card hidden"><div><h2>Texto transcrito</h2><p>Revise, copie ou adicione ao seu caderno.</p></div><textarea id="transcriptionText" readonly></textarea><div><button id="copyText" class="secondary-button">Copiar texto</button><button id="addTextToNotebook" class="primary-button">Adicionar ao caderno</button></div></article></section>
+      <section id="exportar" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">SEUS ARQUIVOS DE ESTUDO</p><h1>Materiais e transcrição</h1><p class="subtitle">Organize seus PDFs por matéria ou transforme um PDF em texto.</p></div></div><div class="export-grid"><article class="pdf-library"><div><p class="eyebrow">MATERIAIS DE ESTUDO</p><h2>Biblioteca por matéria</h2><p>Adicione seus PDFs e mantenha cada material no lugar certo.</p></div><div class="library-controls"><select id="subjectSelect" aria-label="Selecionar matéria"><option>Matemática</option><option>Português</option><option>História</option><option>Geografia</option><option>Ciências</option><option>Biologia</option><option>Física</option><option>Química</option><option>Inglês</option><option>Outras matérias</option></select><label class="upload-button" for="libraryFiles">Adicionar PDFs</label><input type="file" id="libraryFiles" accept="application/pdf" multiple hidden></div><p id="libraryStatus" class="small-status"></p><div id="libraryGrid" class="library-grid"></div><div class="school-sync"><span>🏫</span><div><h3>Escola Paraná</h3><p>A sincronização automática requer uma integração oficial autorizada pela sua conta escolar.</p></div><button id="schoolSyncButton" class="secondary-button">Ver detalhes</button></div><div class="school-sync classroom-sync"><span>📚</span><div><h3>Google Classroom</h3><p id="classroomDescription">Vincule sua conta para localizar e baixar automaticamente os PDFs das suas turmas.</p></div><button id="classroomSyncButton" class="primary-button">Vincular Classroom</button></div><div id="classroomSetup" class="classroom-setup hidden"><label for="googleGovEmail">E-mail institucional gov</label><div><input id="googleGovEmail" type="email" autocomplete="email" placeholder="seuemail@escola.pr.gov.br"><button id="saveGoogleGovEmail" class="secondary-button">Continuar com Google</button></div><p>Use o e-mail fornecido pela escola. Sua senha será solicitada somente na página oficial do Google.</p></div><p id="classroomStatus" class="small-status" role="status" aria-live="polite"></p></article><article class="feature-card"><span class="feature-icon lavender">T</span><h2>Transcrever PDF</h2><p>Extraia o texto das suas matérias. Links e endereços não entram na transcrição.</p><label class="upload-button" for="pdfFile">Escolher um PDF</label><input type="file" id="pdfFile" accept="application/pdf" hidden><p id="pdfStatus" class="small-status"></p></article></div><article id="transcriptionCard" class="transcription-card hidden"><div><h2>Texto transcrito</h2><p>Revise, copie ou adicione ao seu caderno.</p></div><textarea id="transcriptionText" readonly></textarea><div><button id="copyText" class="secondary-button">Copiar texto</button><button id="addTextToNotebook" class="primary-button">Adicionar ao caderno</button></div></article></section>
     </main>
   </div>
+  <aside id="focusSchedule" class="focus-schedule" aria-label="Cronograma do modo foco"><div class="focus-schedule-header"><h2>☷ Cronograma do foco</h2><button id="toggleFocusSchedule" type="button" aria-expanded="true" aria-controls="focusScheduleBody">Recolher</button></div><div id="focusScheduleBody" class="focus-schedule-body"><form id="focusScheduleForm" class="focus-schedule-form"><label class="visually-hidden" for="focusTask">Atividade</label><input id="focusTask" maxlength="90" placeholder="Ex.: Revisar matemática" required><label class="visually-hidden" for="focusTaskTime">Horário</label><input id="focusTaskTime" type="time" required><label class="visually-hidden" for="focusTaskDuration">Duração em minutos</label><input id="focusTaskDuration" type="number" min="5" max="240" step="5" value="30" aria-label="Duração em minutos"><button type="submit">Adicionar</button></form><div id="focusScheduleList" class="focus-schedule-list"></div><p id="focusScheduleStatus" class="visually-hidden" role="status" aria-live="polite"></p></div></aside>
+  <button id="focusModeButton" class="focus-mode-button" type="button" aria-pressed="false" aria-describedby="focusModeStatus"><span aria-hidden="true">◎</span><span id="focusModeLabel">Modo foco</span></button>
+  <button id="installAppButton" class="install-app-button" type="button"><span aria-hidden="true">⬇</span> Instalar aplicativo</button>
+  <div id="installHelp" class="install-help hidden" role="status"><button id="closeInstallHelp" type="button" aria-label="Fechar">✕</button><strong>Instalar Caderno Digital</strong><span id="installHelpText">Abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.</span></div>
+  <span id="focusModeStatus" class="visually-hidden" role="status" aria-live="polite">Modo foco desativado.</span>
+  <div id="internalSiteViewer" class="internal-site-viewer hidden" role="dialog" aria-modal="true" aria-labelledby="internalSiteTitle"><div class="internal-site-window"><header><h2 id="internalSiteTitle">Conteúdo vinculado</h2><button id="closeInternalSite" aria-label="Fechar conteúdo vinculado">✕ Fechar</button></header><p id="internalSiteNotice">O conteúdo está sendo exibido dentro do Caderno Digital.</p><iframe id="internalSiteFrame" title="Site vinculado dentro do Caderno Digital" referrerpolicy="strict-origin-when-cross-origin"></iframe></div></div>
   <script src="app.js"></script>
 </body>
 </html>

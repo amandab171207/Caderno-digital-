@@ -1,0 +1,13 @@
+{
+  "name": "Caderno Digital",
+  "short_name": "Caderno",
+  "description": "Cadernos, estudos, gravações e materiais em um só aplicativo.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fbf9ff",
+  "theme_color": "#292540",
+  "icons": [{"src":"icons/app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

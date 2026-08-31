@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Caderno Digital">
+  <defs><linearGradient id="cover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9c82"/><stop offset="1" stop-color="#8a55b5"/></linearGradient></defs>
+  <rect width="512" height="512" rx="112" fill="#292540"/><rect x="116" y="82" width="300" height="348" rx="36" fill="url(#cover)"/><rect x="142" y="82" width="274" height="348" rx="32" fill="#fffaf4"/>
+  <path d="M190 178h178M190 230h178M190 282h132M190 334h154" stroke="#a99aec" stroke-width="18" stroke-linecap="round"/><path d="M126 142h38M126 206h38M126 270h38M126 334h38M126 398h38" stroke="#f3bd50" stroke-width="18" stroke-linecap="round"/><path d="m360 110 10 25 25 10-25 10-10 25-10-25-25-10 25-10z" fill="#f3bd50"/>
+</svg>
