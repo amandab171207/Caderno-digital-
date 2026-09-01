@@ -398,6 +398,7 @@
               <button class="paper-option selected" data-paper="lined"><i class="lines"></i> Pautada</button><button class="paper-option" data-paper="grid"><i class="grid"></i> Quadriculada</button><button class="paper-option" data-paper="blank"><i class="blank"></i> Em branco</button>
             </div></div>
             <div class="option-group"><h3>Minhas páginas</h3><div id="pageList" class="page-list"></div></div>
+            <div class="option-group device-transfer"><h3>Transferir cadernos</h3><button id="sendNotebooks" class="secondary-button" type="button">Enviar para outro aparelho</button><label class="secondary-button" for="receiveNotebooks">Receber cadernos</label><input id="receiveNotebooks" type="file" accept="application/json,.json" hidden><p id="transferStatus" class="small-status" role="status" aria-live="polite"></p></div>
           </aside>
           <div class="notebook-area"><div id="notebook" class="notebook coral-cover"><div id="paper" class="paper lined-paper"><button id="draggableNotebookButton" class="draggable-notebook-button" type="button" aria-label="Abrir ferramentas de escrita e desenho"><span aria-hidden="true">✎</span> Canetas</button><div id="paperContent" class="paper-content" contenteditable="true" spellcheck="true"><p class="date">28 DE AGOSTO</p><h2>Olá, Amanda! <span>✦</span></h2><p>Este é o seu espaço para anotar ideias, estudar e deixar tudo com a sua cara.</p><p>Toque aqui para começar a escrever...</p></div><canvas id="drawingCanvas" class="drawing-canvas" aria-label="Área de desenho da folha"></canvas><div id="stickerLayer" class="sticker-layer" aria-label="Adesivos na folha"></div></div></div><p class="drag-help">Use as canetas para escrever ou desenhar · Arraste os adesivos pela folha</p></div>
         </div>
@@ -442,6 +443,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>
