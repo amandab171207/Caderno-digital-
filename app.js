@@ -185,7 +185,7 @@ if(cloudAuth)cloudAuth.onAuthStateChanged(loadAccountProgress);
 function savePlatformProgress(platform){platformProgress={...platformProgress,aluraEmail:$('#aluraEmail').value.trim(),aluraProgress:$('#aluraProgress').value};localStorage.setItem(platformProgressStorage,JSON.stringify(platformProgress));renderPlatformDashboard('alura');$('#platformSyncStatus').textContent=`Dados do ${platform} sincronizados dentro do Caderno Digital.`;scheduleCloudSave();}
 $('#saveAlura').onclick=()=>savePlatformProgress('Alura');$('#saveDuolingo').onclick=()=>savePlatformProgress('Duolingo');$$('[data-view-platform]').forEach(button=>button.onclick=()=>renderPlatformDashboard(button.dataset.viewPlatform));renderPlatformDashboard();
 [{container:'.alura-card',title:'Alura',url:'https://www.alura.com.br/'},{container:'.duolingo-card',title:'Duolingo',url:'https://www.duolingo.com/learn'}].forEach(platform=>{const button=document.createElement('button');button.type='button';button.className='platform-view-button';button.textContent=`Acessar ${platform.title} aqui dentro`;button.onclick=()=>openInternalSite(platform.url,platform.title);$(platform.container).append(button);});
-$('.duolingo-card')?.remove();const platformSyncArea=$('.platform-sync-area');platformSyncArea.hidden=true;platformSyncArea.style.display='none';
+$('.duolingo-card')?.remove();$('.platform-sync-area h2').textContent='Alura';$('.platform-sync-area>div:first-child>p:not(.eyebrow)').textContent='Registre e acompanhe seus estudos da Alura sem sair do Caderno Digital.';
 renderResponseCards();renderStudyPlan();
 
 const enemStorage='caderno-digital-enem';
