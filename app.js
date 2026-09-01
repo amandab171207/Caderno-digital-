@@ -12,9 +12,8 @@ let paperType = 'lined', currentPage = 0, currentNotebook = 0;
 const notebookStorage = 'caderno-digital-notebooks';
 let notebooks;
 try { notebooks = JSON.parse(localStorage.getItem(notebookStorage)); } catch { notebooks = null; }
-if (!Array.isArray(notebooks) || !notebooks.length) notebooks = [{ title: 'Meu caderno', cover: 'netflix', paperType: 'lined', pages: [{ title: 'Página 1', content: $('#paperContent').innerHTML, stickers: [] }] }];
+if (!Array.isArray(notebooks) || !notebooks.length) notebooks = [{ title: 'Meu caderno', cover: 'coral', paperType: 'lined', pages: [{ title: 'Página 1', content: $('#paperContent').innerHTML, stickers: [] }] }];
 const legacyCoverMap = {animation:'netflix',series:'disney',cinema:'apple-tv',fantasy:'crunchyroll',space:'prime-video',mystery:'max','magic-school':'globoplay','hero-city':'pluto-tv','galaxy-saga':'netflix','pixel-world':'disney','ocean-adventure':'prime-video','detective-club':'max'};
-Object.assign(legacyCoverMap,{coral:'netflix',lilac:'disney',blue:'apple-tv',yellow:'crunchyroll',green:'prime-video',dark:'max'});
 notebooks.forEach(notebook=>{if(legacyCoverMap[notebook.cover])notebook.cover=legacyCoverMap[notebook.cover];});
 notebooks.forEach(notebook=>{if(!notebook.id)notebook.id=crypto.randomUUID();});
 try { localStorage.setItem(notebookStorage, JSON.stringify(notebooks)); } catch {}
@@ -135,7 +134,7 @@ $('#closePenToolbar').onclick=closePenTools;
 const draggableNotebookButton=$('#draggableNotebookButton');
 draggableNotebookButton.addEventListener('click',()=>{const toolbar=$('#penToolbar'),opening=toolbar.classList.contains('hidden');toolbar.classList.toggle('hidden',!opening);if(opening){sizeDrawingCanvas();setPenTool('draw');$('#drawingMode').focus();}else{setPenTool('text');}});
 window.addEventListener('resize',sizeDrawingCanvas);sizeDrawingCanvas();requestAnimationFrame(()=>loadPageDrawing(activeNotebook().pages[currentPage].drawing));
-$('#newNotebook').onclick=()=>{const title=prompt('Qual é o nome do novo caderno?', 'Novo caderno');if(!title?.trim())return;saveCurrent();notebooks.push({id:crypto.randomUUID(),title:title.trim(),cover:'disney',paperType:'lined',pages:[{title:'Página 1',content:'<p class="date">NOVO CADERNO</p><h2>'+title.trim()+' ✦</h2><p>Comece a escrever aqui...</p>',stickers:[]}]});loadNotebook(notebooks.length-1);};
+$('#newNotebook').onclick=()=>{const title=prompt('Qual é o nome do novo caderno?', 'Novo caderno');if(!title?.trim())return;saveCurrent();notebooks.push({id:crypto.randomUUID(),title:title.trim(),cover:'lilac',paperType:'lined',pages:[{title:'Página 1',content:'<p class="date">NOVO CADERNO</p><h2>'+title.trim()+' ✦</h2><p>Comece a escrever aqui...</p>',stickers:[]}]});loadNotebook(notebooks.length-1);};
 const initialNotebook = activeNotebook();
 paperType = initialNotebook.paperType;
 $('#notebook').className='notebook '+initialNotebook.cover+'-cover';
