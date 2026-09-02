@@ -198,6 +198,9 @@ $('#paper').className='paper '+paperType+'-paper';
 $$('.cover-choice').forEach(b=>b.classList.toggle('selected',b.dataset.cover===initialNotebook.cover));
 $$('.paper-option').forEach(b=>b.classList.toggle('selected',b.dataset.paper===paperType));
 renderNotebooks(); loadPage(0,false);
+function syncNotebookSubjects(){const ignored=new Set(['meu caderno','novo caderno']),existing=new Set(schoolInfo.subjects.map(subject=>subject.name.trim().toLocaleLowerCase('pt-BR')));let changed=false;notebooks.forEach(notebook=>{const name=(notebook.title||'').trim(),normalized=name.toLocaleLowerCase('pt-BR');if(!name||ignored.has(normalized)||existing.has(normalized))return;schoolInfo.subjects.push({id:crypto.randomUUID(),name,grade:'',grade2:'',grade3:'',attendance:'0'});existing.add(normalized);changed=true;});if(!changed)return;saveSchoolInfo();renderSchoolInfo();renderTrimesterGrades();renderSchoolSchedule();}
+new MutationObserver(syncNotebookSubjects).observe($('#notebookList'),{childList:true,subtree:true});
+syncNotebookSubjects();
 
 function renderStickers(category='todos'){const list=category==='todos'?stickerData:stickerData.filter(s=>s[2]===category);$('#stickerGallery').innerHTML=list.length?list.map(([emoji,name])=>`<button class="sticker-card" data-emoji="${escapeHtml(emoji)}" aria-label="Adicionar adesivo ${escapeHtml(name)}"><span class="emoji" aria-hidden="true">${escapeHtml(emoji)}</span><small>${escapeHtml(name)}</small></button>`).join(''):'<p class="small-status">Nenhum adesivo nesta categoria ainda.</p>';$$('.sticker-card').forEach(b=>b.onclick=()=>{placeSticker(b.dataset.emoji);saveCurrent();});}renderStickers();
 $$('.sticker-filter').forEach(b=>b.onclick=()=>{$$('.sticker-filter').forEach(x=>x.classList.toggle('active',x===b));renderStickers(b.dataset.category);});
