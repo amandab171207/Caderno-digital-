@@ -370,6 +370,7 @@
         <button class="nav-item" data-tab="canva" role="tab" aria-controls="canva" aria-selected="false"><span aria-hidden="true">C</span> Canva</button>
         <button class="nav-item" data-tab="downloads" role="tab" aria-controls="downloads" aria-selected="false"><span aria-hidden="true">⬇</span> Downloads</button>
         <button class="nav-item" data-tab="imprimir" role="tab" aria-controls="imprimir" aria-selected="false"><span aria-hidden="true">🖨</span> Imprimir</button>
+        <button class="nav-item" data-tab="configuracoes" role="tab" aria-controls="configuracoes" aria-selected="false"><span aria-hidden="true">⚙</span> Configurações</button>
       </nav>
       <section class="side-login" aria-label="Entrar com a conta Google"><div class="google-login-heading"><span class="google-login-mark" aria-hidden="true">G</span><h2>Minha conta</h2></div><p>Escolha uma conta Google para continuar ou adicione outra conta.</p><button id="sideGoogleLogin" type="button" class="google-login-button"><span aria-hidden="true">G</span> Continuar com Google</button><p id="sideLoginStatus" role="status" aria-live="polite">A senha será digitada somente na página oficial do Google.</p></section>
     </aside>
@@ -390,6 +391,11 @@
           <p id="speechStatus" class="small-status" role="status" aria-live="polite"></p>
           <details class="communication-assist"><summary>Comunicação por texto</summary><label for="communicationText">Digite o que deseja comunicar</label><textarea id="communicationText" rows="3" placeholder="Digite uma mensagem..."></textarea><div class="quick-phrases" aria-label="Frases rápidas"><button data-phrase="Sim">Sim</button><button data-phrase="Não">Não</button><button data-phrase="Preciso de ajuda">Preciso de ajuda</button><button data-phrase="Pode repetir, por favor?">Pode repetir</button></div><div class="speech-controls"><button id="speakCommunication" class="primary-button">🔊 Falar mensagem</button><button id="copyCommunication" class="secondary-button">Copiar</button></div><p id="communicationStatus" class="small-status" role="status" aria-live="polite"></p></details>
         </div>
+      </section>
+
+      <section id="configuracoes" class="tab-panel">
+        <div class="page-heading"><div><p class="eyebrow">PERSONALIZE SEU CADERNO</p><h1>Configurações</h1><p class="subtitle">Organize seus estudos, escolha a aparência e proteja seus dados.</p></div></div>
+        <div id="studySettingsMount"></div>
       </section>
 
       <section id="caderno" class="tab-panel active">
@@ -455,7 +461,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-  <script src="app.js?v=94"></script>
-  <script src="extras.js?v=94"></script>
+  <script src="app.js?v=95"></script>
+  <script src="extras.js?v=95"></script>
 </body>
 </html>

@@ -24,7 +24,7 @@
   notebooks.forEach(n=>{n.folder??='Sem pasta';n.tag??='';n.pages.forEach(p=>{p.favorite??=false;p.attachments??=[];});});
   persistNotebooks();
 
-  const heading=document.querySelector('#caderno .page-heading');
+  const settingsMount=document.querySelector('#studySettingsMount');
   const hub=document.createElement('section');
   hub.className='study-hub';
   hub.innerHTML=`<div class="study-hub-title"><div><p class="eyebrow">CENTRAL DE ESTUDOS</p><h2>Minhas ferramentas</h2></div><button id="toggleStudyHub" class="secondary-button" aria-expanded="false">Abrir ferramentas</button></div>
@@ -39,7 +39,7 @@
       <article class="study-tool"><h3>🛡 Segurança</h3><p>Proteja o caderno com um PIN neste dispositivo.</p><button id="manageNotebookPin">Configurar PIN</button></article>
       <article class="study-tool"><h3>🗑 Lixeira e histórico</h3><div class="tool-row"><button id="openNotebookTrash">Abrir lixeira</button><button id="undoPageChange" class="secondary-button">Desfazer escrita</button></div><div id="notebookTrashList" class="tool-list"></div></article>
     </div>`;
-  heading.after(hub);
+  settingsMount.append(hub);
 
   const pageTools=document.createElement('div');
   pageTools.className='page-extra-tools';
