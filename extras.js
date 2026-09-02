@@ -47,6 +47,12 @@
   const schoolHeading=document.querySelector('#informativo .page-heading');
   schoolHeading.after(schoolTools);
   schoolTools.querySelector('.school-study-tools-grid').append(hub.querySelector('.weekly-goals-tool'),hub.querySelector('.notebook-organizer-tool'));
+  const recordingHistory=document.createElement('section');
+  recordingHistory.className='recording-history-card';
+  recordingHistory.innerHTML='<div><p class="eyebrow">GRAVAÇÕES APAGADAS</p><h2>🗑 Lixeira e histórico</h2><p>Recupere gravações excluídas ou desfaça a exclusão mais recente.</p></div><div class="recording-history-actions"><button id="openRecordingTrash" class="primary-button">Abrir lixeira</button><button id="undoRecordingDeletion" class="secondary-button">Desfazer gravações</button></div><small id="recordingHistoryStatus" role="status" aria-live="polite"></small>';
+  document.querySelector('#gravacao .page-heading').after(recordingHistory);
+  openRecordingTrash.onclick=()=>{trashPanel.classList.remove('hidden');renderTrash();trashPanel.scrollIntoView({behavior:'smooth',block:'start'});};
+  undoRecordingDeletion.onclick=()=>{if(!trashedRecordings.length){recordingHistoryStatus.textContent='Não há gravação apagada para recuperar.';return;}const restored=trashedRecordings.shift();recordings.unshift(restored);renderRecordings();renderTrash();recordingHistoryStatus.textContent=`“${restored.title}” foi recuperada.`;};
 
   const pageTools=document.createElement('div');
   pageTools.className='page-extra-tools';
