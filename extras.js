@@ -33,14 +33,20 @@
       <article class="study-tool"><h3>◐ Aparência</h3><label>Tema<select id="studyTheme">${Object.entries(THEMES).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></label></article>
       <article class="study-tool pomodoro-tool"><h3>◴ Pomodoro</h3><strong id="pomodoroClock" class="tool-clock">25:00</strong><div class="tool-row"><button id="pomodoroStart">Iniciar</button><button id="pomodoroReset" class="secondary-button">Reiniciar</button></div></article>
       <article class="study-tool study-time-tool"><h3>⌛ Tempo por matéria</h3><select id="studySubject"></select><strong id="studyClock" class="tool-clock">00:00:00</strong><button id="toggleStudyTimer">Começar a estudar</button><div id="studyTotals" class="tool-list"></div></article>
-      <article class="study-tool"><h3>🎯 Metas da semana</h3><div class="tool-row"><select id="goalSubject"></select><input id="goalTarget" type="number" min="1" max="50" value="5" aria-label="Quantidade da meta"><button id="addWeeklyGoal">Adicionar</button></div><div id="weeklyGoals" class="tool-list"></div></article>
-      <article class="study-tool"><h3>🏷 Organizar caderno</h3><label>Pasta<input id="notebookFolder" maxlength="40" placeholder="Ex.: 2026 ou Curso técnico"></label><label>Etiqueta<select id="notebookTag">${Object.entries(TAGS).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></label><button id="saveNotebookOrganization">Salvar organização</button></article>
+      <article class="study-tool weekly-goals-tool"><h3>🎯 Metas da semana</h3><div class="tool-row"><select id="goalSubject"></select><input id="goalTarget" type="number" min="1" max="50" value="5" aria-label="Quantidade da meta"><button id="addWeeklyGoal">Adicionar</button></div><div id="weeklyGoals" class="tool-list"></div></article>
+      <article class="study-tool notebook-organizer-tool"><h3>🏷 Organizar caderno</h3><label>Pasta<input id="notebookFolder" maxlength="40" placeholder="Ex.: 2026 ou Curso técnico"></label><label>Etiqueta<select id="notebookTag">${Object.entries(TAGS).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></label><button id="saveNotebookOrganization">Salvar organização</button></article>
       <article class="study-tool"><h3>🔔 Lembretes</h3><p>Avise antes dos trabalhos e provas cadastrados.</p><button id="enableStudyNotifications">Ativar lembretes</button><small id="notificationStatus"></small></article>
       <article class="study-tool"><h3>🛡 Segurança</h3><p>Proteja o caderno com um PIN neste dispositivo.</p><button id="manageNotebookPin">Configurar PIN</button></article>
       <article class="study-tool"><h3>🗑 Lixeira e histórico</h3><div class="tool-row"><button id="openNotebookTrash">Abrir lixeira</button><button id="undoPageChange" class="secondary-button">Desfazer escrita</button></div><div id="notebookTrashList" class="tool-list"></div></article>
     </div>`;
   settingsMount.append(hub);
   document.querySelectorAll('#caderno .study-hub').forEach(block=>settingsMount.append(block));
+  const schoolTools=document.createElement('section');
+  schoolTools.className='school-study-tools';
+  schoolTools.innerHTML='<div class="school-study-tools-heading"><p class="eyebrow">ORGANIZAÇÃO DOS ESTUDOS</p><h2>Metas e cadernos</h2></div><div class="school-study-tools-grid"></div>';
+  const schoolHeading=document.querySelector('#informativo .page-heading');
+  schoolHeading.after(schoolTools);
+  schoolTools.querySelector('.school-study-tools-grid').append(hub.querySelector('.weekly-goals-tool'),hub.querySelector('.notebook-organizer-tool'));
 
   const pageTools=document.createElement('div');
   pageTools.className='page-extra-tools';
