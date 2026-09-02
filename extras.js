@@ -40,6 +40,7 @@
       <article class="study-tool"><h3>🗑 Lixeira e histórico</h3><div class="tool-row"><button id="openNotebookTrash">Abrir lixeira</button><button id="undoPageChange" class="secondary-button">Desfazer escrita</button></div><div id="notebookTrashList" class="tool-list"></div></article>
     </div>`;
   settingsMount.append(hub);
+  document.querySelectorAll('#caderno .study-hub').forEach(block=>settingsMount.append(block));
 
   const pageTools=document.createElement('div');
   pageTools.className='page-extra-tools';
