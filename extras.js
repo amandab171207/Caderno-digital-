@@ -37,7 +37,6 @@
       <article class="study-tool"><h3>🔔 Lembretes</h3><p>Receba avisos de provas, trabalhos e compromissos cadastrados.</p><button id="enableStudyNotifications">Ativar lembretes</button><small id="notificationStatus"></small></article>
       <article class="study-tool"><h3>⇩ Dados do caderno</h3><p>Crie uma cópia de segurança ou restaure seus dados.</p><div class="tool-row"><button id="exportNotebookBackup">Exportar cópia</button><label class="secondary-button settings-file-button" for="importNotebookBackup">Importar cópia</label><input id="importNotebookBackup" type="file" accept="application/json,.json" hidden></div><small id="backupStatus" role="status" aria-live="polite"></small></article>
       <article class="study-tool danger-settings-tool"><h3>🗑 Limpar dados</h3><p>Apague todas as informações salvas neste navegador.</p><button id="clearNotebookData" class="secondary-button">Apagar dados</button><small id="clearDataStatus" role="status" aria-live="polite"></small></article>
-      <article class="study-tool"><h3>ⓘ Sobre o aplicativo</h3><p><strong>Caderno Digital</strong></p><p>Organize seus estudos, materiais e atividades em um só lugar.</p><small>Versão 1.12 · Setembro de 2026</small></article>
     </div>`;
   settingsMount.append(hub);
   document.querySelectorAll('#caderno .study-hub').forEach(block=>settingsMount.append(block));
