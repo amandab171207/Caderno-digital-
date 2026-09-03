@@ -110,7 +110,7 @@
   ocrPhoto.onchange=async e=>{const file=e.target.files[0];if(!file)return;ocrExportStatus.textContent='Lendo a foto… isso pode levar um pouco.';try{await loadExternalScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');const result=await Tesseract.recognize(file,'por');const paragraphs=result.data.text.trim().split(/\n+/).filter(Boolean);paperContent.insertAdjacentHTML('beforeend',paragraphs.map(p=>`<p>${esc(p)}</p>`).join(''));saveCurrent();ocrExportStatus.textContent='Texto da foto adicionado à página atual do caderno.';}catch{ocrExportStatus.textContent='Não foi possível ler a foto. Verifique a internet e tente novamente.';}e.target.value='';};
 
   function refreshAll(){refreshSubjects();renderStudy();renderPageExtras();studyClock.textContent=formatSeconds(toolsState.studySeconds[studySubject.value]||0);notificationStatus.textContent=toolsState.notifications?'Lembretes ativados neste dispositivo.':'Ative para receber avisos.';}
-  function updateTotalAttendanceAverage(){const records=schoolInfo.lessonAttendance||[],registered=records.length,presences=Math.max(0,records.filter(item=>item.status==='present').length+(Number(schoolInfo.presenceAdjustment)||0)),held=Number(schoolInfo.classesHeldSoFar)||registered,percentage=held?Math.min(100,Math.max(0,Math.round(presences/held*100))):null;schoolAttendanceAverage.textContent=percentage===null?'—':`${percentage}%`;}
+  function updateTotalAttendanceAverage(){const records=schoolInfo.lessonAttendance||[],presences=Math.max(0,records.filter(item=>item.status==='present').length+(Number(schoolInfo.presenceAdjustment)||0));schoolAttendanceAverage.textContent=String(presences);}
   const originalRenderSchoolInfo=renderSchoolInfo;
   renderSchoolInfo=function(){originalRenderSchoolInfo();updateTotalAttendanceAverage();};
   const originalRenderAttendanceStats=renderAttendanceStats;
@@ -118,7 +118,7 @@
   window.addEventListener('beforeunload',()=>{if(studyTicker)toggleStudyTimer.click();});
   window.addEventListener('load',()=>{
     const averageLabel=document.querySelector('#schoolAttendanceAverage')?.previousElementSibling;
-    if(averageLabel)averageLabel.textContent='Frequência média (%)';
+    if(averageLabel)averageLabel.textContent='Frequência média';
     const attendanceHeader=document.querySelector('.school-table thead th:nth-last-child(2)');
     if(attendanceHeader)attendanceHeader.textContent='Frequência (%)';
     updateTotalAttendanceAverage();
