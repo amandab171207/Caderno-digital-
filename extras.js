@@ -115,6 +115,7 @@
   renderSchoolInfo=function(){originalRenderSchoolInfo();updateTotalAttendanceAverage();};
   const originalRenderAttendanceStats=renderAttendanceStats;
   renderAttendanceStats=function(){originalRenderAttendanceStats();updateTotalAttendanceAverage();};
+  document.addEventListener('click',event=>{if(event.target.closest('[data-edit-presences]'))setTimeout(updateTotalAttendanceAverage);});
   window.addEventListener('beforeunload',()=>{if(studyTicker)toggleStudyTimer.click();});
   window.addEventListener('load',()=>{
     const averageLabel=document.querySelector('#schoolAttendanceAverage')?.previousElementSibling;
