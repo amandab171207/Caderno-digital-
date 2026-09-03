@@ -95,5 +95,11 @@
 
   function refreshAll(){refreshSubjects();renderStudy();renderPageExtras();studyClock.textContent=formatSeconds(toolsState.studySeconds[studySubject.value]||0);notificationStatus.textContent=toolsState.notifications?'Lembretes ativados neste dispositivo.':'Ative para receber avisos.';}
   window.addEventListener('beforeunload',()=>{if(studyTicker)toggleStudyTimer.click();});
+  window.addEventListener('load',()=>{
+    const averageLabel=document.querySelector('#schoolAttendanceAverage')?.previousElementSibling;
+    if(averageLabel)averageLabel.textContent='Frequência média (%)';
+    const attendanceHeader=document.querySelector('.school-table thead th:nth-last-child(2)');
+    if(attendanceHeader)attendanceHeader.textContent='Frequência (%)';
+  });
   refreshAll();renderPomodoro();scheduleReminders();
 })();
