@@ -390,3 +390,5 @@ renderTrimesterGrades=function(){renderTrimesterGradesBeforePercentage();showMis
 window.addEventListener('load',syncAttendanceSummaryToPresences);
 window.addEventListener('load',()=>setTimeout(showMissingAverageAsPercentage));
 document.addEventListener('click',event=>{if(event.target.closest('[data-edit-presences],[data-school-attendance],[data-lesson-status]'))setTimeout(syncAttendanceSummaryToPresences);});
+
+setInterval(()=>{const saved=localStorage.getItem(schoolInfoStorage);if(!saved||saved===JSON.stringify(schoolInfo))return;try{const received=JSON.parse(saved);if(!Array.isArray(received.subjects)||!Array.isArray(received.activities))return;schoolInfo=received;renderDailyAttendance();renderSchoolInfo();renderTrimesterGrades();renderSchoolSchedule();renderAttendanceStats();}catch{}},1500);
