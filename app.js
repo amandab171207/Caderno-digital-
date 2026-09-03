@@ -384,5 +384,9 @@ const renderSchoolInfoBeforeAttendanceSync=renderSchoolInfo;
 renderSchoolInfo=function(){renderSchoolInfoBeforeAttendanceSync();syncAttendanceSummaryToPresences();};
 const renderAttendanceStatsBeforeAttendanceSync=renderAttendanceStats;
 renderAttendanceStats=function(){renderAttendanceStatsBeforeAttendanceSync();syncAttendanceSummaryToPresences();};
+function showMissingAverageAsPercentage(){const value=$('#schoolGradeAverage');if(value&&value.textContent!=='—'&&!value.textContent.endsWith('%'))value.textContent=`${value.textContent}%`;}
+const renderTrimesterGradesBeforePercentage=renderTrimesterGrades;
+renderTrimesterGrades=function(){renderTrimesterGradesBeforePercentage();showMissingAverageAsPercentage();};
 window.addEventListener('load',syncAttendanceSummaryToPresences);
+window.addEventListener('load',()=>setTimeout(showMissingAverageAsPercentage));
 document.addEventListener('click',event=>{if(event.target.closest('[data-edit-presences],[data-school-attendance],[data-lesson-status]'))setTimeout(syncAttendanceSummaryToPresences);});
