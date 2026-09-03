@@ -5,7 +5,7 @@
   const HISTORY = 'caderno-digital-page-history';
   const THEMES = { claro:'Claro', escuro:'Escuro', lilas:'Lilás', azul:'Azul', verde:'Verde' };
   const TAGS = { '':'Sem etiqueta', importante:'Importante', revisar:'Revisar', prova:'Prova' };
-  let toolsState = {theme:'claro',studySeconds:{},goals:[],notifications:false,pomodoroMinutes:25};
+  let toolsState = {theme:'claro',textSize:'medio',studySeconds:{},goals:[],notifications:false,pomodoroMinutes:25};
   let trash = [], history = [], studyStarted = 0, studySubject = '', studyTicker = 0;
   let pomodoroSeconds = 25 * 60, pomodoroTicker = 0, historyBefore = null;
 
@@ -20,6 +20,7 @@
   const subjects = () => [...new Set([...(schoolInfo?.subjects||[]).map(s=>s.name), ...notebooks.map(n=>n.title)])].filter(Boolean);
 
   document.documentElement.dataset.studyTheme=toolsState.theme;
+  document.documentElement.dataset.textSize=toolsState.textSize;
   notebooks.forEach(n=>{n.folder??='Sem pasta';n.tag??='';n.pages.forEach(p=>{p.favorite??=false;p.attachments??=[];});});
   persistNotebooks();
 
@@ -29,9 +30,14 @@
   hub.innerHTML=`<div class="study-hub-title"><div><p class="eyebrow">CENTRAL DE ESTUDOS</p><h2>Minhas ferramentas</h2></div><button id="toggleStudyHub" class="secondary-button" aria-expanded="false">Abrir ferramentas</button></div>
     <div id="studyHubBody" class="study-hub-body hidden">
       <article class="study-tool"><h3>◐ Aparência</h3><label>Tema<select id="studyTheme">${Object.entries(THEMES).map(([v,l])=>`<option value="${v}">${l}</option>`).join('')}</select></label></article>
+      <article class="study-tool"><h3>↕ Tamanho do texto</h3><label>Tamanho<select id="studyTextSize"><option value="pequeno">Pequeno</option><option value="medio">Médio</option><option value="grande">Grande</option></select></label></article>
+      <article class="study-tool"><h3>✓ Salvamento automático</h3><p>Seus dados são salvos automaticamente neste navegador.</p><strong class="settings-active-badge">Ativado</strong><small id="autoSaveStatus" role="status" aria-live="polite">Tudo salvo.</small></article>
       <article class="study-tool pomodoro-tool"><h3>◴ Pomodoro</h3><strong id="pomodoroClock" class="tool-clock">25:00</strong><div class="tool-row"><button id="pomodoroStart">Iniciar</button><button id="pomodoroReset" class="secondary-button">Reiniciar</button></div></article>
       <article class="study-tool study-time-tool"><h3>⌛ Tempo por matéria</h3><select id="studySubject"></select><strong id="studyClock" class="tool-clock">00:00:00</strong><button id="toggleStudyTimer">Começar a estudar</button><div id="studyTotals" class="tool-list"></div></article>
-      <article class="study-tool"><h3>🔔 Lembretes</h3><p>Avise antes dos trabalhos e provas cadastrados.</p><button id="enableStudyNotifications">Ativar lembretes</button><small id="notificationStatus"></small></article>
+      <article class="study-tool"><h3>🔔 Lembretes</h3><p>Receba avisos de provas, trabalhos e compromissos cadastrados.</p><button id="enableStudyNotifications">Ativar lembretes</button><small id="notificationStatus"></small></article>
+      <article class="study-tool"><h3>⇩ Dados do caderno</h3><p>Crie uma cópia de segurança ou restaure seus dados.</p><div class="tool-row"><button id="exportNotebookBackup">Exportar cópia</button><label class="secondary-button settings-file-button" for="importNotebookBackup">Importar cópia</label><input id="importNotebookBackup" type="file" accept="application/json,.json" hidden></div><small id="backupStatus" role="status" aria-live="polite"></small></article>
+      <article class="study-tool danger-settings-tool"><h3>🗑 Limpar dados</h3><p>Apague todas as informações salvas neste navegador.</p><button id="clearNotebookData" class="secondary-button">Apagar dados</button><small id="clearDataStatus" role="status" aria-live="polite"></small></article>
+      <article class="study-tool"><h3>ⓘ Sobre o aplicativo</h3><p><strong>Caderno Digital</strong></p><p>Organize seus estudos, materiais e atividades em um só lugar.</p><small>Versão 1.12 · Setembro de 2026</small></article>
     </div>`;
   settingsMount.append(hub);
   document.querySelectorAll('#caderno .study-hub').forEach(block=>settingsMount.append(block));
@@ -58,6 +64,16 @@
   toggleStudyHub.onclick=()=>{const closed=studyHubBody.classList.toggle('hidden');toggleStudyHub.textContent=closed?'Abrir ferramentas':'Fechar ferramentas';toggleStudyHub.setAttribute('aria-expanded',String(!closed));if(!closed)refreshAll();};
   studyTheme.value=toolsState.theme;
   studyTheme.onchange=()=>{toolsState.theme=studyTheme.value;document.documentElement.dataset.studyTheme=toolsState.theme;saveTools();};
+  studyTextSize.value=toolsState.textSize;
+  studyTextSize.onchange=()=>{toolsState.textSize=studyTextSize.value;document.documentElement.dataset.textSize=toolsState.textSize;saveTools();showAutoSaveStatus();};
+
+  function showAutoSaveStatus(){const status=document.querySelector('#autoSaveStatus');if(!status)return;status.textContent=`Salvo às ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}.`;}
+  let autoSaveStatusTimer=0;
+  document.addEventListener('input',event=>{if(!event.target.closest('input, textarea, select, [contenteditable]'))return;clearTimeout(autoSaveStatusTimer);autoSaveStatus.textContent='Salvando…';autoSaveStatusTimer=setTimeout(showAutoSaveStatus,1000);});
+
+  exportNotebookBackup.onclick=()=>{const data={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);data[key]=localStorage.getItem(key);}const backup={app:'Caderno Digital',version:1,exportedAt:new Date().toISOString(),data},blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`caderno-digital-backup-${new Date().toISOString().slice(0,10)}.json`;link.click();URL.revokeObjectURL(link.href);backupStatus.textContent='Cópia de segurança exportada.';};
+  importNotebookBackup.onchange=async event=>{const file=event.target.files[0];if(!file)return;try{const backup=JSON.parse(await file.text());if(backup.app!=='Caderno Digital'||!backup.data||typeof backup.data!=='object')throw new Error('invalid');if(!confirm('Importar esta cópia substituirá os dados atuais. Deseja continuar?')){event.target.value='';return;}localStorage.clear();Object.entries(backup.data).forEach(([key,value])=>localStorage.setItem(key,String(value)));location.reload();}catch{backupStatus.textContent='Arquivo de cópia inválido. Escolha um backup do Caderno Digital.';}event.target.value='';};
+  clearNotebookData.onclick=async()=>{if(!confirm('Apagar todos os dados do Caderno Digital neste navegador? Esta ação não pode ser desfeita.'))return;clearDataStatus.textContent='Apagando dados…';localStorage.clear();if(indexedDB?.deleteDatabase){indexedDB.deleteDatabase('caderno-digital-passeios');indexedDB.deleteDatabase('caderno-digital-offline-videos');}setTimeout(()=>location.reload(),300);};
 
   function decorateNotebooks(){document.querySelectorAll('.notebook-list-item').forEach((row,i)=>{row.querySelector('.notebook-meta')?.remove();const n=notebooks[i];if(!n)return;const meta=document.createElement('small');meta.className=`notebook-meta tag-${n.tag||'none'}`;meta.textContent=`${n.folder||'Sem pasta'}${n.tag?` · ${TAGS[n.tag]}`:''}`;row.querySelector('.notebook-name')?.after(meta);});}
   const oldRenderNotebooks=renderNotebooks;
