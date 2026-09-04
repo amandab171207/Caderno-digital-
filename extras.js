@@ -114,5 +114,7 @@
     const attendanceHeader=document.querySelector('.school-table thead th:nth-last-child(2)');
     if(attendanceHeader)attendanceHeader.textContent='Frequência (%)';
   });
-  refreshAll();renderPomodoro();scheduleReminders();
+  function scheduleClassStartNotifications(){if(!toolsState.notifications||Notification.permission!=='granted')return;const now=new Date(),weekday=now.getDay(),currentMinutes=now.getHours()*60+now.getMinutes();(schoolInfo.schedule||[]).filter(item=>Number(item.day)===weekday).forEach(item=>{if(!/^\d{2}:\d{2}$/.test(item.time||''))return;const [hour,minute]=item.time.split(':').map(Number),minutesUntil=hour*60+minute-currentMinutes,subject=schoolInfo.subjects.find(entry=>entry.id===item.subjectId)?.name||'Sua aula',key=`caderno-aula-${localSchoolDate()}-${item.id}`;if(minutesUntil>0&&minutesUntil<=10&&!localStorage.getItem(key)){localStorage.setItem(key,'shown');setTimeout(()=>new Notification(`${subject} começa em breve`,{body:`Sua aula começa às ${item.time}.`,tag:key}),minutesUntil*60000);}});}
+  enableStudyNotifications.addEventListener('click',()=>setTimeout(scheduleClassStartNotifications,0));
+  refreshAll();renderPomodoro();scheduleReminders();scheduleClassStartNotifications();setInterval(scheduleClassStartNotifications,60000);
 })();
