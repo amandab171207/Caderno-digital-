@@ -339,6 +339,7 @@ $('#downloadVideoUrl').onclick=async()=>{const url=$('#offlineVideoUrl').value.t
 renderOfflineVideos();
 
 let recorder, chunks=[], recordTimer, seconds=0, recordings=[], trashedRecordings=[], liveRecognition, liveCaptionText='';
+const meetOutlineIcon='<svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-4v12l-6-4"/></svg>';
 let activeRecordingKind='microphone';
 function recordingKind(item){return item.source||(item.title?.startsWith('Meet ')?'meet':'microphone');}
 const recordingSourcePanel=document.createElement('div');
@@ -487,7 +488,7 @@ $('#recordButton').onclick=async()=>{
 window.addEventListener('beforeunload',event=>{if(recordingBusy||recorder?.state==='recording'){event.preventDefault();event.returnValue='';}});
 const recordingTabs=document.createElement('div');
 recordingTabs.className='recording-tabs';recordingTabs.setAttribute('role','tablist');recordingTabs.setAttribute('aria-label','Tipos de gravação');
-recordingTabs.innerHTML='<button type="button" id="microphoneRecordingTab" role="tab" aria-controls="microphoneRecordingPanel" aria-selected="true" data-recording-kind="microphone">Gravações</button><button type="button" id="meetRecordingTab" role="tab" aria-controls="meetRecordingPanel" aria-selected="false" tabindex="-1" data-recording-kind="meet">Meets</button>';
+recordingTabs.innerHTML='<button type="button" id="microphoneRecordingTab" role="tab" aria-controls="microphoneRecordingPanel" aria-selected="true" data-recording-kind="microphone">Gravações</button><button type="button" id="meetRecordingTab" role="tab" aria-controls="meetRecordingPanel" aria-selected="false" tabindex="-1" data-recording-kind="meet"><svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-4v12l-6-4"/></svg> Meets</button>';
 $('#gravacao .page-heading').after(recordingTabs);
 const recordingContent=[$('#gravacao .record-card'),$('#gravacao .recording-toolbar'),$('#recordingsList'),$('#trashPanel')];
 for(const kind of ['microphone','meet']){
@@ -502,7 +503,7 @@ function selectRecordingKind(kind){
   recordingContent.forEach(node=>$('#'+kind+'RecordingPanel').append(node));
   $('#recordSource').value=kind;$('#recordSource').onchange();autoRecordPanel.hidden=kind==='meet';
   $('#recordTitle').textContent=kind==='meet'?'Pronta para gravar o Meet?':'Pronta para gravar?';
-  $('#recordVisual span').textContent=kind==='meet'?'💻':'🎙';
+  if(kind==='meet')$('#recordVisual span').innerHTML=meetOutlineIcon;else $('#recordVisual span').textContent='🎙';
   $('#gravacao .recording-toolbar h2').textContent=kind==='meet'?'Meus Meets':'Minhas gravações';
   $('#gravacao .subtitle').textContent=kind==='meet'?'Grave o áudio das reuniões e organize por matéria.':'Grave explicações, lembretes ou uma aula pelo microfone.';
   $('#recordTime').textContent='00:00';$('#trashPanel').classList.add('hidden');

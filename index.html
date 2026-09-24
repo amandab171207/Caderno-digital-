@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=70" />
+  <link rel="stylesheet" href="style.css?v=71" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     .notebook.coral-cover { background: linear-gradient(135deg, #ffb39d, #f38576); }
@@ -369,7 +369,7 @@
         <button class="nav-item" data-tab="exportar" role="tab" aria-controls="exportar" aria-selected="false"><span aria-hidden="true">⇩</span> Exportar PDF</button>
         <button class="nav-item" data-tab="canva" role="tab" aria-controls="canva" aria-selected="false"><span aria-hidden="true">C</span> Canva</button>
         <button class="nav-item" data-tab="downloads" role="tab" aria-controls="downloads" aria-selected="false"><span aria-hidden="true">⬇</span> Downloads</button>
-        <button class="nav-item" data-tab="imprimir" role="tab" aria-controls="imprimir" aria-selected="false"><span aria-hidden="true">🖨</span> Imprimir</button>
+        <button class="nav-item" data-tab="imprimir" role="tab" aria-controls="imprimir" aria-selected="false"><span aria-hidden="true"><svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3"/><path d="M7 14h10v7H7zM17 11h.01"/></svg></span> Imprimir</button>
         <button class="nav-item" data-tab="configuracoes" role="tab" aria-controls="configuracoes" aria-selected="false"><span aria-hidden="true">⚙</span> Configurações</button>
       </nav>
       <section class="side-login" aria-label="Entrar com a conta Google"><div class="google-login-heading"><span class="google-login-mark" aria-hidden="true">G</span><h2>Minha conta</h2></div><p>Escolha uma conta Google para continuar ou adicione outra conta.</p><button id="sideGoogleLogin" type="button" class="google-login-button"><span aria-hidden="true">G</span> Continuar com Google</button><p id="sideLoginStatus" role="status" aria-live="polite">A senha será digitada somente na página oficial do Google.</p></section>
@@ -423,7 +423,7 @@
 
       <section id="downloads" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">ASSISTA SEM INTERNET</p><h1>Downloads</h1><p class="subtitle">Salve vídeos permitidos no dispositivo e assista depois sem conexão.</p></div></div><div class="download-layout"><article class="download-card"><h2>Adicionar vídeo do dispositivo</h2><p>Escolha um vídeo que você possui ou tem autorização para guardar.</p><label class="upload-button" for="offlineVideoFile">Escolher vídeo</label><input id="offlineVideoFile" type="file" accept="video/*" hidden><p id="offlineFileStatus" class="small-status" role="status" aria-live="polite"></p></article><article class="download-card"><h2>Salvar por link direto</h2><p>Funciona com links diretos permitidos, como arquivos MP4. Páginas de streaming podem bloquear a cópia.</p><label for="offlineVideoName">Nome do vídeo</label><input id="offlineVideoName" maxlength="100" placeholder="Nome da aula"><label for="offlineVideoUrl">Link direto do vídeo</label><input id="offlineVideoUrl" type="url" placeholder="https://exemplo.com/aula.mp4"><button id="downloadVideoUrl" class="primary-button">Baixar para assistir offline</button><p id="offlineUrlStatus" class="small-status" role="status" aria-live="polite"></p></article></div><div class="offline-library-heading"><div><h2>Minha biblioteca offline</h2><p>Os vídeos ficam armazenados somente neste navegador.</p></div><span id="offlineVideoCount" aria-live="polite">0 vídeos</span></div><div id="offlineVideoGrid" class="offline-video-grid"></div><aside class="video-safety-note"><strong>Uso responsável</strong><span>Baixe apenas vídeos próprios, de domínio público ou que permitam download. Para YouTube, Alura e outros streamings, use o recurso oficial de download da plataforma.</span></aside></section>
 
-      <section id="imprimir" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE PRONTO NO PAPEL</p><h1>Imprimir folha</h1><p class="subtitle">Escolha qualquer caderno e página para ver a prévia antes de imprimir.</p></div><button id="printButton" class="primary-button">🖨 Imprimir esta folha</button></div><div class="print-layout"><aside class="print-controls"><label for="printNotebookSelect">Caderno</label><select id="printNotebookSelect"></select><label for="printPageSelect">Folha</label><select id="printPageSelect"></select><p>Somente a folha escolhida será impressa.</p></aside><div class="print-preview"><p class="eyebrow">PRÉVIA DE IMPRESSÃO</p><div id="printPaper" class="paper lined-paper"></div></div></div></section>
+      <section id="imprimir" class="tab-panel"><div class="page-heading"><div><p class="eyebrow">DEIXE PRONTO NO PAPEL</p><h1>Imprimir folha</h1><p class="subtitle">Escolha qualquer caderno e página para ver a prévia antes de imprimir.</p></div><button id="printButton" class="primary-button"><svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 8V3h10v5M7 17H4V9h16v8h-3"/><path d="M7 14h10v7H7zM17 11h.01"/></svg> Imprimir esta folha</button></div><div class="print-layout"><aside class="print-controls"><label for="printNotebookSelect">Caderno</label><select id="printNotebookSelect"></select><label for="printPageSelect">Folha</label><select id="printPageSelect"></select><p>Somente a folha escolhida será impressa.</p></aside><div class="print-preview"><p class="eyebrow">PRÉVIA DE IMPRESSÃO</p><div id="printPaper" class="paper lined-paper"></div></div></div></section>
 
       <section id="ia" class="tab-panel">
         <div class="page-heading"><div><p class="eyebrow">ESTUDE COM LEVEZA</p><h1>Tutora IA <span class="sparkle">✦</span></h1><p class="subtitle">Sua companheira para tirar dúvidas e entender melhor as matérias.</p></div></div>
@@ -466,7 +466,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
   <script src="subject-detection.js?v=1"></script>
-  <script src="app.js?v=120"></script>
+  <script src="app.js?v=121"></script>
   <script src="extras.js?v=120"></script>
 </body>
 </html>
