@@ -40,6 +40,7 @@
     </div>`;
   settingsMount.append(hub);
   document.querySelectorAll('#caderno .study-hub').forEach(block=>settingsMount.append(block));
+  document.querySelectorAll('.search-tool').forEach(tool=>tool.remove());
   const recordingHeading=document.querySelector('#gravacao .page-heading');
   const recordingActions=document.createElement('div');
   recordingActions.className='recording-heading-actions';
@@ -49,7 +50,7 @@
   const undoRecordingButton=document.createElement('button');
   undoRecordingButton.id='undoRecordingDeletion';undoRecordingButton.className='secondary-button';undoRecordingButton.textContent='Desfazer gravações';recordingActions.append(undoRecordingButton);
   const recordingStatus=document.createElement('small');recordingStatus.id='recordingHistoryStatus';recordingStatus.setAttribute('role','status');recordingStatus.setAttribute('aria-live','polite');recordingHeading.after(recordingStatus);
-  undoRecordingButton.onclick=()=>{if(!trashedRecordings.length){recordingStatus.textContent='Não há gravação apagada para recuperar.';return;}const restored=trashedRecordings.shift();recordings.unshift(restored);renderRecordings();renderTrash();recordingStatus.textContent=`“${restored.title}” foi recuperada.`;};
+  undoRecordingButton.onclick=()=>{const index=trashedRecordings.findIndex(item=>recordingKind(item)===activeRecordingKind);if(index<0){recordingStatus.textContent='Não há gravação apagada nesta aba para recuperar.';return;}const [restored]=trashedRecordings.splice(index,1);recordings.unshift(restored);renderRecordings();renderTrash();recordingStatus.textContent=`“${restored.title}” foi recuperada.`;};
 
   const pageTools=document.createElement('div');
   pageTools.className='page-extra-tools';

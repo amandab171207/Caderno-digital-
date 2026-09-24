@@ -100,7 +100,7 @@ $$('.tab-panel').forEach(panel=>panel.setAttribute('aria-hidden',String(!panel.c
 
 const canvaConnectionStorage='caderno-digital-canva-connected';
 function renderCanvaConnection(){const connected=localStorage.getItem(canvaConnectionStorage)==='true';$('#canvaConnectView').classList.toggle('hidden',connected);$('#canvaWorkspace').classList.toggle('hidden',!connected);$('#finishCanvaConnection').classList.add('hidden');if(connected&&!$('#canvaFrame').getAttribute('src'))$('#canvaFrame').src='https://www.canva.com/';if(!connected)$('#canvaFrame').removeAttribute('src');}
-$('#connectCanva').onclick=()=>{const canvaWindow=window.open('https://www.canva.com/login/','canva-account-login','popup,width=1100,height=760');if(!canvaWindow){$('#canvaStatus').textContent='O navegador bloqueou a janela do Canva. Permita janelas pop-up e tente novamente.';return;}$('#finishCanvaConnection').classList.remove('hidden');$('#canvaStatus').textContent='Entre no Canva e depois clique em “Já entrei — concluir vínculo”.';};
+$('#connectCanva').onclick=()=>{openInternalSite('https://www.canva.com/login/','Canva — Entrar');$('#finishCanvaConnection').classList.remove('hidden');$('#canvaStatus').textContent='Entre no Canva pelo visualizador interno. Ao terminar, feche-o e conclua o vínculo.';};
 $('#finishCanvaConnection').onclick=()=>{localStorage.setItem(canvaConnectionStorage,'true');$('#canvaStatus').textContent='Canva vinculado neste navegador.';renderCanvaConnection();};
 $('#disconnectCanva').onclick=()=>{localStorage.removeItem(canvaConnectionStorage);$('#canvaStatus').textContent='Canva desvinculado do Caderno Digital.';renderCanvaConnection();};
 $('#reloadCanva').onclick=()=>{$('#canvaFrame').src='https://www.canva.com/';};
@@ -119,15 +119,19 @@ $('#focusScheduleForm').onsubmit=event=>{event.preventDefault();const task=$('#f
 $('#toggleFocusSchedule').onclick=()=>{const collapsed=$('#focusSchedule').classList.toggle('collapsed');$('#toggleFocusSchedule').textContent=collapsed?'Expandir':'Recolher';$('#toggleFocusSchedule').setAttribute('aria-expanded',String(!collapsed));};renderFocusSchedule();
 
 const accessibilityStorage='caderno-digital-accessibility';
-let accessibilityPreferences={font:'normal',vision:'default',reduceMotion:window.matchMedia('(prefers-reduced-motion: reduce)').matches,underlineLinks:false,deafMode:false};
+let accessibilityPreferences={font:'normal',vision:'default',reduceMotion:window.matchMedia('(prefers-reduced-motion: reduce)').matches,underlineLinks:false,deafMode:false,librasMode:false};
 try{accessibilityPreferences={...accessibilityPreferences,...JSON.parse(localStorage.getItem(accessibilityStorage)||'{}')};}catch{}
-function applyAccessibilityPreferences(){document.body.classList.remove('font-large','font-larger','vision-protanopia','vision-deuteranopia','vision-tritanopia','vision-achromatopsia','vision-high-contrast','reduce-motion','underline-controls','deaf-mode');if(accessibilityPreferences.font!=='normal')document.body.classList.add(`font-${accessibilityPreferences.font}`);if(accessibilityPreferences.vision!=='default')document.body.classList.add(`vision-${accessibilityPreferences.vision}`);document.body.classList.toggle('reduce-motion',accessibilityPreferences.reduceMotion);document.body.classList.toggle('underline-controls',accessibilityPreferences.underlineLinks);document.body.classList.toggle('deaf-mode',accessibilityPreferences.deafMode);$$('[data-font]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.font===accessibilityPreferences.font)));$('#visionMode').value=accessibilityPreferences.vision;$('#reduceMotion').checked=accessibilityPreferences.reduceMotion;$('#underlineLinks').checked=accessibilityPreferences.underlineLinks;$('#deafMode').checked=accessibilityPreferences.deafMode;const liveCaptions=$('#enableLiveCaptions');if(liveCaptions&&accessibilityPreferences.deafMode)liveCaptions.checked=true;try{localStorage.setItem(accessibilityStorage,JSON.stringify(accessibilityPreferences));}catch{}}
+let librasLoading;
+function loadLibras(){if(window.VLibras){$('#librasStatus').textContent='Modo Libras ativo.';return Promise.resolve();}if(librasLoading)return librasLoading;$('#librasStatus').textContent='Carregando o tradutor de Libras...';librasLoading=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://vlibras.gov.br/app/vlibras-plugin.js';script.onload=()=>{new window.VLibras.Widget('https://vlibras.gov.br/app');$('#librasStatus').textContent='Modo Libras ativo. Use o botão azul ao lado da tela.';resolve();};script.onerror=()=>{librasLoading=null;$('#librasStatus').textContent='Não foi possível carregar o tradutor de Libras. Verifique a conexão.';reject();};document.body.append(script);});return librasLoading;}
+function applyAccessibilityPreferences(){document.body.classList.remove('font-large','font-larger','vision-protanopia','vision-deuteranopia','vision-tritanopia','vision-achromatopsia','vision-high-contrast','reduce-motion','underline-controls','deaf-mode','libras-mode');if(accessibilityPreferences.font!=='normal')document.body.classList.add(`font-${accessibilityPreferences.font}`);if(accessibilityPreferences.vision!=='default')document.body.classList.add(`vision-${accessibilityPreferences.vision}`);document.body.classList.toggle('reduce-motion',accessibilityPreferences.reduceMotion);document.body.classList.toggle('underline-controls',accessibilityPreferences.underlineLinks);document.body.classList.toggle('deaf-mode',accessibilityPreferences.deafMode);document.body.classList.toggle('libras-mode',accessibilityPreferences.librasMode);$$('[data-font]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.font===accessibilityPreferences.font)));$('#visionMode').value=accessibilityPreferences.vision;$('#colorBlindMode').checked=accessibilityPreferences.vision!=='default';$('#reduceMotion').checked=accessibilityPreferences.reduceMotion;$('#underlineLinks').checked=accessibilityPreferences.underlineLinks;$('#deafMode').checked=accessibilityPreferences.deafMode;$('#librasMode').checked=accessibilityPreferences.librasMode;if(accessibilityPreferences.librasMode)loadLibras().catch(()=>{});else $('#librasStatus').textContent='';const liveCaptions=$('#enableLiveCaptions');if(liveCaptions&&accessibilityPreferences.deafMode)liveCaptions.checked=true;try{localStorage.setItem(accessibilityStorage,JSON.stringify(accessibilityPreferences));}catch{}}
 $('#accessibilityToggle').onclick=()=>{const panel=$('#accessibilityPanel'),willOpen=panel.classList.contains('hidden');panel.classList.toggle('hidden',!willOpen);$('#accessibilityToggle').setAttribute('aria-expanded',String(willOpen));if(willOpen)panel.querySelector('button,select,input')?.focus();};
 $$('[data-font]').forEach(button=>button.onclick=()=>{accessibilityPreferences.font=button.dataset.font;applyAccessibilityPreferences();});
 $('#visionMode').onchange=event=>{accessibilityPreferences.vision=event.target.value;applyAccessibilityPreferences();};
+$('#colorBlindMode').onchange=event=>{accessibilityPreferences.vision=event.target.checked?(accessibilityPreferences.vision==='default'?'deuteranopia':accessibilityPreferences.vision):'default';applyAccessibilityPreferences();};
 $('#reduceMotion').onchange=event=>{accessibilityPreferences.reduceMotion=event.target.checked;applyAccessibilityPreferences();};
 $('#underlineLinks').onchange=event=>{accessibilityPreferences.underlineLinks=event.target.checked;applyAccessibilityPreferences();};
 $('#deafMode').onchange=event=>{accessibilityPreferences.deafMode=event.target.checked;applyAccessibilityPreferences();};
+$('#librasMode').onchange=event=>{accessibilityPreferences.librasMode=event.target.checked;applyAccessibilityPreferences();};
 applyAccessibilityPreferences();
 ['#recordStatus','#libraryStatus','#pdfStatus','#classroomStatus'].forEach(selector=>{const element=$(selector);if(element){element.setAttribute('role','status');element.setAttribute('aria-live','polite');}});
 $('#recordTime').setAttribute('aria-label','Tempo da gravação');
@@ -260,13 +264,14 @@ async function loadAccountProgress(user){if(!user||!cloudDb)return;try{const sna
 if(cloudAuth)cloudAuth.onAuthStateChanged(loadAccountProgress);
 function savePlatformProgress(platform){if(platform==='Duolingo'){platformProgress={...platformProgress,duolingoEmail:$('#duolingoEmail').value.trim(),duolingoProgress:$('#duolingoProgress').value};}else{platformProgress={...platformProgress,aluraEmail:$('#aluraEmail').value.trim(),aluraProgress:$('#aluraProgress').value};}localStorage.setItem(platformProgressStorage,JSON.stringify(platformProgress));renderPlatformDashboard(platform.toLowerCase());const status=platform==='Duolingo'?$('#duolingoSyncStatus'):$('#platformSyncStatus');if(status)status.textContent=`Dados do ${platform} sincronizados dentro do Caderno Digital.`;scheduleCloudSave();}
 $('#saveAlura').onclick=()=>savePlatformProgress('Alura');$('#saveDuolingo').onclick=()=>savePlatformProgress('Duolingo');$$('[data-view-platform]').forEach(button=>button.onclick=()=>renderPlatformDashboard(button.dataset.viewPlatform));renderPlatformDashboard();
-[{container:'.alura-card',title:'Alura',url:'https://cursos.alura.com.br/dashboard'},{container:'.duolingo-card',title:'Duolingo',url:'https://www.duolingo.com/learn'}].forEach(platform=>{const button=document.createElement('button');button.type='button';button.className='platform-view-button';button.textContent=`Acessar ${platform.title} aqui dentro`;button.onclick=()=>openInternalSite(platform.url,platform.title);$(platform.container).append(button);});
+const openAluraButton=document.createElement('button');openAluraButton.type='button';openAluraButton.className='platform-view-button';openAluraButton.textContent='Acessar Alura aqui dentro';openAluraButton.onclick=()=>{const email=$('#aluraEmail').value.trim();if(!email||!$('#aluraEmail').checkValidity()){$('#platformSyncStatus').textContent='Digite um e-mail válido da sua conta Alura.';$('#aluraEmail').focus();return;}savePlatformProgress('Alura');const loginUrl=new URL('https://cursos.alura.com.br/loginForm');loginUrl.searchParams.set('email',email);$('#platformSyncStatus').textContent='Abrindo seu acesso à Alura dentro do caderno.';openInternalSite(loginUrl.href,'Alura',email);};$('.alura-card').append(openAluraButton);
+const openDuolingoButton=document.createElement('button');openDuolingoButton.type='button';openDuolingoButton.className='platform-view-button';openDuolingoButton.textContent='Acessar Duolingo aqui dentro';openDuolingoButton.onclick=()=>{const email=$('#duolingoEmail').value.trim();if(!email||!$('#duolingoEmail').checkValidity()){$('#duolingoSyncStatus').textContent='Digite um e-mail válido da sua conta Duolingo.';$('#duolingoEmail').focus();return;}savePlatformProgress('Duolingo');const loginUrl=new URL('https://www.duolingo.com/log-in');loginUrl.searchParams.set('email',email);$('#duolingoSyncStatus').textContent='Abrindo seu acesso ao Duolingo dentro do caderno.';openInternalSite(loginUrl.href,'Duolingo',email);};$('.duolingo-card').append(openDuolingoButton);
 const platformSyncArea=$('.platform-sync-area'),aluraTabMount=$('#aluraTabMount');
 if(platformSyncArea&&aluraTabMount){aluraTabMount.append(platformSyncArea);platformSyncArea.hidden=false;platformSyncArea.style.display='block';const heading=platformSyncArea.querySelector('h2'),description=platformSyncArea.querySelector('h2 + p');if(heading)heading.textContent='Minha Alura';if(description)description.textContent='Registre sua conta e acesse a plataforma para continuar seus estudos.';}
 const aluraConnectionStorage='caderno-digital-alura-connected',aluraCard=$('.alura-card');
 if(aluraCard){aluraCard.insertAdjacentHTML('afterbegin','<span id="aluraConnectedBadge" class="khan-badge hidden">✓ Alura vinculada</span>');$('#saveAlura').textContent='Vincular Alura';$('#saveAlura').insertAdjacentHTML('afterend','<button id="finishAluraConnection" type="button" class="secondary-button hidden">Já entrei — concluir vínculo</button><button id="disconnectAlura" type="button" class="secondary-button hidden">Desvincular Alura</button>');}
 function renderAluraConnection(){const connected=localStorage.getItem(aluraConnectionStorage)==='true';$('#aluraConnectedBadge')?.classList.toggle('hidden',!connected);$('#saveAlura')?.classList.toggle('hidden',connected);$('#disconnectAlura')?.classList.toggle('hidden',!connected);if(connected)$('#platformSyncStatus').textContent='✓ Conta Alura vinculada ao Caderno Digital.';}
-if($('#saveAlura'))$('#saveAlura').onclick=()=>{const email=$('#aluraEmail').value.trim();if(!email||!$('#aluraEmail').checkValidity()){$('#platformSyncStatus').textContent='Digite um e-mail válido para vincular sua conta Alura.';$('#aluraEmail').focus();return;}const loginWindow=window.open('https://cursos.alura.com.br/loginForm','alura-account-login','popup,width=1100,height=760');if(!loginWindow){$('#platformSyncStatus').textContent='O navegador bloqueou a janela da Alura. Permita janelas pop-up e tente novamente.';return;}$('#finishAluraConnection').classList.remove('hidden');$('#platformSyncStatus').textContent='Entre na página oficial da Alura e depois clique em “Já entrei — concluir vínculo”.';};
+if($('#saveAlura'))$('#saveAlura').onclick=()=>{const email=$('#aluraEmail').value.trim();if(!email||!$('#aluraEmail').checkValidity()){$('#platformSyncStatus').textContent='Digite um e-mail válido para vincular sua conta Alura.';$('#aluraEmail').focus();return;}openInternalSite('https://cursos.alura.com.br/loginForm','Alura — Entrar');$('#finishAluraConnection').classList.remove('hidden');$('#platformSyncStatus').textContent='Entre na Alura pelo visualizador interno. Ao terminar, feche-o e conclua o vínculo.';};
 if($('#finishAluraConnection'))$('#finishAluraConnection').onclick=()=>{savePlatformProgress('Alura');localStorage.setItem(aluraConnectionStorage,'true');$('#finishAluraConnection').classList.add('hidden');renderAluraConnection();};
 if($('#disconnectAlura'))$('#disconnectAlura').onclick=()=>{if(!confirm('Desvincular sua conta Alura deste caderno?'))return;localStorage.removeItem(aluraConnectionStorage);renderAluraConnection();$('#platformSyncStatus').textContent='Conta Alura desvinculada. Seus cadernos continuam salvos.';};
 renderAluraConnection();
@@ -294,14 +299,15 @@ $('#readingSchoolEmail').value=readingProfile.email||'';$('#readingBookTitle').v
 function renderReadingProgress(){const progress=Math.max(0,Math.min(100,Number($('#readingProgress').value)||0));$('#readingProgressValue').textContent=`${progress}%`;$('#readingProgressTrack').setAttribute('aria-valuenow',progress);$('#readingProgressTrack span').style.width=`${progress}%`;}
 $('#readingProgress').oninput=renderReadingProgress;renderReadingProgress();
 $('#saveReadingProgress').onclick=()=>{const email=$('#readingSchoolEmail');if(email.value&&!email.checkValidity()){$('#readingSaveStatus').textContent='Digite um e-mail @escola válido.';email.focus();return;}readingProfile={email:email.value.trim(),book:$('#readingBookTitle').value.trim(),progress:Number($('#readingProgress').value),notes:$('#readingNotes').value.trim()};try{localStorage.setItem(readingStorage,JSON.stringify(readingProfile));$('#readingSaveStatus').textContent='Leitura e progresso salvos neste aparelho.';}catch{$('#readingSaveStatus').textContent='Não foi possível salvar neste navegador.';}};
-$('#openLeiaParana').onclick=()=>openInternalSite(leiaParanaUrl,'Leia Paraná — Clube de Leitura');
+function openReadingAccount(){const email=$('#readingSchoolEmail').value.trim();if(!email||!$('#readingSchoolEmail').checkValidity()){$('#readingSyncStatus').textContent='Digite um e-mail @escola válido para acessar o Leia Paraná.';$('#readingSchoolEmail').focus();return;}readingProfile={email,book:$('#readingBookTitle').value.trim(),progress:Number($('#readingProgress').value),notes:$('#readingNotes').value.trim()};localStorage.setItem(readingStorage,JSON.stringify(readingProfile));const loginUrl=new URL(leiaParanaUrl);loginUrl.searchParams.set('email',email);$('#readingSyncStatus').textContent='Abrindo seu acesso ao Leia Paraná dentro do caderno.';openInternalSite(loginUrl.href,'Leia Paraná — Clube de Leitura',email);}
+$('#openLeiaParana').onclick=openReadingAccount;
 $('#openLeiaHelp').onclick=()=>openInternalSite(leiaParanaHelpUrl,'Leia Paraná — Como usar');
-$('#syncLeiaParana').onclick=()=>{$('#readingSyncStatus').textContent='Leia Paraná conectado. Entre com sua conta @escola na plataforma oficial para atualizar o progresso.';openInternalSite(leiaParanaUrl,'Leia Paraná — Clube de Leitura');};
+$('#syncLeiaParana').onclick=openReadingAccount;
 
 const schoolVideoDescriptions={Matemática:'Exercícios e explicações de matemática escolar.',Português:'Gramática, leitura, interpretação e produção de texto.',História:'Aulas de história e contexto social.',Geografia:'Espaço geográfico, mapas, sociedade e meio ambiente.',Ciências:'Conteúdos de ciências para o ensino escolar.',Biologia:'Vida, ecologia, genética e corpo humano.',Física:'Movimento, energia, eletricidade e outros fundamentos.',Química:'Matéria, transformações e fundamentos de química.',Inglês:'Vocabulário, leitura e fundamentos do idioma.',Programação:'Lógica, algoritmos e desenvolvimento de projetos.'};
 const khanConnectionStorage='caderno-digital-khan-connected';
 function renderKhanConnection(){const connected=localStorage.getItem(khanConnectionStorage)==='true';$('#khanConnectedBadge').classList.toggle('hidden',!connected);$('#finishKhanConnection').classList.add('hidden');$('#disconnectKhan').classList.toggle('hidden',!connected);$('#connectKhan').classList.toggle('hidden',connected);$('#khanConnectTitle').textContent=connected?'Khan Academy vinculada':'Vincule sua Khan Academy';if(connected)$('#khanStatus').textContent='Sua Khan Academy está vinculada neste aparelho.';}
-$('#connectKhan').onclick=()=>{const login=window.open('https://pt.khanacademy.org/login','khan-academy-login','popup,width=1100,height=760');if(!login){$('#khanStatus').textContent='O navegador bloqueou a janela. Permita pop-ups ou use um botão de estudo.';return;}$('#finishKhanConnection').classList.remove('hidden');$('#khanStatus').textContent='Entre na Khan Academy e depois clique em “Já entrei — concluir vínculo”.';};
+$('#connectKhan').onclick=()=>{openInternalSite('https://pt.khanacademy.org/login','Khan Academy — Entrar');$('#finishKhanConnection').classList.remove('hidden');$('#khanStatus').textContent='Entre na Khan Academy pelo visualizador interno. Ao terminar, feche-o e conclua o vínculo.';};
 $('#finishKhanConnection').onclick=()=>{localStorage.setItem(khanConnectionStorage,'true');renderKhanConnection();};
 $('#disconnectKhan').onclick=()=>{localStorage.removeItem(khanConnectionStorage);$('#khanStatus').textContent='Khan Academy desvinculada deste aparelho.';renderKhanConnection();};
 $$('[data-khan-url]').forEach(button=>button.onclick=()=>openInternalSite(button.dataset.khanUrl,button.dataset.khanTitle));renderKhanConnection();
@@ -316,7 +322,7 @@ $('#essayTitle').value=savedEssay.title;$('#essayGenre').value=savedEssay.genre;
 function updateEssay(){savedEssay={title:$('#essayTitle').value,genre:$('#essayGenre').value,theme:$('#essayTheme').value,text:$('#essayText').value};const words=savedEssay.text.trim()?savedEssay.text.trim().split(/\s+/).length:0;$('#essayCount').textContent=`${words} palavra${words===1?'':'s'} · ${savedEssay.text.length} caracteres`;$('#essaySaveStatus').textContent='Salvando...';try{localStorage.setItem(essayStorage,JSON.stringify(savedEssay));$('#essaySaveStatus').textContent='Salva automaticamente neste navegador.';}catch{$('#essaySaveStatus').textContent='Não foi possível salvar neste navegador.';}}
 ['#essayTitle','#essayGenre','#essayTheme','#essayText'].forEach(selector=>$(selector).addEventListener('input',updateEssay));updateEssay();
 let internalSiteReturnFocus;
-function openInternalSite(url,title='Conteúdo vinculado'){internalSiteReturnFocus=document.activeElement;$('#internalSiteTitle').textContent=title;$('#internalSiteFrame').src=url;$('#internalSiteViewer').classList.remove('hidden');document.body.style.overflow='hidden';$('#closeInternalSite').focus();}
+function openInternalSite(url,title='Conteúdo vinculado',account=''){internalSiteReturnFocus=document.activeElement;$('#internalSiteTitle').textContent=title;$('#internalSiteNotice').textContent=account?`Acesso interno usando a conta ${account}. Sua senha continua protegida pelo serviço.`:'O conteúdo está sendo exibido dentro do Caderno Digital. Nenhuma nova aba foi aberta.';$('#internalSiteFrame').src=url;$('#internalSiteViewer').classList.remove('hidden');document.body.style.overflow='hidden';$('#closeInternalSite').focus();}
 function closeInternalSite(){if($('#internalSiteViewer').classList.contains('hidden'))return;$('#internalSiteViewer').classList.add('hidden');$('#internalSiteFrame').src='about:blank';document.body.style.overflow='';internalSiteReturnFocus?.focus();}
 $('#closeInternalSite').onclick=closeInternalSite;$('#internalSiteViewer').addEventListener('click',event=>{if(event.target===$('#internalSiteViewer'))closeInternalSite();});document.addEventListener('keydown',event=>{if(event.key==='Escape')closeInternalSite();});
 function openEssayParana(){openInternalSite(essayParanaUrl,'Redação Paraná — Portal do aluno');}
@@ -333,14 +339,28 @@ $('#downloadVideoUrl').onclick=async()=>{const url=$('#offlineVideoUrl').value.t
 renderOfflineVideos();
 
 let recorder, chunks=[], recordTimer, seconds=0, recordings=[], trashedRecordings=[], liveRecognition, liveCaptionText='';
+let activeRecordingKind='microphone';
+function recordingKind(item){return item.source||(item.title?.startsWith('Meet ')?'meet':'microphone');}
+const recordingSourcePanel=document.createElement('div');
+recordingSourcePanel.className='recording-source-panel';
+recordingSourcePanel.innerHTML='<label for="recordSource">O que deseja gravar?</label><select id="recordSource"><option value="microphone">Microfone</option><option value="meet">Áudio do Google Meet</option></select><div id="meetRecordingOptions" class="hidden"><p>Abra o Meet em outra aba. Ao iniciar, selecione essa aba e marque “Compartilhar áudio da aba”. Apenas o áudio será gravado.</p><label><input id="includeMeetMicrophone" type="checkbox"> Incluir minha voz pelo microfone</label><p>Use fones para evitar eco. As gravações ficam nesta sessão: baixe antes de fechar ou recarregar a página.</p></div>';
+$('#recordStatus').after(recordingSourcePanel);
+$('#recordStatus').setAttribute('role','status');
+$('#recordSource').onchange=()=>{
+  const meet=$('#recordSource').value==='meet';
+  $('#meetRecordingOptions').classList.toggle('hidden',!meet);
+  $('#enableLiveCaptions').disabled=meet;
+  $('#recordStatus').textContent=meet?'Selecione a aba do Meet com áudio ao iniciar.':'Toque no botão e permita o uso do microfone.';
+  $('#liveCaptions span').textContent=meet?'As legendas ao vivo do Meet não são capturadas.':'Aguardando a gravação.';
+};
 const captionPanel=document.createElement('div');captionPanel.className='live-caption-panel';captionPanel.innerHTML='<label class="accessibility-check"><input id="enableLiveCaptions" type="checkbox"> Ativar legendas ao vivo</label><div id="liveCaptions" class="live-captions" role="log" aria-live="polite"><strong>Legendas:</strong> <span>Aguardando a gravação.</span></div>';
 $('#recordStatus').after(captionPanel);
 $('#enableLiveCaptions').checked=accessibilityPreferences.deafMode;
 function startLiveCaptions(){if(!$('#enableLiveCaptions').checked)return;const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Recognition){$('#liveCaptions span').textContent='As legendas ao vivo não estão disponíveis neste navegador. Você ainda pode adicionar um texto à gravação salva.';return;}liveCaptionText='';liveRecognition=new Recognition();liveRecognition.lang='pt-BR';liveRecognition.continuous=true;liveRecognition.interimResults=true;liveRecognition.onresult=event=>{let finalText='',interimText='';for(let i=0;i<event.results.length;i++){const text=event.results[i][0].transcript;if(event.results[i].isFinal)finalText+=text+' ';else interimText+=text;}liveCaptionText=finalText.trim();$('#liveCaptions span').textContent=(finalText+interimText).trim()||'Ouvindo...';};liveRecognition.onerror=()=>{$('#liveCaptions span').textContent='Não foi possível gerar as legendas ao vivo.';};try{liveRecognition.start();$('#liveCaptions span').textContent='Ouvindo...';}catch{}}
 function stopLiveCaptions(){if(liveRecognition){try{liveRecognition.stop();}catch{}liveRecognition=null;}if($('#enableLiveCaptions').checked&&!$('#liveCaptions span').textContent.trim())$('#liveCaptions span').textContent='Gravação finalizada.';}
 function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function renderRecordings(){const filter=$('#recordFilter').value;const visible=filter==='Todas'?recordings:filter==='personalizada'?recordings.filter(item=>item.custom):recordings.filter(item=>item.subject===filter);$('#recordingsList').innerHTML=visible.length?visible.map(item=>`<div class="audio-item"><span aria-hidden="true">🎙</span><span>${escapeHtml(item.title)}</span><span class="recording-subject">${escapeHtml(item.subject)}</span><audio controls src="${item.url}" aria-label="Ouvir ${escapeHtml(item.title)}"></audio><button class="recording-caption" data-caption="${item.id}" aria-label="Adicionar texto à gravação ${escapeHtml(item.title)}">${item.caption?'Editar texto':'＋ Texto'}</button><button class="delete-recording" data-id="${item.id}" aria-label="Mover ${escapeHtml(item.title)} para a lixeira">🗑</button>${item.caption?`<p class="recording-transcript"><strong>Texto da gravação:</strong> ${escapeHtml(item.caption)}</p>`:''}</div>`).join(''):'<p class="small-status">Nenhuma gravação nesta matéria ainda.</p>';$$('.recording-caption').forEach(button=>button.onclick=()=>{const item=recordings.find(recording=>recording.id===button.dataset.caption),caption=prompt('Digite uma descrição ou transcrição para esta gravação:',item.caption||'');if(caption===null)return;item.caption=caption.trim();renderRecordings();});$$('.delete-recording').forEach(button=>button.onclick=()=>{const index=recordings.findIndex(item=>item.id===button.dataset.id);trashedRecordings.unshift(recordings.splice(index,1)[0]);renderRecordings();renderTrash();});}
-function renderTrash(){$('#trashCount').textContent=trashedRecordings.length;$('#trashList').innerHTML=trashedRecordings.length?trashedRecordings.map(item=>`<div class="audio-item"><span>🎙</span><span>${item.title}</span><span class="recording-subject">${item.subject}</span><div class="trash-actions"><button data-restore="${item.id}">Recuperar</button><button class="remove-forever" data-remove="${item.id}">Apagar</button></div></div>`).join(''):'<p class="small-status">A lixeira está vazia.</p>';$$('[data-restore]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.restore);recordings.unshift(trashedRecordings.splice(index,1)[0]);renderRecordings();renderTrash();});$$('[data-remove]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.remove);const [item]=trashedRecordings.splice(index,1);URL.revokeObjectURL(item.url);renderTrash();});}
+function renderRecordings(){const filter=$('#recordFilter').value,items=recordings.filter(item=>recordingKind(item)===activeRecordingKind);const visible=filter==='Todas'?items:filter==='personalizada'?items.filter(item=>item.custom):items.filter(item=>item.subject===filter);$('#recordingsList').innerHTML=visible.length?visible.map(item=>`<div class="audio-item"><span aria-hidden="true">🎙</span><span>${escapeHtml(item.title)}</span><span class="recording-subject">${escapeHtml(item.subject)}</span><audio controls src="${item.url}" aria-label="Ouvir ${escapeHtml(item.title)}"></audio><a class="secondary-button" href="${item.url}" download="${escapeHtml(item.title)}.${item.mimeType?.includes('mp4')?'m4a':'webm'}">Baixar</a><button class="recording-caption" data-caption="${item.id}" aria-label="Adicionar texto à gravação ${escapeHtml(item.title)}">${item.caption?'Editar texto':'＋ Texto'}</button><button class="delete-recording" data-id="${item.id}" aria-label="Mover ${escapeHtml(item.title)} para a lixeira">🗑</button>${item.caption?`<p class="recording-transcript"><strong>Texto da gravação:</strong> ${escapeHtml(item.caption)}</p>`:''}</div>`).join(''):'<p class="small-status">Nenhuma gravação nesta matéria ainda.</p>';$$('.recording-caption').forEach(button=>button.onclick=()=>{const item=recordings.find(recording=>recording.id===button.dataset.caption),caption=prompt('Digite uma descrição ou transcrição para esta gravação:',item.caption||'');if(caption===null)return;item.caption=caption.trim();renderRecordings();});$$('.delete-recording').forEach(button=>button.onclick=()=>{const index=recordings.findIndex(item=>item.id===button.dataset.id);trashedRecordings.unshift(recordings.splice(index,1)[0]);renderRecordings();renderTrash();});}
+function renderTrash(){const items=trashedRecordings.filter(item=>recordingKind(item)===activeRecordingKind);$('#trashCount').textContent=items.length;$('#trashList').innerHTML=items.length?items.map(item=>`<div class="audio-item"><span>🎙</span><span>${item.title}</span><span class="recording-subject">${item.subject}</span><div class="trash-actions"><button data-restore="${item.id}">Recuperar</button><button class="remove-forever" data-remove="${item.id}">Apagar</button></div></div>`).join(''):'<p class="small-status">A lixeira está vazia.</p>';$$('[data-restore]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.restore);recordings.unshift(trashedRecordings.splice(index,1)[0]);renderRecordings();renderTrash();});$$('[data-remove]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.remove);const [item]=trashedRecordings.splice(index,1);URL.revokeObjectURL(item.url);renderTrash();});}
 const deleteSubjectButton=document.createElement('button');deleteSubjectButton.type='button';deleteSubjectButton.className='delete-subject-button hidden';deleteSubjectButton.textContent='Excluir nome da matéria';$('#recordSubjectSelect').after(deleteSubjectButton);
 function updateDeleteSubjectButton(){const selected=$('#recordSubjectSelect').selectedOptions[0];deleteSubjectButton.classList.toggle('hidden',!selected?.dataset.customSubject);}
 function addCustomRecordingSubject(){const input=$('#customSubject'),subject=input.value.trim();if(!subject)return;[$('#recordSubjectSelect'),$('#recordFilter')].forEach(select=>{if(![...select.options].some(option=>option.value===subject)){const option=document.createElement('option');option.value=subject;option.textContent=subject;option.dataset.customSubject='true';select.insertBefore(option,select.querySelector('option[value="personalizada"]'));}});$('#recordSubjectSelect').value=subject;input.value='';input.classList.add('hidden');updateDeleteSubjectButton();}
@@ -350,26 +370,165 @@ $('#customSubject').onchange=addCustomRecordingSubject;
 $('#customSubject').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addCustomRecordingSubject();}};
 $('#recordFilter').onchange=renderRecordings;
 $('#toggleTrash').onclick=()=>{$('#trashPanel').classList.toggle('hidden');renderTrash();};
-$('#recordButton').onclick=async()=>{if(recorder?.state==='recording'){stopLiveCaptions();recorder.stop();return;}try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{stream.getTracks().forEach(t=>t.stop());clearInterval(recordTimer);$('#recordButton').classList.remove('stop');$('#recordButton').textContent='●';$('#recordVisual').classList.remove('recording');$('#recordTitle').textContent='Gravação salva!';$('#recordStatus').textContent='Você pode ouvir ou gravar outra.';const blob=new Blob(chunks,{type:'audio/webm'}),url=URL.createObjectURL(blob),isCustom=$('#recordSubjectSelect').value==='personalizada',subject=isCustom?$('#customSubject').value.trim()||'Nome da matéria':$('#recordSubjectSelect').value;recordings.unshift({id:crypto.randomUUID(),title:`Gravação ${new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`,subject,custom:isCustom,url,caption:liveCaptionText});renderRecordings();};recorder.start();startLiveCaptions();seconds=0;$('#recordTime').textContent='00:00';recordTimer=setInterval(()=>$('#recordTime').textContent=formatTime(++seconds),1000);$('#recordButton').classList.add('stop');$('#recordButton').textContent='■';$('#recordVisual').classList.add('recording');$('#recordTitle').textContent='Gravando...';$('#recordStatus').textContent='Toque no quadrado para finalizar.';}catch(err){$('#recordStatus').textContent='Não foi possível usar o microfone. Verifique a permissão do navegador.';}};
-renderRecordings();renderTrash();
+const subjectDetectionPanel=document.createElement('div');
+subjectDetectionPanel.className='recording-source-panel';
+subjectDetectionPanel.innerHTML='<label><input id="detectRecordingSubject" type="checkbox" checked> Identificar matéria pelo áudio</label><p>Analisa até 90 segundos das primeiras falas. A transcrição pode enviar áudio ao serviço de voz do navegador e precisar de internet.</p><p id="subjectDetectionStatus" role="status" aria-live="polite">A matéria será sugerida quando houver informação suficiente. Você pode corrigir a escolha.</p>';
+$('#recordSubjectSelect').before(subjectDetectionPanel);
+let recordingBusy=false,subjectDetector=null,recordingSubjectOverride=null;
+function ensureRecordingSubjectOption(name){
+  ['#recordSubjectSelect','#recordFilter'].forEach(selector=>{
+    const select=$(selector);
+    if(![...select.options].some(option=>option.value===name)){
+      const option=document.createElement('option');option.value=name;option.textContent=name;
+      select.insertBefore(option,select.querySelector('option[value="personalizada"]'));
+    }
+  });
+}
+function recordingSubjectNames(){return [...new Set([...Object.keys(recordingSubjectVocabulary),...schoolInfo.subjects.map(item=>item.name),...[...$('#recordSubjectSelect').options].map(option=>option.value).filter(name=>name!=='personalizada'&&name!=='Não identificada')])];}
+$('#recordSubjectSelect').addEventListener('change',()=>{
+  if(!recordingSubjectOverride)return;
+  subjectDetector?.stop();
+  const custom=$('#recordSubjectSelect').value==='personalizada';
+  recordingSubjectOverride(custom?$('#customSubject').value.trim()||'Não identificada':$('#recordSubjectSelect').value,custom);
+  $('#subjectDetectionStatus').textContent='Matéria escolhida manualmente. A identificação automática foi encerrada.';
+});
+$('#customSubject').addEventListener('input',()=>{
+  if(recordingSubjectOverride&&$('#recordSubjectSelect').value==='personalizada')recordingSubjectOverride($('#customSubject').value.trim()||'Não identificada',true);
+});
+function setRecordingControls(busy){
+  ['#recordSource','#includeMeetMicrophone','#recordSubjectSelect','#customSubject','#detectRecordingSubject'].forEach(selector=>$(selector).disabled=busy);
+  deleteSubjectButton.disabled=busy;$('[data-recording-kind]').forEach(button=>button.disabled=busy);
+  $('#enableLiveCaptions').disabled=busy||$('#recordSource').value==='meet';
+}
+$('#recordButton').onclick=async()=>{
+  if(recordingBusy)return;
+  if(recorder?.state==='recording'){$('#recordButton').disabled=true;recorder.stop();return;}
+  recordingBusy=true;$('#recordButton').disabled=true;setRecordingControls(true);
+  const meet=$('#recordSource').value==='meet',streams=[];
+  const detectSubject=$('#detectRecordingSubject').checked;
+  let custom=$('#recordSubjectSelect').value==='personalizada';
+  let subject=custom?$('#customSubject').value.trim()||'Nome da matéria':$('#recordSubjectSelect').value;
+  let context,activeRecorder,failed=false;
+  const cleanup=()=>{
+    subjectDetector?.stop();subjectDetector=null;recordingSubjectOverride=null;
+    streams.forEach(stream=>stream.getTracks().forEach(track=>track.stop()));
+    if(context)context.close().catch(()=>{});
+    stopLiveCaptions();clearInterval(recordTimer);
+    recordingBusy=false;$('#recordButton').disabled=false;setRecordingControls(false);
+    $('#recordButton').classList.remove('stop');$('#recordButton').textContent='●';
+    $('#recordButton').setAttribute('aria-label','Iniciar gravação');$('#recordVisual').classList.remove('recording');
+  };
+  try{
+    if(!window.MediaRecorder||!navigator.mediaDevices)throw new Error('Use um navegador compatível em uma conexão HTTPS ou localhost.');
+    let input,recognitionTrack;
+    if(meet){
+      if(!navigator.mediaDevices.getDisplayMedia)throw new Error('A captura de abas não está disponível neste navegador. Abra o caderno no Chrome ou Edge no computador.');
+      const display=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser'},audio:true,selfBrowserSurface:'exclude',systemAudio:'exclude'});
+      streams.push(display);
+      if(!display.getAudioTracks().some(track=>track.readyState==='live'))throw new Error('Nenhum áudio foi compartilhado. Tente novamente, selecione a aba do Meet e marque “Compartilhar áudio da aba”.');
+      input=new MediaStream(display.getAudioTracks());
+      recognitionTrack=display.getAudioTracks()[0];
+      if($('#includeMeetMicrophone').checked){
+        const mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+        streams.push(mic);
+        context=new AudioContext();await context.resume();
+        const destination=context.createMediaStreamDestination();
+        context.createMediaStreamSource(input).connect(destination);
+        context.createMediaStreamSource(mic).connect(destination);
+        input=destination.stream;streams.push(input);
+      }
+      if(display.getVideoTracks().some(track=>track.readyState==='ended')||display.getAudioTracks().some(track=>track.readyState==='ended'))throw new Error('O compartilhamento foi encerrado. Inicie novamente para gravar.');
+      display.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(activeRecorder?.state==='recording'){recordingBusy=true;$('#recordButton').disabled=true;activeRecorder.stop();}},{once:true}));
+    }else{
+      input=await navigator.mediaDevices.getUserMedia({audio:true});streams.push(input);recognitionTrack=input.getAudioTracks()[0];
+    }
+    const mimeType=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(type=>MediaRecorder.isTypeSupported(type));
+    activeRecorder=new MediaRecorder(input,mimeType?{mimeType}:undefined);recorder=activeRecorder;
+    const captured=[];liveCaptionText='';
+    activeRecorder.ondataavailable=event=>{if(event.data.size)captured.push(event.data);};
+    activeRecorder.onerror=()=>{failed=true;$('#recordStatus').textContent='A gravação foi interrompida. Baixe o áudio recuperado, se disponível.';};
+    activeRecorder.onstop=()=>{
+      const caption=liveCaptionText;cleanup();
+      if(detectSubject&&subject==='Não identificada')$('#subjectDetectionStatus').textContent='Gravação encerrada sem identificar a matéria.';
+      const blob=new Blob(captured,{type:activeRecorder.mimeType||captured[0]?.type||'audio/webm'});
+      if(!blob.size){$('#recordTitle').textContent='Nenhum áudio gravado';$('#recordStatus').textContent='Tente iniciar uma nova gravação.';return;}
+      recordings.unshift({id:crypto.randomUUID(),source:meet?'meet':'microphone',title:(meet?'Meet ':'Gravação ')+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),subject,custom,url:URL.createObjectURL(blob),mimeType:blob.type,caption});
+      renderRecordings();$('#recordTitle').textContent=failed?'Gravação interrompida':'Gravação pronta!';
+      $('#recordStatus').textContent=failed?'Baixe o áudio recuperado antes de sair.':'Você pode ouvir abaixo. Baixe para guardar antes de fechar ou recarregar a página.';
+    };
+    activeRecorder.start(1000);
+    recordingSubjectOverride=(name,isCustom=false)=>{subject=name;custom=isCustom;};
+    recordingSubjectNames().forEach(ensureRecordingSubjectOption);
+    $('#recordSubjectSelect').disabled=false;$('#customSubject').disabled=false;
+    if(detectSubject){
+      subject='Não identificada';custom=false;ensureRecordingSubjectOption(subject);$('#recordSubjectSelect').value=subject;$('#customSubject').classList.add('hidden');updateDeleteSubjectButton();
+      if($('#enableLiveCaptions').checked&&!meet)$('#liveCaptions span').textContent='As legendas acompanham a identificação inicial, por até 90 segundos.';
+      subjectDetector=createRecordingSubjectDetector({track:recognitionTrack,names:recordingSubjectNames(),
+        onSubject:name=>{subject=name;custom=false;ensureRecordingSubjectOption(name);$('#recordSubjectSelect').value=name;updateDeleteSubjectButton();},
+        onStatus:message=>$('#subjectDetectionStatus').textContent=message,
+        onTranscript:text=>{if($('#enableLiveCaptions').checked&&!meet){liveCaptionText=text;$('#liveCaptions span').textContent=text;}}
+      });
+    }else{
+      $('#subjectDetectionStatus').textContent='Identificação automática desativada. Usando a matéria escolhida.';
+      if(!meet)startLiveCaptions();
+    }
+    seconds=0;$('#recordTime').textContent='00:00';recordTimer=setInterval(()=>$('#recordTime').textContent=formatTime(++seconds),1000);
+    $('#recordButton').classList.add('stop');$('#recordButton').textContent='■';$('#recordButton').setAttribute('aria-label','Finalizar gravação');
+    $('#recordVisual').classList.add('recording');$('#recordTitle').textContent=meet?'Gravando áudio do Meet...':'Gravando...';
+    $('#recordStatus').textContent='Toque no quadrado para finalizar. Mantenha esta página aberta.';
+    recordingBusy=false;$('#recordButton').disabled=false;
+  }catch(error){
+    cleanup();$('#recordTitle').textContent='Pronta para gravar?';
+    $('#recordStatus').textContent=error.name==='NotAllowedError'?'Gravação cancelada ou permissão negada. Tente novamente e permita o acesso solicitado.':error.name==='NotFoundError'?'Nenhuma fonte de áudio encontrada. Verifique seu microfone ou a aba compartilhada.':error.message||'Não foi possível iniciar a gravação.';
+  }
+};
+window.addEventListener('beforeunload',event=>{if(recordingBusy||recorder?.state==='recording'){event.preventDefault();event.returnValue='';}});
+const recordingTabs=document.createElement('div');
+recordingTabs.className='recording-tabs';recordingTabs.setAttribute('role','tablist');recordingTabs.setAttribute('aria-label','Tipos de gravação');
+recordingTabs.innerHTML='<button type="button" id="microphoneRecordingTab" role="tab" aria-controls="microphoneRecordingPanel" aria-selected="true" data-recording-kind="microphone">Gravações</button><button type="button" id="meetRecordingTab" role="tab" aria-controls="meetRecordingPanel" aria-selected="false" tabindex="-1" data-recording-kind="meet">Meets</button>';
+$('#gravacao .page-heading').after(recordingTabs);
+const recordingContent=[$('#gravacao .record-card'),$('#gravacao .recording-toolbar'),$('#recordingsList'),$('#trashPanel')];
+for(const kind of ['microphone','meet']){
+  const panel=document.createElement('section');panel.id=kind+'RecordingPanel';panel.className='recording-kind-panel';panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',kind+'RecordingTab');panel.hidden=kind!=='microphone';panel.tabIndex=0;recordingTabs.after(panel);
+}
+$('#recordSource').hidden=true;recordingSourcePanel.querySelector('label[for="recordSource"]').hidden=true;
+function selectRecordingKind(kind){
+  if(recordingBusy||recorder?.state==='recording')return;
+  activeRecordingKind=kind;
+  $$('[data-recording-kind]').forEach(button=>{const selected=button.dataset.recordingKind===kind;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
+  for(const name of ['microphone','meet'])$('#'+name+'RecordingPanel').hidden=name!==kind;
+  recordingContent.forEach(node=>$('#'+kind+'RecordingPanel').append(node));
+  $('#recordSource').value=kind;$('#recordSource').onchange();
+  $('#recordTitle').textContent=kind==='meet'?'Pronta para gravar o Meet?':'Pronta para gravar?';
+  $('#recordVisual span').textContent=kind==='meet'?'💻':'🎙';
+  $('#gravacao .recording-toolbar h2').textContent=kind==='meet'?'Meus Meets':'Minhas gravações';
+  $('#gravacao .subtitle').textContent=kind==='meet'?'Grave o áudio das reuniões e organize por matéria.':'Grave explicações, lembretes ou uma aula pelo microfone.';
+  $('#recordTime').textContent='00:00';$('#trashPanel').classList.add('hidden');
+  $('#subjectDetectionStatus').textContent='A matéria será sugerida quando houver informação suficiente. Você pode corrigir a escolha.';
+  const history=$('#recordingHistoryStatus');if(history)history.textContent='';
+  renderRecordings();renderTrash();
+}
+$$('[data-recording-kind]').forEach(button=>{
+  button.onclick=()=>selectRecordingKind(button.dataset.recordingKind);
+  button.onkeydown=event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();if(recordingBusy||recorder?.state==='recording')return;const kind=event.key==='Home'?'microphone':event.key==='End'?'meet':activeRecordingKind==='meet'?'microphone':'meet';selectRecordingKind(kind);$('#'+kind+'RecordingTab').focus();};
+});
+selectRecordingKind('microphone');
 
 let subjectPdfs = [];
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char])); }
 function renderLibrary() { $('#libraryGrid').innerHTML = subjectPdfs.map(item=>`<article class="pdf-card"><span class="pdf-icon">📄</span><strong title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</strong><small>${escapeHtml(item.subject)}</small><a href="${item.url}" download="${escapeHtml(item.name)}">Baixar PDF</a></article>`).join(''); }
 $('#libraryFiles').onchange=e=>{const files=[...e.target.files];if(!files.length)return;const subject=$('#subjectSelect').value;subjectPdfs.push(...files.map(file=>({name:file.name,subject,url:URL.createObjectURL(file)})));renderLibrary();$('#libraryStatus').textContent=`${files.length} PDF(s) adicionado(s) em ${subject}.`;e.target.value='';};
 $('#schoolSyncButton').onclick=()=>{const status=$('#schoolStatus');status.textContent='Abrindo o acesso autorizado da sua conta @escola...';connectClassroom();};
-const classroomClientStorage = 'caderno-digital-google-client-id';
 const classroomEmailStorage = 'caderno-digital-google-gov-email';
 if(localStorage.getItem(classroomEmailStorage))$('#classroomSetup').classList.add('hidden');
-let classroomTokenClient, classroomAccessToken = '';
+let classroomAccessToken = '';
 const classroomScopes = 'https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly https://www.googleapis.com/auth/classroom.courseworkmaterials.readonly https://www.googleapis.com/auth/drive.readonly';
-function loadExternalScript(src) { return new Promise((resolve,reject)=>{const existing=document.querySelector(`script[src="${src}"]`);if(existing){if(existing.dataset.loaded)resolve();else existing.addEventListener('load',resolve,{once:true});return;}const script=document.createElement('script');script.src=src;script.async=true;script.defer=true;script.onload=()=>{script.dataset.loaded='true';resolve();};script.onerror=reject;document.head.append(script);}); }
 async function classroomApi(path) { const response=await fetch(`https://classroom.googleapis.com/v1/${path}`,{headers:{Authorization:`Bearer ${classroomAccessToken}`}});if(!response.ok){const detail=await response.json().catch(()=>({}));throw new Error(detail.error?.message||`Erro ${response.status} do Google Classroom`);}return response.json(); }
 function classroomPdfAttachments(materials=[], courseName='Classroom') { return materials.flatMap(material=>{const drive=material.driveFile?.driveFile;if(!drive)return[];const title=drive.title||'Material do Classroom';return /\.pdf$/i.test(title)?[{id:drive.id,name:title,subject:courseName}]:[];}); }
 async function listClassroomPdfs() { const courses=[];let pageToken='';do{const data=await classroomApi(`courses?courseStates=ACTIVE&pageSize=100${pageToken?`&pageToken=${encodeURIComponent(pageToken)}`:''}`);courses.push(...(data.courses||[]));pageToken=data.nextPageToken||'';}while(pageToken);const found=[];for(const course of courses){for(const endpoint of ['courseWork','courseWorkMaterials']){let token='';do{const data=await classroomApi(`courses/${course.id}/${endpoint}?pageSize=100${token?`&pageToken=${encodeURIComponent(token)}`:''}`);const items=data[endpoint]||[];items.forEach(item=>found.push(...classroomPdfAttachments(item.materials,course.name)));token=data.nextPageToken||'';}while(token);}}return [...new Map(found.map(file=>[file.id,file])).values()]; }
 async function downloadClassroomPdf(file) { const response=await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(file.id)}?alt=media`,{headers:{Authorization:`Bearer ${classroomAccessToken}`}});if(!response.ok)throw new Error(`Não foi possível baixar ${file.name}`);const blob=await response.blob(),url=URL.createObjectURL(blob);subjectPdfs.unshift({name:file.name,subject:file.subject,url});const link=document.createElement('a');link.href=url;link.download=file.name;document.body.append(link);link.click();link.remove(); }
 async function syncClassroomPdfs() { const status=$('#classroomStatus'),schoolStatus=$('#schoolStatus');status.textContent='Procurando PDFs nas suas turmas...';schoolStatus.textContent='Procurando materiais publicados no Google Classroom...';try{const files=await listClassroomPdfs();if(!files.length){status.textContent='Nenhum PDF foi encontrado nas turmas ativas.';schoolStatus.textContent='Acesso concluído, mas nenhum PDF foi encontrado nas turmas ativas.';return;}let downloaded=0;for(const file of files){try{await downloadClassroomPdf(file);downloaded++;status.textContent=`Baixando PDFs... ${downloaded} de ${files.length}`;schoolStatus.textContent=`Recebendo materiais... ${downloaded} de ${files.length}`;}catch{}}renderLibrary();status.textContent=`${downloaded} PDF(s) do Classroom baixado(s) e adicionado(s) à biblioteca.`;schoolStatus.textContent=`✓ ${downloaded} PDF(s) da escola adicionado(s) à biblioteca.`;$('#schoolDescription').textContent='Materiais recebidos das turmas autorizadas no Google Classroom.';$('#schoolSyncButton').textContent='Atualizar PDFs';$('#classroomPageDescription').textContent='✓ Classroom vinculado. O acesso aos PDFs está autorizado.';$('#classroomSyncButton').textContent='Buscar novos PDFs';}catch(error){status.textContent=`Não foi possível sincronizar: ${error.message}`;schoolStatus.textContent=`Não foi possível acessar os PDFs: ${error.message}`;} }
-async function connectClassroom() { const email=localStorage.getItem(classroomEmailStorage);if(!email){$('#classroomSetup').classList.remove('hidden');$('#googleGovEmail').focus();return;}const clientId=localStorage.getItem(classroomClientStorage);const status=$('#classroomStatus');if(!clientId){status.textContent='O acesso do Classroom ainda precisa ser liberado pelo responsável do Caderno Digital.';return;}status.textContent='Abrindo a autorização segura do Google...';try{await loadExternalScript('https://accounts.google.com/gsi/client');classroomTokenClient=google.accounts.oauth2.initTokenClient({client_id:clientId,scope:classroomScopes,hint:email,callback:response=>{if(response.error){status.textContent='A autorização do Google não foi concluída.';return;}classroomAccessToken=response.access_token;syncClassroomPdfs();}});classroomTokenClient.requestAccessToken({prompt:classroomAccessToken?'':'consent',hint:email});}catch{status.textContent='Não foi possível carregar a conexão do Google. Verifique sua internet.';} }
+async function connectClassroom() { const email=localStorage.getItem(classroomEmailStorage);if(!email){$('#classroomSetup').classList.remove('hidden');$('#googleGovEmail').focus();return;}const status=$('#classroomStatus');if(!cloudAuth){status.textContent='A conexão segura do Google ainda está carregando. Tente novamente em instantes.';return;}status.textContent='Abrindo a autorização oficial do Google Classroom...';try{const provider=new firebase.auth.GoogleAuthProvider();classroomScopes.split(' ').forEach(scope=>provider.addScope(scope));provider.setCustomParameters({login_hint:email,prompt:'consent'});const result=await cloudAuth.signInWithPopup(provider),credential=firebase.auth.GoogleAuthProvider.credentialFromResult(result);if(!credential?.accessToken)throw new Error('missing-token');classroomAccessToken=credential.accessToken;$('#classroomPageDescription').textContent='✓ Classroom autorizado com sua conta escolar.';await syncClassroomPdfs();}catch(error){status.textContent=error?.code==='auth/popup-closed-by-user'?'A autorização foi fechada antes de ser concluída.':'O Google não liberou o acesso ao Classroom. Confirme a conta escolar e as permissões solicitadas.';} }
 $('#classroomSyncButton').onclick=connectClassroom;
 $('#openMaterialLibrary').onclick=()=>document.querySelector('[data-tab="exportar"]').click();
 $('#saveGoogleGovEmail').onclick=()=>{const input=$('#googleGovEmail'),email=input.value.trim().toLowerCase();if(!input.checkValidity()||!email){$('#classroomStatus').textContent='Digite um e-mail institucional válido.';return;}localStorage.setItem(classroomEmailStorage,email);$('#classroomSetup').classList.add('hidden');connectClassroom();};
