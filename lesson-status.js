@@ -31,7 +31,18 @@
     if (active.length) return {lesson:active[0].item};
     return {message:minute < Math.min(...valid.map(row=>row.start)) || minute >= Math.max(...valid.map(row=>row.end)) ? 'Fora do horário das aulas cadastradas.' : 'Intervalo na grade: nenhuma aula cadastrada agora. Isso não confirma aula vaga.'};
   }
-  const api = {classify,current,minutes,labels};
+  function lessonChanges(existing, values) {
+    const changes = {lessonType:values.type,lessonEvidence:values.evidence.trim(),dayOverride:values.override || null};
+    // Type and notices can be saved even when an imported lesson has only an ordinal.
+    if (values.start || values.end) {
+      if (minutes(values.start) === null || minutes(values.end) === null || minutes(values.end) <= minutes(values.start)) {
+        throw new Error('Preencha início e término juntos, com término depois do início. Para salvar apenas o tipo e o aviso, deixe os dois vazios.');
+      }
+      changes.time=values.start;changes.endTime=values.end;
+    }
+    return {...existing,...changes};
+  }
+  const api = {classify,current,minutes,labels,lessonChanges};
   root.lessonStatus = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
@@ -63,9 +74,21 @@
       const save=document.createElement('button');save.type='button';save.className='secondary-button';save.textContent='Salvar informações';detail.append(save);
       const feedback=document.createElement('small');feedback.setAttribute('role','status');detail.append(feedback);
       save.onclick=()=>{
-        if(minutes(start.value)===null || minutes(end.value)===null || minutes(end.value)<=minutes(start.value)){feedback.textContent='Informe início e término válidos, com término depois do início.';return;}
-        Object.assign(item,{time:start.value,endTime:end.value,lessonType:type.value,lessonEvidence:evidence.value.trim(),dayOverride:override.value?{date:localSchoolDate(),type:override.value}:null});
-        saveSchoolInfo();renderSchoolSchedule();
+        const index=schoolInfo.schedule.findIndex(entry=>entry.id===item.id);
+        if(index<0){feedback.textContent='Esta aula foi removida. Atualize a grade antes de salvar.';return;}
+        const previous=schoolInfo.schedule[index];
+        let updated;
+        try { updated=lessonChanges(previous,{start:start.value,end:end.value,type:type.value,evidence:evidence.value,override:override.value?{date:localSchoolDate(),type:override.value}:null}); }
+        catch(error){feedback.textContent=error.message;return;}
+        schoolInfo.schedule[index]=updated;
+        try { saveSchoolInfo(); }
+        catch {schoolInfo.schedule[index]=previous;feedback.textContent='Não foi possível salvar neste aparelho. Tente novamente.';return;}
+        Object.assign(item,updated);refresh();updateStatus();
+        const name=schoolInfo.subjects.find(subject=>subject.id===updated.subjectId)?.name || 'Aula';
+        const day=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][updated.day];
+        button.parentElement.querySelector('strong').textContent=`${updated.time}${updated.endTime?'–'+updated.endTime:''} · ${name}`;
+        feedback.textContent=`✓ Informações salvas nesta aula: ${name}, ${day}, ${updated.time}.`;
+        if(typeof scheduleCloudSave==='function')scheduleCloudSave();
       };
       button.parentElement.append(detail);
     });

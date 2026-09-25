@@ -18,3 +18,12 @@ assert.match(current([],new Date(2026,8,26)).message,/Nenhuma aula/);
 assert.equal(minutes('24:00'),null);
 assert.equal(minutes('1ª aula'),null);
 console.log('15 verificações passaram.');
+
+const {lessonChanges}=require('./lesson-status.js');
+const original={id:'a',day:1,time:'1ª aula',subjectId:'math'};
+const saved=lessonChanges(original,{start:'',end:'',type:'meet',evidence:' aviso ',override:null});
+assert.equal(saved.id,'a');assert.equal(saved.time,'1ª aula');assert.equal(saved.lessonType,'meet');assert.equal(saved.lessonEvidence,'aviso');assert.equal(original.lessonType,undefined);
+assert.throws(()=>lessonChanges(original,{start:'08:00',end:'',type:'meet',evidence:''}));
+const timed=lessonChanges(saved,{start:'08:00',end:'09:00',type:'recording',evidence:'',override:null});
+assert.equal(timed.time,'08:00');assert.equal(timed.endTime,'09:00');assert.equal(JSON.parse(JSON.stringify(timed)).lessonType,'recording');
+console.log('Salvamento por aula e preservação dos horários verificados.');
