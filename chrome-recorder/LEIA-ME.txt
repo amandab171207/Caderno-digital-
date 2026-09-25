@@ -1,0 +1,17 @@
+Caderno Digital — Gravador de aulas para Chrome 116 ou mais recente
+
+1. Extraia esta pasta no computador.
+2. Abra chrome://extensions no Chrome e ative Modo do desenvolvedor.
+3. Clique em Carregar sem compactação e escolha esta pasta.
+4. Fixe a extensão na barra. Abra a aba do Meet ou da videoaula.
+5. Clique na extensão para gravar. O indicador REC mostra que está gravando.
+6. Você pode fechar o site do Caderno Digital. Mantenha o Chrome e a aula abertos.
+7. Clique novamente na extensão para parar. A biblioteca será aberta.
+8. Baixe o vídeo e importe no Caderno Digital, em Gravações > Importar áudios ou vídeos.
+
+A extensão grava vídeo e áudio da aba escolhida, sem seu microfone.
+Não começa sozinha em horários programados. Não grava com computador desligado,
+em suspensão ou Chrome fechado. Não envia gravações a servidores.
+Os trechos são guardados a cada cinco segundos neste perfil do Chrome.
+Após falha, pode haver arquivo incompleto. Não remova a extensão antes de baixar
+seus arquivos. Abra as Opções da extensão para acessar a biblioteca depois.

@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Caderno Digital — Gravador de aulas",
+  "version": "1.0.0",
+  "minimum_chrome_version": "116",
+  "description": "Grava vídeo e áudio da aba escolhida com o Caderno Digital fechado. Clique para iniciar e parar.",
+  "permissions": ["tabCapture", "offscreen", "activeTab", "storage"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_title": "Gravar esta aula / parar gravação"},
+  "options_ui": {"page": "library.html", "open_in_tab": true}
+}

@@ -25,7 +25,7 @@ window.addEventListener('load',()=>setTimeout(applyDailyAttendanceSymbols));
 window.addEventListener('load',()=>setTimeout(splitSchoolActivities));
 window.addEventListener('load',()=>{const form=$('#schoolActivityForm'),actions=form.querySelector('.school-dialog-actions'),box=document.createElement('div');box.id='tripPdfBox';box.className='trip-pdf-box hidden';box.innerHTML='<label for="tripPdfFile">PDF do passeio</label><input id="tripPdfFile" type="file" accept="application/pdf"><small>Escolha o informativo ou autorização do passeio em PDF.</small>';actions.before(box);form.addEventListener('submit',async event=>{if($('#schoolActivityType').value!=='Passeio')return;event.preventDefault();event.stopImmediatePropagation();const file=$('#tripPdfFile').files[0];if(!file)return;const id=crypto.randomUUID(),title=file.name.replace(/\.[^.]+$/,'');await schoolPdfTransaction('readwrite',store=>store.put({id,name:file.name,blob:file,savedAt:Date.now()}));if(!schoolInfo.tripPdfs)schoolInfo.tripPdfs=[];schoolInfo.tripPdfs.unshift({id,name:file.name});schoolInfo.activities.push({id:crypto.randomUUID(),title,type:'Passeio',date:$('#schoolActivityDate').value,subjectId:'',done:false});saveSchoolInfo();form.closest('dialog').close();renderSchoolInfo();renderTripPdfs();},true);setTimeout(renderTripPdfs);});
 window.addEventListener('load',()=>{const grade=$('#schoolSubjectGrade'),row=grade?.closest('.school-form-row');if(!grade||!row)return;grade.previousElementSibling.textContent='Nota do 1º trimestre';grade.type='text';grade.inputMode='decimal';grade.pattern='[0-9]+([,.][0-9]+)?';grade.placeholder='Ex.: 6,5';const attendance=$('#schoolSubjectAttendance');if(attendance){const hiddenAttendance=document.createElement('input');hiddenAttendance.id='schoolSubjectAttendance';hiddenAttendance.type='hidden';hiddenAttendance.value=attendance.value;attendance.closest('div').replaceWith(hiddenAttendance);}const second=document.createElement('div');second.innerHTML='<label for="schoolSubjectGrade2">Nota do 2º trimestre</label><input id="schoolSubjectGrade2" type="text" inputmode="decimal" pattern="[0-9]+([,.][0-9]+)?" placeholder="Ex.: 6,5">';const third=document.createElement('div');third.innerHTML='<label for="schoolSubjectGrade3">Nota do 3º trimestre</label><input id="schoolSubjectGrade3" type="text" inputmode="decimal" pattern="[0-9]+([,.][0-9]+)?" placeholder="Ex.: 6,5">';row.insertBefore(second,row.lastElementChild);row.insertBefore(third,row.lastElementChild);setTimeout(renderTrimesterGrades);});
-const saveSchoolInfo=()=>localStorage.setItem(schoolInfoStorage,JSON.stringify(schoolInfo));
+const saveSchoolInfo=()=>{localStorage.setItem(schoolInfoStorage,JSON.stringify(schoolInfo));window.dispatchEvent(new Event('school-schedule-updated'));};
 function localSchoolDate(){const now=new Date(),year=now.getFullYear(),month=String(now.getMonth()+1).padStart(2,'0'),day=String(now.getDate()).padStart(2,'0');return `${year}-${month}-${day}`;}
 function registerSchoolAttendance(status){if(!schoolInfo.attendanceLog)schoolInfo.attendanceLog=[];if(!schoolInfo.lessonAttendance)schoolInfo.lessonAttendance=[];const date=localSchoolDate(),today=new Date().getDay(),existing=schoolInfo.attendanceLog.find(item=>item.date===date),todayLessons=(schoolInfo.schedule||[]).filter(item=>Number(item.day)===today),todaySubjectIds=[...new Set(todayLessons.map(lesson=>lesson.subjectId))];if(existing)existing.status=status;else schoolInfo.attendanceLog.push({date,status});todayLessons.forEach(lesson=>{let record=schoolInfo.lessonAttendance.find(item=>item.date===date&&item.scheduleId===lesson.id);if(record)record.status=status;else schoolInfo.lessonAttendance.push({date,scheduleId:lesson.id,subjectId:lesson.subjectId,status});});todaySubjectIds.forEach(updateSubjectAttendance);schoolInfo.subjects.forEach(subject=>{if(!todaySubjectIds.includes(subject.id))subject.attendance='0';});saveSchoolInfo();renderSchoolInfo();renderDailyAttendance();renderSchoolSchedule();renderAttendanceStats();}
 function updateSubjectAttendance(subjectId){const lessons=(schoolInfo.lessonAttendance||[]).filter(item=>item.subjectId===subjectId);if(!lessons.length)return;const subject=schoolInfo.subjects.find(item=>item.id===subjectId);if(subject)subject.attendance=String(Math.round(lessons.filter(item=>item.status==='present').length/lessons.length*100));}
@@ -344,7 +344,7 @@ let activeRecordingKind='microphone';
 function recordingKind(item){return item.source||(item.title?.startsWith('Meet ')?'meet':'microphone');}
 const recordingSourcePanel=document.createElement('div');
 recordingSourcePanel.className='recording-source-panel';
-recordingSourcePanel.innerHTML='<label for="recordSource">O que deseja gravar?</label><select id="recordSource"><option value="microphone">Microfone</option><option value="meet">Áudio do Google Meet</option></select><div id="meetRecordingOptions" class="hidden"><p>Abra o Meet em outra aba. Ao iniciar, selecione essa aba e marque “Compartilhar áudio da aba”. Apenas o áudio será gravado.</p><label><input id="includeMeetMicrophone" type="checkbox"> Incluir minha voz pelo microfone</label><p>Use fones para evitar eco. As gravações ficam nesta sessão: baixe antes de fechar ou recarregar a página.</p></div>';
+recordingSourcePanel.innerHTML='<label for="recordSource">O que deseja gravar?</label><select id="recordSource"><option value="microphone">Microfone</option><option value="meet">Áudio do Google Meet</option></select><div id="meetRecordingOptions" class="hidden"><p>Abra o Meet em outra aba. Ao iniciar, selecione essa aba e marque “Compartilhar áudio da aba”. O vídeo e o áudio da aba serão gravados.</p><label><input id="includeMeetMicrophone" type="checkbox"> Incluir minha voz pelo microfone</label><p>Use fones para evitar eco. Baixe uma cópia para guardar em outro aparelho.</p></div>';
 $('#recordStatus').after(recordingSourcePanel);
 $('#recordStatus').setAttribute('role','status');
 $('#recordSource').onchange=()=>{
@@ -362,8 +362,8 @@ $('#enableLiveCaptions').checked=accessibilityPreferences.deafMode;
 function startLiveCaptions(){if(!$('#enableLiveCaptions').checked)return;const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(!Recognition){$('#liveCaptions span').textContent='As legendas ao vivo não estão disponíveis neste navegador. Você ainda pode adicionar um texto à gravação salva.';return;}liveCaptionText='';liveRecognition=new Recognition();liveRecognition.lang='pt-BR';liveRecognition.continuous=true;liveRecognition.interimResults=true;liveRecognition.onresult=event=>{let finalText='',interimText='';for(let i=0;i<event.results.length;i++){const text=event.results[i][0].transcript;if(event.results[i].isFinal)finalText+=text+' ';else interimText+=text;}liveCaptionText=finalText.trim();$('#liveCaptions span').textContent=(finalText+interimText).trim()||'Ouvindo...';};liveRecognition.onerror=()=>{$('#liveCaptions span').textContent='Não foi possível gerar as legendas ao vivo.';};try{liveRecognition.start();$('#liveCaptions span').textContent='Ouvindo...';}catch{}}
 function stopLiveCaptions(){if(liveRecognition){try{liveRecognition.stop();}catch{}liveRecognition=null;}if($('#enableLiveCaptions').checked&&!$('#liveCaptions span').textContent.trim())$('#liveCaptions span').textContent='Gravação finalizada.';}
 function formatTime(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
-function renderRecordings(){const filter=$('#recordFilter').value,items=recordings.filter(item=>recordingKind(item)===activeRecordingKind);const visible=filter==='Todas'?items:filter==='personalizada'?items.filter(item=>item.custom):items.filter(item=>item.subject===filter);$('#recordingsList').innerHTML=visible.length?visible.map(item=>`<div class="audio-item"><span aria-hidden="true">🎙</span><span>${escapeHtml(item.title)}</span><span class="recording-subject">${escapeHtml(item.subject)}</span><audio controls src="${item.url}" aria-label="Ouvir ${escapeHtml(item.title)}"></audio><a class="secondary-button" href="${item.url}" download="${escapeHtml(item.title)}.${item.mimeType?.includes('mp4')?'m4a':'webm'}">Baixar</a><button class="recording-caption" data-caption="${item.id}" aria-label="Adicionar texto à gravação ${escapeHtml(item.title)}">${item.caption?'Editar texto':'＋ Texto'}</button><button class="delete-recording" data-id="${item.id}" aria-label="Mover ${escapeHtml(item.title)} para a lixeira">🗑</button>${item.caption?`<p class="recording-transcript"><strong>Texto da gravação:</strong> ${escapeHtml(item.caption)}</p>`:''}</div>`).join(''):'<p class="small-status">Nenhuma gravação nesta matéria ainda.</p>';$$('.recording-caption').forEach(button=>button.onclick=()=>{const item=recordings.find(recording=>recording.id===button.dataset.caption),caption=prompt('Digite uma descrição ou transcrição para esta gravação:',item.caption||'');if(caption===null)return;item.caption=caption.trim();renderRecordings();});$$('.delete-recording').forEach(button=>button.onclick=()=>{const index=recordings.findIndex(item=>item.id===button.dataset.id);trashedRecordings.unshift(recordings.splice(index,1)[0]);renderRecordings();renderTrash();});}
-function renderTrash(){const items=trashedRecordings.filter(item=>recordingKind(item)===activeRecordingKind);$('#trashCount').textContent=items.length;$('#trashList').innerHTML=items.length?items.map(item=>`<div class="audio-item"><span>🎙</span><span>${item.title}</span><span class="recording-subject">${item.subject}</span><div class="trash-actions"><button data-restore="${item.id}">Recuperar</button><button class="remove-forever" data-remove="${item.id}">Apagar</button></div></div>`).join(''):'<p class="small-status">A lixeira está vazia.</p>';$$('[data-restore]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.restore);recordings.unshift(trashedRecordings.splice(index,1)[0]);renderRecordings();renderTrash();});$$('[data-remove]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.remove);const [item]=trashedRecordings.splice(index,1);URL.revokeObjectURL(item.url);renderTrash();});}
+function renderRecordings(){const filter=$('#recordFilter').value,items=recordings.filter(item=>recordingKind(item)===activeRecordingKind);const visible=filter==='Todas'?items:filter==='personalizada'?items.filter(item=>item.custom):items.filter(item=>item.subject===filter);$('#recordingsList').innerHTML=visible.length?visible.map(item=>`<div class="audio-item"><span aria-hidden="true">🎙</span><span>${escapeHtml(item.title)}</span><span class="recording-subject">${escapeHtml(item.subject)}</span>${recordingIsVideo(item)?`<video controls playsinline preload="metadata" src="${item.url}" aria-label="Assistir ${escapeHtml(item.title)}"></video>`:`<audio controls preload="metadata" src="${item.url}" aria-label="Ouvir ${escapeHtml(item.title)}"></audio>`}<a class="secondary-button" href="${item.url}" download="${escapeHtml(item.title)}.${recordingFileExtension(item)}">Baixar</a><button class="recording-caption" data-caption="${item.id}" aria-label="Adicionar texto à gravação ${escapeHtml(item.title)}">${item.caption?'Editar texto':'＋ Texto'}</button><button class="delete-recording" data-id="${item.id}" aria-label="Mover ${escapeHtml(item.title)} para a lixeira">🗑</button>${item.caption?`<p class="recording-transcript"><strong>Texto da gravação:</strong> ${escapeHtml(item.caption)}</p>`:''}</div>`).join(''):'<p class="small-status">Nenhuma gravação nesta matéria ainda.</p>';$$('.recording-caption').forEach(button=>button.onclick=()=>{const item=recordings.find(recording=>recording.id===button.dataset.caption),caption=prompt('Digite uma descrição ou transcrição para esta gravação:',item.caption||'');if(caption===null)return;item.caption=caption.trim();renderRecordings();});$$('.delete-recording').forEach(button=>button.onclick=()=>{const index=recordings.findIndex(item=>item.id===button.dataset.id);trashedRecordings.unshift(recordings.splice(index,1)[0]);renderRecordings();renderTrash();});}
+function renderTrash(){const items=trashedRecordings.filter(item=>recordingKind(item)===activeRecordingKind);$('#trashCount').textContent=items.length;$('#trashList').innerHTML=items.length?items.map(item=>`<div class="audio-item"><span>🎙</span><span>${escapeHtml(item.title)}</span><span class="recording-subject">${escapeHtml(item.subject)}</span><div class="trash-actions"><button data-restore="${item.id}">Recuperar</button><button class="remove-forever" data-remove="${item.id}">Apagar</button></div></div>`).join(''):'<p class="small-status">A lixeira está vazia.</p>';$$('[data-restore]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.restore);recordings.unshift(trashedRecordings.splice(index,1)[0]);renderRecordings();renderTrash();});$$('[data-remove]').forEach(button=>button.onclick=()=>{const index=trashedRecordings.findIndex(item=>item.id===button.dataset.remove);const [item]=trashedRecordings.splice(index,1);URL.revokeObjectURL(item.url);renderTrash();});}
 const deleteSubjectButton=document.createElement('button');deleteSubjectButton.type='button';deleteSubjectButton.className='delete-subject-button hidden';deleteSubjectButton.textContent='Excluir nome da matéria';$('#recordSubjectSelect').after(deleteSubjectButton);
 function updateDeleteSubjectButton(){const selected=$('#recordSubjectSelect').selectedOptions[0];deleteSubjectButton.classList.toggle('hidden',!selected?.dataset.customSubject);}
 function addCustomRecordingSubject(){const input=$('#customSubject'),subject=input.value.trim();if(!subject)return;[$('#recordSubjectSelect'),$('#recordFilter')].forEach(select=>{if(![...select.options].some(option=>option.value===subject)){const option=document.createElement('option');option.value=subject;option.textContent=subject;option.dataset.customSubject='true';select.insertBefore(option,select.querySelector('option[value="personalizada"]'));}});$('#recordSubjectSelect').value=subject;input.value='';input.classList.add('hidden');updateDeleteSubjectButton();}
@@ -374,9 +374,29 @@ $('#customSubject').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addCust
 $('#recordFilter').onchange=renderRecordings;
 $('#toggleTrash').onclick=()=>{$('#trashPanel').classList.toggle('hidden');renderTrash();};
 const subjectDetectionPanel=document.createElement('div');
-subjectDetectionPanel.className='recording-source-panel';
+subjectDetectionPanel.className='recording-source-panel';subjectDetectionPanel.hidden=true;
 subjectDetectionPanel.innerHTML='<label><input id="detectRecordingSubject" type="checkbox" checked> Identificar matéria pelo áudio</label><p>Analisa até 90 segundos das primeiras falas. A transcrição pode enviar áudio ao serviço de voz do navegador e precisar de internet.</p><p id="subjectDetectionStatus" role="status" aria-live="polite">A matéria será sugerida quando houver informação suficiente. Você pode corrigir a escolha.</p>';
 $('#recordSubjectSelect').before(subjectDetectionPanel);
+const recordingLessonPanel=document.createElement('div');recordingLessonPanel.className='recording-source-panel';
+recordingLessonPanel.innerHTML='<label for="recordLessonSelect">Aula de Minha semana</label><select id="recordLessonSelect"><option value="auto">Aula do horário atual</option></select><small id="recordLessonStatus"></small>';
+subjectDetectionPanel.before(recordingLessonPanel);
+function syncRecordingLessons(){
+  const select=$('#recordLessonSelect'),previous=select.value,days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const lessons=(schoolInfo.schedule||[]).filter(item=>schoolInfo.subjects.some(subject=>subject.id===item.subjectId)).slice().sort((a,b)=>a.day-b.day||a.time.localeCompare(b.time));
+  select.replaceChildren(new Option('Aula do horário atual','auto'));
+  lessons.forEach(lesson=>{const name=schoolInfo.subjects.find(item=>item.id===lesson.subjectId).name;ensureRecordingSubjectOption(name);select.add(new Option(`${days[lesson.day]} · ${lesson.time}${lesson.endTime?'–'+lesson.endTime:''} · ${name}`,lesson.id));});
+  select.value=lessons.some(item=>item.id===previous)?previous:'auto';
+  updateRecordingLesson();
+}
+function updateRecordingLesson(){
+  const lesson=lessonForRecording(schoolInfo.schedule,schoolInfo.subjects,$('#recordLessonSelect').value);
+  const subject=lesson&&schoolInfo.subjects.find(item=>item.id===lesson.subjectId);
+  $('#recordLessonStatus').textContent=subject?'Vinculada a '+subject.name:'Escolha uma aula ou deixe a matéria ser identificada durante a gravação.';
+  if(subject&&!recordingBusy&&recorder?.state!=='recording')selectRecordingSubject(subject.name);
+}
+$('#recordLessonSelect').onchange=updateRecordingLesson;
+window.addEventListener('school-schedule-updated',syncRecordingLessons);
+window.addEventListener('load',syncRecordingLessons);
 let recordingBusy=false,subjectDetector=null,recordingSubjectOverride=null;
 function ensureRecordingSubjectOption(name){
   ['#recordSubjectSelect','#recordFilter'].forEach(selector=>{
@@ -399,8 +419,8 @@ $('#customSubject').addEventListener('input',()=>{
   if(recordingSubjectOverride&&$('#recordSubjectSelect').value==='personalizada')recordingSubjectOverride($('#customSubject').value.trim()||'Não identificada',true);
 });
 function setRecordingControls(busy){
-  ['#recordSource','#includeMeetMicrophone','#recordSubjectSelect','#customSubject','#detectRecordingSubject'].forEach(selector=>$(selector).disabled=busy);
-  deleteSubjectButton.disabled=busy;$('[data-recording-kind]').forEach(button=>button.disabled=busy);
+  ['#recordSource','#includeMeetMicrophone','#recordSubjectSelect','#customSubject','#detectRecordingSubject','#recordLessonSelect'].forEach(selector=>$(selector).disabled=busy);
+  deleteSubjectButton.disabled=busy;$$('[data-recording-kind]').forEach(button=>button.disabled=busy);
   $('#enableLiveCaptions').disabled=busy||$('#recordSource').value==='meet';
 }
 $('#recordButton').onclick=async()=>{
@@ -408,7 +428,9 @@ $('#recordButton').onclick=async()=>{
   if(recorder?.state==='recording'){$('#recordButton').disabled=true;recorder.stop();return;}
   recordingBusy=true;$('#recordButton').disabled=true;setRecordingControls(true);
   const meet=$('#recordSource').value==='meet',streams=[];
-  const detectSubject=$('#detectRecordingSubject').checked;
+  let linkedLesson=lessonForRecording(schoolInfo.schedule,schoolInfo.subjects,$('#recordLessonSelect').value);
+  const detectSubject=!linkedLesson;
+  if(linkedLesson)selectRecordingSubject(schoolInfo.subjects.find(item=>item.id===linkedLesson.subjectId).name);
   let custom=$('#recordSubjectSelect').value==='personalizada';
   let subject=custom?$('#customSubject').value.trim()||'Nome da matéria':$('#recordSubjectSelect').value;
   let context,activeRecorder,failed=false;
@@ -429,23 +451,23 @@ $('#recordButton').onclick=async()=>{
       const display=await navigator.mediaDevices.getDisplayMedia({video:{displaySurface:'browser'},audio:true,selfBrowserSurface:'exclude',systemAudio:'exclude'});
       streams.push(display);
       if(!display.getAudioTracks().some(track=>track.readyState==='live'))throw new Error('Nenhum áudio foi compartilhado. Tente novamente, selecione a aba do Meet e marque “Compartilhar áudio da aba”.');
-      input=new MediaStream(display.getAudioTracks());
+      input=new MediaStream(display.getTracks());
       recognitionTrack=display.getAudioTracks()[0];
       if($('#includeMeetMicrophone').checked){
         const mic=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
         streams.push(mic);
         context=new AudioContext();await context.resume();
         const destination=context.createMediaStreamDestination();
-        context.createMediaStreamSource(input).connect(destination);
+        context.createMediaStreamSource(new MediaStream(display.getAudioTracks())).connect(destination);
         context.createMediaStreamSource(mic).connect(destination);
-        input=destination.stream;streams.push(input);
+        input=new MediaStream([...display.getVideoTracks(),...destination.stream.getAudioTracks()]);streams.push(input);
       }
       if(display.getVideoTracks().some(track=>track.readyState==='ended')||display.getAudioTracks().some(track=>track.readyState==='ended'))throw new Error('O compartilhamento foi encerrado. Inicie novamente para gravar.');
       display.getTracks().forEach(track=>track.addEventListener('ended',()=>{if(activeRecorder?.state==='recording'){recordingBusy=true;$('#recordButton').disabled=true;activeRecorder.stop();}},{once:true}));
     }else{
       input=await navigator.mediaDevices.getUserMedia({audio:true});streams.push(input);recognitionTrack=input.getAudioTracks()[0];
     }
-    const mimeType=['audio/webm;codecs=opus','audio/webm','audio/mp4'].find(type=>MediaRecorder.isTypeSupported(type));
+    const mimeType=recordingMimeCandidates(meet).find(type=>MediaRecorder.isTypeSupported(type));
     activeRecorder=new MediaRecorder(input,mimeType?{mimeType}:undefined);recorder=activeRecorder;
     const captured=[];liveCaptionText='';
     activeRecorder.ondataavailable=event=>{if(event.data.size)captured.push(event.data);};
@@ -453,14 +475,14 @@ $('#recordButton').onclick=async()=>{
     activeRecorder.onstop=()=>{
       const caption=liveCaptionText;cleanup();
       if(detectSubject&&subject==='Não identificada')$('#subjectDetectionStatus').textContent='Gravação encerrada sem identificar a matéria.';
-      const blob=new Blob(captured,{type:activeRecorder.mimeType||captured[0]?.type||'audio/webm'});
+      const blob=new Blob(captured,{type:activeRecorder.mimeType||captured[0]?.type||(meet?'video/webm':'audio/webm')});
       if(!blob.size){$('#recordTitle').textContent='Nenhum áudio gravado';$('#recordStatus').textContent='Tente iniciar uma nova gravação.';return;}
-      recordings.unshift({id:crypto.randomUUID(),source:meet?'meet':'microphone',title:(meet?'Meet ':'Gravação ')+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),subject,custom,url:URL.createObjectURL(blob),mimeType:blob.type,caption});
+      recordings.unshift({id:crypto.randomUUID(),source:meet?'meet':'microphone',title:(meet?'Meet ':'Gravação ')+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),subject,custom,url:URL.createObjectURL(blob),mimeType:blob.type,blob,lessonId:linkedLesson?.id||null,caption});
       renderRecordings();$('#recordTitle').textContent=failed?'Gravação interrompida':'Gravação pronta!';
-      $('#recordStatus').textContent=failed?'Baixe o áudio recuperado antes de sair.':'Você pode ouvir abaixo. Baixe para guardar antes de fechar ou recarregar a página.';
+      $('#recordStatus').textContent=failed?'Baixe o áudio recuperado antes de sair.':'Gravação concluída. Você pode reproduzir ou baixar o arquivo abaixo.';
     };
     activeRecorder.start(1000);
-    recordingSubjectOverride=(name,isCustom=false)=>{subject=name;custom=isCustom;};
+    recordingSubjectOverride=(name,isCustom=false)=>{subject=name;custom=isCustom;linkedLesson=null;};
     recordingSubjectNames().forEach(ensureRecordingSubjectOption);
     $('#recordSubjectSelect').disabled=false;$('#customSubject').disabled=false;
     if(detectSubject){
@@ -477,7 +499,7 @@ $('#recordButton').onclick=async()=>{
     }
     seconds=0;$('#recordTime').textContent='00:00';recordTimer=setInterval(()=>$('#recordTime').textContent=formatTime(++seconds),1000);
     $('#recordButton').classList.add('stop');$('#recordButton').textContent='■';$('#recordButton').setAttribute('aria-label','Finalizar gravação');
-    $('#recordVisual').classList.add('recording');$('#recordTitle').textContent=meet?'Gravando áudio do Meet...':'Gravando...';
+    $('#recordVisual').classList.add('recording');$('#recordTitle').textContent=meet?'Gravando vídeo do Meet...':'Gravando...';
     $('#recordStatus').textContent='Toque no quadrado para finalizar. Mantenha esta página aberta.';
     recordingBusy=false;$('#recordButton').disabled=false;
   }catch(error){
@@ -485,10 +507,10 @@ $('#recordButton').onclick=async()=>{
     $('#recordStatus').textContent=error.name==='NotAllowedError'?'Gravação cancelada ou permissão negada. Tente novamente e permita o acesso solicitado.':error.name==='NotFoundError'?'Nenhuma fonte de áudio encontrada. Verifique seu microfone ou a aba compartilhada.':error.message||'Não foi possível iniciar a gravação.';
   }
 };
-window.addEventListener('beforeunload',event=>{if(recordingBusy||recorder?.state==='recording'){event.preventDefault();event.returnValue='';}});
+window.addEventListener('beforeunload',event=>{if(recordingBusy||recorder?.state==='recording'||(typeof recordingTransferBusy!=='undefined'&&recordingTransferBusy)){event.preventDefault();event.returnValue='';}});
 const recordingTabs=document.createElement('div');
 recordingTabs.className='recording-tabs';recordingTabs.setAttribute('role','tablist');recordingTabs.setAttribute('aria-label','Tipos de gravação');
-recordingTabs.innerHTML='<button type="button" id="microphoneRecordingTab" role="tab" aria-controls="microphoneRecordingPanel" aria-selected="true" data-recording-kind="microphone">Gravações</button><button type="button" id="meetRecordingTab" role="tab" aria-controls="meetRecordingPanel" aria-selected="false" tabindex="-1" data-recording-kind="meet"><svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-4v12l-6-4"/></svg> Meets</button>';
+recordingTabs.innerHTML='<button type="button" id="microphoneRecordingTab" role="tab" aria-controls="microphoneRecordingPanel" aria-selected="true" data-recording-kind="microphone"><span aria-hidden="true">🎙</span> Gravações</button><button type="button" id="meetRecordingTab" role="tab" aria-controls="meetRecordingPanel" aria-selected="false" tabindex="-1" data-recording-kind="meet"><svg class="outline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="6" width="12" height="12" rx="2"/><path d="m15 10 6-4v12l-6-4"/></svg> Meets</button>';
 $('#gravacao .page-heading').after(recordingTabs);
 const recordingContent=[$('#gravacao .record-card'),$('#gravacao .recording-toolbar'),$('#recordingsList'),$('#trashPanel')];
 for(const kind of ['microphone','meet']){
@@ -498,6 +520,7 @@ $('#recordSource').hidden=true;recordingSourcePanel.querySelector('label[for="re
 function selectRecordingKind(kind){
   if(recordingBusy||recorder?.state==='recording')return;
   activeRecordingKind=kind;
+  syncRecordingLessons();
   $$('[data-recording-kind]').forEach(button=>{const selected=button.dataset.recordingKind===kind;button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;});
   for(const name of ['microphone','meet'])$('#'+name+'RecordingPanel').hidden=name!==kind;
   recordingContent.forEach(node=>$('#'+kind+'RecordingPanel').append(node));
@@ -505,7 +528,7 @@ function selectRecordingKind(kind){
   $('#recordTitle').textContent=kind==='meet'?'Pronta para gravar o Meet?':'Pronta para gravar?';
   if(kind==='meet')$('#recordVisual span').innerHTML=meetOutlineIcon;else $('#recordVisual span').textContent='🎙';
   $('#gravacao .recording-toolbar h2').textContent=kind==='meet'?'Meus Meets':'Minhas gravações';
-  $('#gravacao .subtitle').textContent=kind==='meet'?'Grave o áudio das reuniões e organize por matéria.':'Grave explicações, lembretes ou uma aula pelo microfone.';
+  $('#gravacao .subtitle').textContent=kind==='meet'?'Grave as reuniões em vídeo com áudio e organize por matéria.':'Grave explicações, lembretes ou uma aula pelo microfone.';
   $('#recordTime').textContent='00:00';$('#trashPanel').classList.add('hidden');
   $('#subjectDetectionStatus').textContent='A matéria será sugerida quando houver informação suficiente. Você pode corrigir a escolha.';
   const history=$('#recordingHistoryStatus');if(history)history.textContent='';
@@ -573,12 +596,22 @@ window.addEventListener('load',()=>setTimeout(prepareScheduleEditor));
 // Organização, busca, calendário e estudo automático.
 const recordingsDbName='caderno-digital-gravacoes';let recordingsStorageReady=false,recordingsSaveTimer=0;
 function openRecordingsDb(){return new Promise((resolve,reject)=>{const request=indexedDB.open(recordingsDbName,1);request.onupgradeneeded=()=>request.result.createObjectStore('items',{keyPath:'id'});request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});}
-async function saveRecordingsInBrowser(){if(!recordingsStorageReady)return;try{const items=[...recordings.map(item=>({...item,deleted:false})),...trashedRecordings.map(item=>({...item,deleted:true}))],saved=await Promise.all(items.map(async item=>({id:item.id,title:item.title,subject:item.subject,custom:item.custom,caption:item.caption||'',deleted:item.deleted,blob:await fetch(item.url).then(response=>response.blob())}))),db=await openRecordingsDb(),transaction=db.transaction('items','readwrite'),store=transaction.objectStore('items');store.clear();saved.forEach(item=>store.put(item));transaction.oncomplete=()=>db.close();}catch{}}
-function queueRecordingSave(){clearTimeout(recordingsSaveTimer);recordingsSaveTimer=setTimeout(saveRecordingsInBrowser,500);}
+let recordingWriteChain=Promise.resolve();
+function saveRecordingsInBrowser(){
+  if(!recordingsStorageReady)return Promise.resolve();
+  const items=[...recordings.map(item=>({...item,deleted:false})),...trashedRecordings.map(item=>({...item,deleted:true}))];
+  const operation=async()=>{
+    const saved=await Promise.all(items.map(async item=>({id:item.id,title:item.title,subject:item.subject,source:recordingKind(item),mimeType:item.mimeType||item.blob?.type||'',lessonId:item.lessonId||null,custom:!!item.custom,caption:item.caption||'',deleted:item.deleted,blob:item.blob||await fetch(item.url).then(response=>response.blob())})));
+    const db=await openRecordingsDb();
+    await new Promise((resolve,reject)=>{const transaction=db.transaction('items','readwrite'),store=transaction.objectStore('items');store.clear();saved.forEach(item=>store.put(item));transaction.oncomplete=()=>{db.close();resolve();};transaction.onerror=transaction.onabort=()=>{db.close();reject(transaction.error||new Error('Não foi possível salvar as gravações neste aparelho.'));};});
+  };
+  recordingWriteChain=recordingWriteChain.catch(()=>{}).then(operation);return recordingWriteChain;
+}
+function queueRecordingSave(){clearTimeout(recordingsSaveTimer);recordingsSaveTimer=setTimeout(()=>saveRecordingsInBrowser().catch(()=>{$('#recordStatus').textContent='Não foi possível guardar neste aparelho. Baixe a gravação antes de fechar a página.';}),500);}
 const renderRecordingsBeforeStorage=renderRecordings,renderTrashBeforeStorage=renderTrash;
 renderRecordings=function(){renderRecordingsBeforeStorage();queueRecordingSave();};
 renderTrash=function(){renderTrashBeforeStorage();queueRecordingSave();};
-(async()=>{try{const db=await openRecordingsDb(),transaction=db.transaction('items','readonly'),request=transaction.objectStore('items').getAll();request.onsuccess=()=>{const saved=request.result||[];recordings=saved.filter(item=>!item.deleted).map(item=>({...item,url:URL.createObjectURL(item.blob)}));trashedRecordings=saved.filter(item=>item.deleted).map(item=>({...item,url:URL.createObjectURL(item.blob)}));recordingsStorageReady=true;renderRecordings();renderTrash();db.close();};}catch{recordingsStorageReady=true;}})();
+(async()=>{try{const db=await openRecordingsDb(),transaction=db.transaction('items','readonly'),request=transaction.objectStore('items').getAll();request.onerror=()=>{recordingsStorageReady=true;db.close();$('#recordStatus').textContent='Não foi possível carregar gravações salvas neste aparelho.';};request.onsuccess=()=>{const saved=request.result||[];const existing=new Set([...recordings,...trashedRecordings].map(item=>item.id));recordings.push(...saved.filter(item=>!item.deleted&&!existing.has(item.id)).map(item=>({...item,url:URL.createObjectURL(item.blob)})));trashedRecordings.push(...saved.filter(item=>item.deleted&&!existing.has(item.id)).map(item=>({...item,url:URL.createObjectURL(item.blob)})));recordings.forEach(item=>ensureRecordingSubjectOption(item.subject));recordingsStorageReady=true;renderRecordings();renderTrash();db.close();};}catch{recordingsStorageReady=true;}})();
 
 function createStudyMaterial(text,title){const clean=text.replace(/\s+/g,' ').trim(),sentences=clean.match(/[^.!?]+[.!?]+/g)||[clean];if(!clean)return;const summary=sentences.slice(0,3).join(' ').trim();const cards=sentences.slice(0,Math.min(5,sentences.length)).map((sentence,index)=>({id:crypto.randomUUID(),question:`${title}: ponto ${index+1}`,answer:sentence.trim(),source:'Material de estudo'}));responseCards.unshift(...cards);localStorage.setItem(responseCardsStorage,JSON.stringify(responseCards));renderResponseCards();alert(`Resumo criado:\n\n${summary}\n\n${cards.length} flashcard(s) foram adicionados à Tutora IA.`);}
 const studyFromPdfButton=document.createElement('button');studyFromPdfButton.className='secondary-button';studyFromPdfButton.textContent='Criar resumo e flashcards';studyFromPdfButton.onclick=()=>createStudyMaterial($('#transcriptionText').value,'PDF transcrito');$('#addTextToNotebook').after(studyFromPdfButton);
