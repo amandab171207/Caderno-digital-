@@ -6,7 +6,7 @@
   const THEMES = { claro:'Claro', escuro:'Escuro', lilas:'Lilás', azul:'Azul', verde:'Verde' };
   const TAGS = { '':'Sem etiqueta', importante:'Importante', revisar:'Revisar', prova:'Prova' };
   let toolsState = {theme:'claro',textSize:'medio',studySeconds:{},goals:[],notifications:false,pomodoroMinutes:25};
-  let trash = [], history = [], studyStarted = 0, studySubject = '', studyTicker = 0;
+  let trash = [], history = [], studyStarted = 0, activeStudySubject = '', studyTicker = 0;
   let pomodoroSeconds = 25 * 60, pomodoroTicker = 0, historyBefore = null;
 
   const read = (key, fallback) => { try { const value=JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
@@ -87,9 +87,10 @@
   function renderPageExtras(){const p=activePage();if(!p)return;favoritePage.textContent=p.favorite?'★ Remover dos favoritos':'☆ Favoritar página';}
 
   function formatSeconds(total){total=Math.max(0,Math.floor(total));return `${String(Math.floor(total/3600)).padStart(2,'0')}:${String(Math.floor(total%3600/60)).padStart(2,'0')}:${String(total%60).padStart(2,'0')}`;}
+  const studySubject=document.querySelector('#studySubject');
   function refreshSubjects(){const names=subjects();studySubject.innerHTML=names.map(s=>`<option>${esc(s)}</option>`).join('')||'<option>Estudos</option>';}
   function renderStudy(){studyTotals.innerHTML=Object.entries(toolsState.studySeconds||{}).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([s,t])=>`<div><span>${esc(s)}</span><strong>${formatSeconds(t)}</strong></div>`).join('');}
-  toggleStudyTimer.onclick=()=>{if(studyTicker){const elapsed=Math.floor((Date.now()-studyStarted)/1000);toolsState.studySeconds[studySubject] = (toolsState.studySeconds[studySubject]||0)+elapsed;clearInterval(studyTicker);studyTicker=0;studyClock.textContent=formatSeconds(toolsState.studySeconds[studySubject]);toggleStudyTimer.textContent='Começar a estudar';saveTools();renderStudy();return;}studySubject=studySubject.value;studyStarted=Date.now();toggleStudyTimer.textContent='Parar e salvar';studyTicker=setInterval(()=>studyClock.textContent=formatSeconds((toolsState.studySeconds[studySubject]||0)+(Date.now()-studyStarted)/1000),1000);};
+  toggleStudyTimer.onclick=()=>{if(studyTicker){const elapsed=Math.floor((Date.now()-studyStarted)/1000);toolsState.studySeconds[activeStudySubject] = (toolsState.studySeconds[activeStudySubject]||0)+elapsed;clearInterval(studyTicker);studyTicker=0;studyClock.textContent=formatSeconds(toolsState.studySeconds[activeStudySubject]);toggleStudyTimer.textContent='Começar a estudar';saveTools();renderStudy();return;}activeStudySubject=studySubject.value;studyStarted=Date.now();toggleStudyTimer.textContent='Parar e salvar';studyTicker=setInterval(()=>studyClock.textContent=formatSeconds((toolsState.studySeconds[activeStudySubject]||0)+(Date.now()-studyStarted)/1000),1000);};
   studySubject.onchange=()=>studyClock.textContent=formatSeconds(toolsState.studySeconds[studySubject.value]||0);
 
   function renderPomodoro(){pomodoroClock.textContent=`${String(Math.floor(pomodoroSeconds/60)).padStart(2,'0')}:${String(pomodoroSeconds%60).padStart(2,'0')}`;}
@@ -117,5 +118,6 @@
   });
   function scheduleClassStartNotifications(){if(!toolsState.notifications||Notification.permission!=='granted')return;const now=new Date(),weekday=now.getDay(),currentMinutes=now.getHours()*60+now.getMinutes();(schoolInfo.schedule||[]).filter(item=>Number(item.day)===weekday).forEach(item=>{if(!/^\d{2}:\d{2}$/.test(item.time||''))return;const [hour,minute]=item.time.split(':').map(Number),minutesUntil=hour*60+minute-currentMinutes,subject=schoolInfo.subjects.find(entry=>entry.id===item.subjectId)?.name||'Sua aula',key=`caderno-aula-${localSchoolDate()}-${item.id}`;if(minutesUntil>0&&minutesUntil<=10&&!localStorage.getItem(key)){localStorage.setItem(key,'shown');setTimeout(()=>new Notification(`${subject} começa em breve`,{body:`Sua aula começa às ${item.time}.`,tag:key}),minutesUntil*60000);}});}
   enableStudyNotifications.addEventListener('click',()=>setTimeout(scheduleClassStartNotifications,0));
+  window.addEventListener('cloud-data-applied',()=>{toolsState={...toolsState,...read(STORAGE,{})};trash=read(TRASH,[]);history=read(HISTORY,[]);document.documentElement.dataset.studyTheme=toolsState.theme;document.documentElement.dataset.textSize=toolsState.textSize;studyTheme.value=toolsState.theme;studyTextSize.value=toolsState.textSize;refreshAll();});
   refreshAll();renderPomodoro();scheduleReminders();scheduleClassStartNotifications();setInterval(scheduleClassStartNotifications,60000);
 })();
