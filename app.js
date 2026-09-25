@@ -607,7 +607,7 @@ function saveRecordingsInBrowser(){
   };
   recordingWriteChain=recordingWriteChain.catch(()=>{}).then(operation);return recordingWriteChain;
 }
-function queueRecordingSave(){clearTimeout(recordingsSaveTimer);recordingsSaveTimer=setTimeout(()=>saveRecordingsInBrowser().catch(()=>{$('#recordStatus').textContent='Não foi possível guardar neste aparelho. Baixe a gravação antes de fechar a página.';}),500);}
+function queueRecordingSave(){window.dispatchEvent(new Event('recordings-changed'));clearTimeout(recordingsSaveTimer);recordingsSaveTimer=setTimeout(()=>saveRecordingsInBrowser().catch(()=>{$('#recordStatus').textContent='Não foi possível guardar neste aparelho. Baixe a gravação antes de fechar a página.';}),500);}
 const renderRecordingsBeforeStorage=renderRecordings,renderTrashBeforeStorage=renderTrash;
 renderRecordings=function(){renderRecordingsBeforeStorage();queueRecordingSave();};
 renderTrash=function(){renderTrashBeforeStorage();queueRecordingSave();};

@@ -1,14 +1,56 @@
 // Audio/video files live in Storage; only metadata is written to the private user document.
 const recordingTransferPanel=document.createElement('section');
 recordingTransferPanel.className='recording-transfer';
-recordingTransferPanel.innerHTML='<h2>Gravações entre aparelhos</h2><p>Abra o caderno no celular e no computador com a mesma conta Google. Toque em sincronizar primeiro no celular e depois no computador.</p><div class="recording-transfer-actions"><button id="syncRecordingFiles" class="secondary-button">Sincronizar gravações</button><label class="secondary-button" for="importRecordingFiles">Importar áudios ou vídeos</label><input id="importRecordingFiles" type="file" accept="audio/*,video/*,.webm,.m4a,.mp3,.wav,.ogg,.mp4" multiple hidden></div><p id="recordingTransferStatus" role="status" aria-live="polite"></p><details><summary>Gravar com o caderno fechado no Chrome</summary><p>Instale a extensão no computador. A aula e o Chrome precisam permanecer abertos. Clique na extensão para iniciar e novamente para parar. Ela grava vídeo com o áudio da aba; seu microfone não é incluído.</p><a href="downloads/caderno-gravador-chrome.zip" download class="secondary-button">Baixar extensão</a><p>Extraia o arquivo, abra chrome://extensions, ative o modo do desenvolvedor e use “Carregar sem compactação” para selecionar a pasta extraída. Após gravar, baixe o vídeo na biblioteca da extensão e importe aqui.</p></details>';
+recordingTransferPanel.innerHTML='<h2>Gravações entre aparelhos</h2><p>Abra o caderno no celular e no computador com a mesma conta Google. Com internet, os áudios e vídeos são transferidos automaticamente enquanto o caderno estiver aberto.</p><div class="recording-transfer-actions"><button id="syncRecordingFiles" class="secondary-button">Sincronizar gravações</button><label class="secondary-button" for="importRecordingFiles">Importar áudios ou vídeos</label><input id="importRecordingFiles" type="file" accept="audio/*,video/*,.webm,.m4a,.mp3,.wav,.ogg,.mp4" multiple hidden></div><p id="recordingTransferStatus" role="status" aria-live="polite"></p><details><summary>Gravar com o caderno fechado no Chrome</summary><p>Instale a extensão no computador. A aula e o Chrome precisam permanecer abertos. Clique na extensão para iniciar e novamente para parar. Ela grava vídeo com o áudio da aba; seu microfone não é incluído.</p><a href="downloads/caderno-gravador-chrome.zip" download class="secondary-button">Baixar extensão</a><p>Extraia o arquivo, abra chrome://extensions, ative o modo do desenvolvedor e use “Carregar sem compactação” para selecionar a pasta extraída. Após gravar, baixe o vídeo na biblioteca da extensão e importe aqui.</p></details>';
 $('#gravacao').append(recordingTransferPanel);
 let recordingTransferBusy=false;
+let recordingSyncBlocked=false;
 const recordingTransferStatus=message=>$('#recordingTransferStatus').textContent=message;
 async function waitRecordingStorage(){
   for(let attempts=0;attempts<100&&!recordingsStorageReady;attempts++)await new Promise(resolve=>setTimeout(resolve,100));
   if(!recordingsStorageReady)throw new Error('As gravações ainda estão carregando. Tente novamente.');
 }
+let automaticRecordingSyncTimer,recordingSyncUnsubscribe,recordingSyncUid=null;
+let recordingSyncLocalSignature='',recordingSyncRemoteSignature='',recordingSyncRemoteDirty=true,recordingSyncRetry=1500;
+function recordingLocalSignature(){return JSON.stringify(recordings.map(item=>[item.id,item.blob?.size||0]).sort((a,b)=>a[0].localeCompare(b[0])));}
+function scheduleAutomaticRecordingSync(delay=1500){
+  clearTimeout(automaticRecordingSyncTimer);
+  if(!recordingSyncUid||recordingSyncBlocked)return;
+  automaticRecordingSyncTimer=setTimeout(async()=>{
+    if(cloudUser?.uid!==recordingSyncUid||navigator.onLine===false||document.visibilityState==='hidden')return;
+    if(!cloudReady||!recordingsStorageReady||recordingTransferBusy){scheduleAutomaticRecordingSync(2000);return;}
+    if(!recordingSyncRemoteDirty&&recordingLocalSignature()===recordingSyncLocalSignature)return;
+    const uid=recordingSyncUid,signature=recordingLocalSignature();recordingSyncRemoteDirty=false;
+    const success=await syncRecordingFiles();
+    if(uid!==recordingSyncUid)return;
+    if(success){
+      // Recheck after a transfer if another recording was created while it ran.
+      recordingSyncLocalSignature=signature;recordingSyncRetry=1500;
+      if(recordingLocalSignature()!==signature||recordingSyncRemoteDirty)scheduleAutomaticRecordingSync();
+    }else{recordingSyncRemoteDirty=true;recordingSyncRetry=Math.min(Math.max(recordingSyncRetry*2,15000),300000);scheduleAutomaticRecordingSync(recordingSyncRetry);}
+  },delay);
+}
+function connectAutomaticRecordingSync(user){
+  clearTimeout(automaticRecordingSyncTimer);recordingSyncUnsubscribe?.();recordingSyncUnsubscribe=null;
+  recordingSyncUid=user?.uid||null;recordingSyncLocalSignature='';recordingSyncRemoteSignature='';recordingSyncRemoteDirty=true;recordingSyncBlocked=false;recordingSyncRetry=1500;
+  if(!user)return;
+  recordingSyncUnsubscribe=cloudDb.collection('users').doc(user.uid).onSnapshot(snapshot=>{
+    const signature=JSON.stringify(snapshot.data()?.recordingFiles||{});
+    if(signature===recordingSyncRemoteSignature)return;
+    recordingSyncRemoteSignature=signature;recordingSyncRemoteDirty=true;scheduleAutomaticRecordingSync();
+  },()=>{recordingSyncBlocked=true;recordingTransferStatus('A sincronização automática não conseguiu acessar sua conta. Toque em Sincronizar gravações para tentar novamente.');});
+  scheduleAutomaticRecordingSync();
+}
+$('#syncRecordingFiles').onclick=async()=>{
+  recordingSyncBlocked=false;
+  const uid=cloudUser?.uid,success=await syncRecordingFiles();
+  if(success&&cloudUser?.uid===uid){recordingSyncLocalSignature=recordingLocalSignature();recordingSyncRetry=1500;}
+  if(recordingSyncRemoteDirty)scheduleAutomaticRecordingSync();
+};
+window.addEventListener('recordings-changed',()=>scheduleAutomaticRecordingSync());
+window.addEventListener('online',()=>{recordingSyncBlocked=false;recordingSyncRemoteDirty=true;scheduleAutomaticRecordingSync();});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){recordingSyncRemoteDirty=true;scheduleAutomaticRecordingSync();}});
+if(cloudAuth)cloudAuth.onAuthStateChanged(connectAutomaticRecordingSync);
 async function persistTransferredRecordings(){clearTimeout(recordingsSaveTimer);await saveRecordingsInBrowser();}
 $('#importRecordingFiles').onchange=async event=>{
   if(recordingTransferBusy)return;
@@ -26,7 +68,7 @@ $('#importRecordingFiles').onchange=async event=>{
   }catch(error){recordingTransferStatus(error.message||'Não foi possível importar os arquivos.');}
   finally{recordingTransferBusy=false;$('#syncRecordingFiles').disabled=false;event.target.value='';}
 };
-$('#syncRecordingFiles').onclick=async()=>{
+async function syncRecordingFiles(){
   if(recordingTransferBusy)return;
   if(!cloudUser){recordingTransferStatus('Entre com Google no caderno, usando a mesma conta do celular.');return;}
   if(!window.firebase?.storage){recordingTransferStatus('Não foi possível carregar a sincronização. Verifique sua conexão e atualize a página.');return;}
@@ -55,10 +97,12 @@ $('#syncRecordingFiles').onclick=async()=>{
       recordings.unshift({...item,blob,url:URL.createObjectURL(blob)});ensureRecordingSubjectOption(item.subject||'Não identificada');
       await persistTransferredRecordings();
     }
-    renderRecordings();await persistTransferredRecordings();recordingTransferStatus(`Sincronização concluída: ${uploaded} enviado(s) e ${received} recebido(s).`);
+    renderRecordings();await persistTransferredRecordings();recordingTransferStatus(`Sincronização concluída: ${uploaded} enviado(s) e ${received} recebido(s).`);return true;
   }catch(error){
     renderRecordings();
     const configError=/storage\/(unauthorized|bucket-not-found|project-not-found|unknown)|permission-denied/.test(error.code||'');
+    recordingSyncBlocked=configError;
     recordingTransferStatus(configError?'O armazenamento de gravações na nuvem ainda precisa ser habilitado ou autorizado. Seus arquivos continuam neste aparelho. Use Baixar e Importar para transferi-los.':error.message||'A sincronização foi interrompida. Tente novamente; os arquivos já enviados serão preservados.');
+    return false;
   }finally{recordingTransferBusy=false;$('#syncRecordingFiles').disabled=false;$('#importRecordingFiles').disabled=false;}
-};
+}
