@@ -27,3 +27,11 @@ assert.throws(()=>lessonChanges(original,{start:'08:00',end:'',type:'meet',evide
 const timed=lessonChanges(saved,{start:'08:00',end:'09:00',type:'recording',evidence:'',override:null});
 assert.equal(timed.time,'08:00');assert.equal(timed.endTime,'09:00');assert.equal(JSON.parse(JSON.stringify(timed)).lessonType,'recording');
 console.log('Salvamento por aula e preservação dos horários verificados.');
+
+const {shareLessonInformation}=require('./lesson-status.js');
+const nextDay={id:'b',day:3,subjectId:'math',time:'10:00',endTime:'11:00',dayOverride:{date,type:'free'}};
+const otherSubject={id:'c',day:4,subjectId:'science',lessonType:'inperson'};
+const week=shareLessonInformation([original,nextDay,otherSubject],timed);
+assert.equal(week[1].lessonType,'recording');assert.equal(week[1].lessonEvidence,'');assert.equal(week[1].time,'10:00');assert.equal(week[1].endTime,'11:00');assert.deepEqual(week[1].dayOverride,nextDay.dayOverride);assert.equal(week[2],otherSubject);assert.equal(nextDay.lessonType,undefined);
+assert.deepEqual(JSON.parse(JSON.stringify(week)),week);
+console.log('Replicação entre dias, horários individuais e exceções de hoje verificados.');

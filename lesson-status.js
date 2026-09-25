@@ -42,10 +42,14 @@
     }
     return {...existing,...changes};
   }
-  const api = {classify,current,minutes,labels,lessonChanges};
+  function shareLessonInformation(schedule, updated) {
+    return schedule.map(lesson=>lesson.id===updated.id ? updated : updated.subjectId && lesson.subjectId===updated.subjectId ? {...lesson,lessonType:updated.lessonType,lessonEvidence:updated.lessonEvidence} : lesson);
+  }
+  const api = {classify,current,minutes,labels,lessonChanges,shareLessonInformation};
   root.lessonStatus = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
+  let editors = new Map();
   function updateStatus() {
     const box = document.querySelector('#currentLessonStatus'); if (!box) return;
     const result = current(schoolInfo.schedule || []);
@@ -56,13 +60,14 @@
   }
   function enhance() {
     const mount = document.querySelector('#schoolScheduleMount .school-schedule-card'); if (!mount) return;
+    editors = new Map();
     const status = document.createElement('p'); status.id = 'currentLessonStatus'; status.className = 'lesson-current-status'; status.setAttribute('role','status');
     mount.querySelector('.school-card-heading').after(status);
     mount.querySelectorAll('[data-delete-schedule]').forEach(button=>{
       const item = schoolInfo.schedule.find(entry=>entry.id === button.dataset.deleteSchedule); if (!item) return;
       const detail = document.createElement('details'); detail.className = 'lesson-detection';
       const summary = document.createElement('summary'); detail.append(summary);
-      const refresh = ()=>{const info=classify(item,localSchoolDate());summary.textContent=`${labels[info.type]} · configurar`;}; refresh();
+      const refresh = ()=>{const current=schoolInfo.schedule.find(lesson=>lesson.id===item.id)||item;const info=classify(current,localSchoolDate());summary.textContent=`${labels[info.type]} · configurar`;}; refresh();
       function field(title, control) { const label=document.createElement('label');label.append(document.createTextNode(title),control);detail.append(label);return control; }
       const start=field('Início',document.createElement('input')),end=field('Término',document.createElement('input'));
       start.type=end.type='time';start.value=minutes(item.time)!==null?item.time:'';end.value=minutes(item.endTime)!==null?item.endTime:'';
@@ -71,8 +76,10 @@
       type.value=item.lessonType || 'auto';
       const evidence=field('Link ou aviso do professor',document.createElement('textarea'));evidence.maxLength=3000;evidence.value=item.lessonEvidence || '';evidence.placeholder='Cole o aviso que indica Meet ou aula gravada';
       const override=field('Somente hoje',document.createElement('select'));override.add(new Option('Usar tipo habitual',''));Object.entries(labels).forEach(([value,text])=>override.add(new Option(text,value)));override.value=item.dayOverride?.date===localSchoolDate()?item.dayOverride.type:'';
-      const save=document.createElement('button');save.type='button';save.className='secondary-button';save.textContent='Salvar informações';detail.append(save);
+      const hint=document.createElement('p');hint.textContent='Ao salvar, o tipo habitual e o link ou aviso serão aplicados automaticamente a todas as aulas desta matéria na semana. Horários e “Somente hoje” são individuais.';detail.append(hint);
+      const save=document.createElement('button');save.type='button';save.className='secondary-button';save.textContent='Salvar para esta matéria na semana';detail.append(save);
       const feedback=document.createElement('small');feedback.setAttribute('role','status');detail.append(feedback);
+      editors.set(item.id,{type,evidence,refresh,feedback});
       save.onclick=()=>{
         const index=schoolInfo.schedule.findIndex(entry=>entry.id===item.id);
         if(index<0){feedback.textContent='Esta aula foi removida. Atualize a grade antes de salvar.';return;}
@@ -80,14 +87,15 @@
         let updated;
         try { updated=lessonChanges(previous,{start:start.value,end:end.value,type:type.value,evidence:evidence.value,override:override.value?{date:localSchoolDate(),type:override.value}:null}); }
         catch(error){feedback.textContent=error.message;return;}
-        schoolInfo.schedule[index]=updated;
+        const previousSchedule=schoolInfo.schedule;
+        schoolInfo.schedule=shareLessonInformation(previousSchedule,updated);
         try { saveSchoolInfo(); }
-        catch {schoolInfo.schedule[index]=previous;feedback.textContent='Não foi possível salvar neste aparelho. Tente novamente.';return;}
-        Object.assign(item,updated);refresh();updateStatus();
+        catch {schoolInfo.schedule=previousSchedule;feedback.textContent='Não foi possível salvar neste aparelho. Tente novamente.';return;}
+        updateStatus();
         const name=schoolInfo.subjects.find(subject=>subject.id===updated.subjectId)?.name || 'Aula';
-        const day=['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'][updated.day];
+        const affected=schoolInfo.schedule.filter(lesson=>lesson.id===updated.id || (updated.subjectId && lesson.subjectId===updated.subjectId));
+        affected.forEach(lesson=>{const editor=editors.get(lesson.id);if(!editor)return;editor.type.value=lesson.lessonType||'auto';editor.evidence.value=lesson.lessonEvidence||'';editor.refresh();editor.feedback.textContent=`✓ Tipo e aviso salvos nas ${affected.length} aula(s) de ${name} na semana.`;});
         button.parentElement.querySelector('strong').textContent=`${updated.time}${updated.endTime?'–'+updated.endTime:''} · ${name}`;
-        feedback.textContent=`✓ Informações salvas nesta aula: ${name}, ${day}, ${updated.time}.`;
         if(typeof scheduleCloudSave==='function')scheduleCloudSave();
       };
       button.parentElement.append(detail);

@@ -1,4 +1,4 @@
-const CACHE_NAME='caderno-digital-v121';
+const CACHE_NAME='caderno-digital-v122';
 const APP_FILES=['./','./index.html','./style.css','./subject-detection.js','./recording-media.js','./recording-sync.js','./app.js','./extras.js','./lesson-status.js','./recording-guard.js','./manifest.webmanifest','./icons/app-icon.svg','./icons/app-icon-192.png','./icons/app-icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_FILES)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))));self.clients.claim();});
