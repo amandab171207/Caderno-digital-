@@ -73,3 +73,12 @@ body:not(.libras-mode) [vw]{display:none!important}
 .outline-icon{display:inline-block;width:20px;height:20px;vertical-align:middle;flex-shrink:0}.nav-item .outline-icon{width:18px;height:18px;vertical-align:-3px}.recording-tabs .outline-icon{width:18px;height:18px;margin-right:5px;vertical-align:-3px}.record-visual .outline-icon{width:46px;height:46px;color:#6c687c}
 
 .recording-source-panel[hidden]{display:none!important}.audio-item video{width:100%;max-height:380px;background:#211d2d;border-radius:10px}.audio-item:has(video){flex-wrap:wrap}.recording-transfer{max-width:700px;margin:24px auto;padding:18px;border:1px solid #ded9e8;border-radius:16px;background:white}.recording-transfer p{font-size:13px;color:#6c687c;line-height:1.5}.recording-transfer-actions{display:flex;gap:10px;flex-wrap:wrap}
+.lesson-current-status { padding: 14px; border: 1px solid #bcb0d9; border-radius: 12px; background: #f4effc; color: #302444; line-height: 1.6; }
+.school-week-list > div:has(.lesson-detection) { flex-wrap: wrap; }
+.lesson-detection { flex-basis: 100%; grid-column: 1 / -1; min-width: 0; padding: 10px; border-top: 1px solid #d6cfe3; }
+.lesson-detection summary { cursor: pointer; font-weight: 600; }
+.lesson-detection label { display: flex; flex-direction: column; gap: 5px; margin-top: 12px; }
+.lesson-detection input, .lesson-detection select, .lesson-detection textarea { box-sizing: border-box; width: 100%; padding: 9px; border: 1px solid #bcb0d9; border-radius: 7px; font: inherit; background: white; color: #302444; }
+.lesson-detection textarea { min-height: 80px; resize: vertical; }
+.school-week-list .lesson-detection button { width: auto; margin-top: 12px; padding: 10px; }
+.lesson-detection small { display: block; margin-top: 8px; }
