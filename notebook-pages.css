@@ -1,0 +1,9 @@
+/* Proportions of a 20 × 27.5 cm school notebook, fitted to the screen. */
+#notebook{width:100%;max-width:724px}
+#paper{aspect-ratio:200 / 275;min-height:0;height:auto;overflow:hidden;container-type:inline-size}
+#paperContent{position:absolute;inset:0;height:100%;min-height:0;padding:8% 9%;overflow:auto;overflow-wrap:anywhere;box-sizing:border-box;font-size:clamp(12px,2.5cqw,16px);line-height:1.8}
+#paperContent img,#paperContent video{max-width:100%;max-height:60cqw;object-fit:contain}
+#paperContent table{max-width:100%;table-layout:fixed;overflow-wrap:anywhere}
+#paperContent h2{font-size:clamp(20px,5cqw,34px)}
+.notebook-page-status{margin:12px 0;color:#62596e;font-size:13px;text-align:center}
+@media print{#paper{aspect-ratio:200 / 275;min-height:0}#paperContent{min-height:0}.notebook-page-status{display:none}}
