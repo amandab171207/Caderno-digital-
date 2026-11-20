@@ -265,3 +265,10 @@ input,select,textarea,button{max-width:100%}
   .ai-input button{width:100%}
   .global-search-button{right:10px}
 }
+
+
+/* Mostra o caderno primeiro e as opções de capa logo abaixo */
+.studio-grid{grid-template-columns:minmax(0,1fr)!important}
+.notebook-area{order:-1}
+.customizer{order:1}
+.notebook-area .notebook{margin-left:auto;margin-right:auto}
