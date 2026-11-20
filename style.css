@@ -216,3 +216,52 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   #focusModeButton,#installAppButton{font-size:11px;padding:9px 11px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Centralização geral e prevenção de rolagem horizontal */
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+body{margin:0}
+.app-shell{width:100%;max-width:100%;margin:0 auto;overflow-x:clip}
+main{min-width:0;max-width:100%;}
+.tab-panel{width:100%;max-width:1120px;margin-left:auto!important;margin-right:auto!important;min-width:0}
+.tab-panel>*{min-width:0;max-width:100%}
+.page-heading,.tool-heading,.section-heading{width:100%;max-width:100%;margin-left:auto;margin-right:auto}
+.studio-grid,.khan-grid,.classroom-page-grid,.school-info-grid,.essay-layout,.download-layout,.export-grid,.platform-cards{width:100%;max-width:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+.feature-card,.khan-card,.classroom-connect-card,.classroom-info-card,.record-card,.customizer,.pdf-library,.transcription-card{min-width:0;max-width:100%}
+img,video,iframe,canvas,svg{max-width:100%}
+input,select,textarea,button{max-width:100%}
+.school-table-wrap,.table-wrap,.data-table-wrap{width:100%;max-width:100%;overflow-x:hidden}
+.school-table,.data-table,.grades-table{width:100%!important;max-width:100%;min-width:0!important;table-layout:fixed}
+.school-table th,.school-table td,.data-table th,.data-table td,.grades-table th,.grades-table td{white-space:normal!important;overflow-wrap:anywhere;word-break:break-word;padding:8px 5px}
+.audio-item,.school-sync,.recording-transfer,.recording-toolbar,.khan-connect-card,.classroom-connect-card{width:100%;max-width:100%;min-width:0;flex-wrap:wrap}
+.audio-item audio{min-width:0;max-width:100%}
+.notebook-area{width:100%;min-width:0;display:flex;flex-direction:column;align-items:center}
+.notebook{width:100%;max-width:min(100%,680px);margin-left:auto;margin-right:auto}
+.paper{width:100%;max-width:100%}
+.paper-content{max-width:100%;overflow-wrap:anywhere}
+.sticker-gallery{grid-template-columns:repeat(auto-fit,minmax(88px,1fr))}
+@media(max-width:800px){
+  main{width:100%;margin:0 auto;padding-left:clamp(12px,4vw,22px);padding-right:clamp(12px,4vw,22px)}
+  .tab-panel{max-width:680px}
+  .school-table-wrap,.table-wrap,.data-table-wrap{overflow:visible}
+  .school-table,.data-table,.grades-table{font-size:12px}
+  .school-table th,.school-table td,.data-table th,.data-table td,.grades-table th,.grades-table td{padding:7px 3px;font-size:inherit}
+  .video-lesson-grid,.library-grid,.offline-video-grid,.response-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+  .page-list{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+  .cover-choices{grid-template-columns:repeat(auto-fit,minmax(42px,1fr))}
+  .paper-options{grid-template-columns:repeat(auto-fit,minmax(105px,1fr))}
+}
+@media(max-width:520px){
+  main{padding-left:12px;padding-right:12px}
+  .tab-panel{max-width:100%}
+  .page-heading{align-items:center;text-align:center}
+  .page-heading>div{width:100%;text-align:center}
+  .page-heading .primary-button,.page-heading .secondary-button,.page-heading .heading-actions{width:100%}
+  .page-heading .heading-actions{grid-template-columns:1fr}
+  .school-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .school-table{font-size:11px}
+  .sticker-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ai-input{grid-template-columns:minmax(0,1fr)}
+  .ai-input button{width:100%}
+  .global-search-button{right:10px}
+}
