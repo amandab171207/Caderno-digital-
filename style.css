@@ -85,3 +85,134 @@ body:not(.libras-mode) [vw]{display:none!important}
 
 /* Cores das notas: abaixo de 50 vermelho, 50–59 amarelo, 60 ou mais rosa. */
 .school-grade.grade-red{background:#ffb8b8;color:#8f1010}.school-grade.grade-yellow{background:#fff2bf;color:#8a5a00}.school-grade.grade-pink{background:#ffe0f0;color:#a83268}.school-grade.grade-neutral{background:#f1eff5;color:#625b70}
+
+
+/* Experiência responsiva: celular e tablet */
+:root{--mobile-card:#fff;--mobile-border:#ebe6f1;--mobile-shadow:0 8px 24px #3024400b}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{min-width:320px}
+button,.primary-button,.secondary-button,.upload-button{ -webkit-tap-highlight-color:transparent }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #b9a8f4;outline-offset:2px}
+.tab-panel.active{animation:panel-enter .22s ease-out}
+@keyframes panel-enter{from{opacity:.72;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media (min-width:801px) and (max-width:1100px){
+  .sidebar{width:224px;padding:26px 14px}
+  .brand{margin:0 8px 30px;font-size:20px}
+  .nav-item{padding:11px 10px;font-size:13px}
+  main{width:calc(100% - 224px);margin-left:224px;padding:34px 26px}
+  .studio-grid{grid-template-columns:190px minmax(0,1fr);gap:20px}
+  .customizer{padding:15px}
+  .paper-content{padding:42px 36px}
+  .page-heading{gap:14px}
+  .school-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .school-info-grid,.khan-grid,.essay-layout{grid-template-columns:1fr 1fr}
+  .export-grid{grid-template-columns:1fr 1fr}
+  .feature-card,.pdf-library{padding:21px}
+}
+@media (max-width:800px){
+  body{background:#f8f6fc}
+  .mobile-header{background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-bottom:1px solid #eee9f3;color:#292540;box-shadow:0 5px 20px #3024400b}
+  .mobile-header button{background:#f5f1fb;color:#554b6b}
+  .sidebar{background:#fff;box-shadow:12px 0 40px #211a3126}
+  .brand{margin-bottom:24px}
+  .side-tip{margin-top:18px}
+  main{padding-top:calc(78px + env(safe-area-inset-top));padding-bottom:calc(34px + env(safe-area-inset-bottom));}
+  .tab-panel{max-width:760px}
+  .page-heading{align-items:flex-start;gap:14px;margin-bottom:22px}
+  .page-heading h1{font-size:clamp(29px,5vw,38px);line-height:1.08}
+  .subtitle{font-size:14px;line-height:1.5}
+  .page-heading .primary-button,.page-heading .secondary-button{width:auto;max-width:100%}
+  .feature-card,.pdf-library,.transcription-card,.school-info-card,.khan-card,.reading-card,.essay-editor-card,.essay-sync-card,.tutor-tool-card,.classroom-connect-card,.classroom-info-card,.record-card,.customizer{border-radius:18px;box-shadow:var(--mobile-shadow)}
+  .school-info-grid,.khan-grid,.essay-layout,.download-layout{grid-template-columns:1fr}
+  .school-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .school-summary article{padding:14px;min-width:0}
+  .school-summary strong{font-size:21px}
+  .school-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .school-table{min-width:560px}
+  .school-calendar-card{padding:16px}
+  .record-card{padding:30px 18px}
+  .record-controls{gap:18px}
+  .audio-item{min-width:0;flex-wrap:wrap}
+  .audio-item audio{width:100%;flex-basis:100%}
+  .school-sync{align-items:flex-start;flex-wrap:wrap}
+  .school-sync>div{flex:1;min-width:160px}
+  .school-sync button{width:100%;margin:4px 0 0}
+  .classroom-setup>div{flex-wrap:wrap}
+  .classroom-setup>div input,.classroom-setup>div button{width:100%}
+  .studio-grid{grid-template-columns:1fr;gap:16px}
+  .customizer{order:0}
+  .notebook-area{order:1}
+  .notebook{width:min(100%,620px)}
+  .paper,.paper-content{min-height:560px}
+  .cover-choices{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .paper-options{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .paper-option{justify-content:center;min-height:42px}
+  .page-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sticker-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .video-lesson-grid,.library-grid,.offline-video-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .global-search-button{top:calc(10px + env(safe-area-inset-top));right:12px}
+  #focusModeButton,#installAppButton{bottom:calc(12px + env(safe-area-inset-bottom))}
+  #focusModeButton{right:12px}
+  #installAppButton{left:12px}
+}
+@media (max-width:520px){
+  main{padding-left:14px;padding-right:14px}
+  .page-heading{flex-direction:column}
+  .page-heading>div{width:100%}
+  .page-heading .primary-button,.page-heading .secondary-button,.page-heading .heading-actions{width:100%}
+  .page-heading .heading-actions{display:grid;grid-template-columns:1fr 1fr}
+  .school-summary{grid-template-columns:1fr 1fr}
+  .school-summary article{gap:9px;padding:12px}
+  .school-summary-icon{flex-basis:36px;width:36px;height:36px}
+  .school-summary strong{font-size:19px}
+  .ai-card{align-items:flex-start;gap:12px;padding:17px}
+  .ai-card h2{font-size:20px}
+  .ai-input{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+  .ai-input input{width:100%;min-width:0}
+  .ai-input button{min-height:46px}
+  .suggestions{gap:7px}
+  .suggestions button{min-height:40px}
+  .chat-box{padding:12px;min-height:210px}
+  .message{max-width:96%;font-size:13px}
+  .feature-card,.pdf-library,.transcription-card,.school-info-card,.khan-card,.reading-card,.essay-editor-card,.tutor-tool-card{padding:17px}
+  .export-grid{grid-template-columns:1fr;gap:12px}
+  .library-controls{display:grid;grid-template-columns:1fr}
+  .library-controls>*{width:100%}
+  .school-summary article{min-height:88px}
+  .school-form-row{grid-template-columns:1fr}
+  .school-calendar-card{padding:12px}
+  .school-calendar-card section{gap:2px}
+  .school-calendar-card section>button{min-height:35px}
+  .record-card{padding:25px 15px}
+  .record-visual{width:88px;height:88px;font-size:38px}
+  .recording-toolbar{align-items:stretch;flex-direction:column}
+  .recording-toolbar select{width:100%}
+  .audio-item{padding:10px}
+  .recording-tabs{gap:4px}
+  .recording-tabs button{padding:10px 5px;font-size:13px}
+  .studio-grid{gap:12px}
+  .customizer{padding:14px}
+  .cover-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .paper-options{grid-template-columns:1fr}
+  .paper-option{justify-content:flex-start}
+  .notebook{padding:8px 6px 8px 14px}
+  .paper,.paper-content{min-height:500px}
+  .paper-content{padding:34px 20px;font-size:14px}
+  .paper-content h2{font-size:25px}
+  .sticker-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .sticker-card{padding:11px 5px;border-radius:13px}
+  .sticker-card .emoji{font-size:35px}
+  .video-lesson-grid,.library-grid,.offline-video-grid,.response-cards{grid-template-columns:1fr}
+  .school-week-list>div{min-width:0}
+  .school-week-list>div>*{min-width:0}
+  .school-schedule-form{grid-template-columns:1fr}
+  .school-sync{padding:12px}
+  .school-sync button{white-space:normal}
+  .canva-workspace{min-height:500px}
+  .canva-embed{min-height:420px}
+  .essay-editor-card{grid-template-columns:1fr}
+  .essay-editor-card>*{grid-column:1!important;grid-row:auto!important}
+  .global-search-button{right:10px}
+  #focusModeButton,#installAppButton{font-size:11px;padding:9px 11px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
