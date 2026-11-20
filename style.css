@@ -82,3 +82,6 @@ body:not(.libras-mode) [vw]{display:none!important}
 .lesson-detection textarea { min-height: 80px; resize: vertical; }
 .school-week-list .lesson-detection button { width: auto; margin-top: 12px; padding: 10px; }
 .lesson-detection small { display: block; margin-top: 8px; }
+
+/* Cores das notas: abaixo de 50 vermelho, 50–59 amarelo, 60 ou mais rosa. */
+.school-grade.grade-red{background:#ffe3e3;color:#b42318}.school-grade.grade-yellow{background:#fff2bf;color:#8a5a00}.school-grade.grade-pink{background:#ffe0f0;color:#a83268}.school-grade.grade-neutral{background:#f1eff5;color:#625b70}
